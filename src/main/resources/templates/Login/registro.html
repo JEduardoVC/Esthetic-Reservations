@@ -10,9 +10,35 @@
 
 <body>
     <div class="container">
-        <h1>Registro</h1>
-        <form action="login.html">
-            <button type="submit" class="btn btn-secondary">Volver</button>
-        </form>
+        <h1 class="m-5 p-5 text-primary text-center ">Esthetic Reservation</h1>
+        <p class="text-center text-uppercase">En esta parte se realizara el llenado del formulario para registar un usuario unicos</p>
+        <div class="mt-3 text-end">
+            <form action="login.html">
+                <button type="submit" class="btn btn-secondary">Volver</button>
+            </form>
+        </div>
+        <div class="mt-3">
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label" for="nombre">Nombre:</label>
+                    <input class="form-control" id="nombre" name="nombre" placeholder="Ingrese tu nombre con apellidos">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="email">Correo electronico:</label>
+                    <input class="form-control" id="email" name="email" placeholder="Ingrese tu email">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="password">Contraseña:</label>
+                    <input class="form-control" id="password" name="password" placeholder="Ingrese tu contraseña">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="repet_password">Repetir contraseña:</label>
+                    <input class="form-control" id="repet_password" name="repet_password" placeholder="Repita su contraseña">
+                </div>
+                <button type="submit" class="btn btn-primary">Registar</button>
+            </form>
+        </div>
+
+
     </div>
 </body>
