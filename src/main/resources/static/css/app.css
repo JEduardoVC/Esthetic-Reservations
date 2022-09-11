@@ -1,0 +1,11 @@
+.container-small {
+    width: 40%;
+    margin: auto;
+}
+
+@media (max-width: 576px) {
+    .container-small {
+        width: 90%;
+        margin: auto;
+    }
+}
