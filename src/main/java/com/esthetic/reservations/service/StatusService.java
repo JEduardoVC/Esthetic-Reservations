@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.esthetic.reservations.implemen.service.GenericImpService;
 import com.esthetic.reservations.model.Status;
-import com.esthetic.reservations.repository.GenericRepository;
+import com.esthetic.reservations.repository.StatusRepository;
 
 public class StatusService implements GenericImpService<Status> {
 	@Autowired
-	private GenericRepository<Status> statusRepository;
+	private StatusRepository statusRepository;
 
 	@Override
 	public Status save(Status status) {
@@ -41,7 +41,7 @@ public class StatusService implements GenericImpService<Status> {
 	}
 	
 	@Override
-	public List<Status> where(String table, String columna, String valor) {
-		return (List<Status>) statusRepository.where(table, columna, valor);
+	public List<Status> where(String columna, String valor) {
+		return (List<Status>) statusRepository.where(columna, valor);
 	}
 }

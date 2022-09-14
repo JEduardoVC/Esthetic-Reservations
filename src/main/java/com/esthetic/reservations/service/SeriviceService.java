@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.esthetic.reservations.implemen.service.GenericImpService;
 import com.esthetic.reservations.model.Service;
-import com.esthetic.reservations.repository.GenericRepository;
+import com.esthetic.reservations.repository.ServiceRepository;
 
 @org.springframework.stereotype.Service
 public class SeriviceService implements GenericImpService<Service> {
 
 	@Autowired
-	private GenericRepository<Service> serviceRepository;
+	private ServiceRepository serviceRepository;
 
 	@Override
 	public Service save(Service service) {
@@ -43,7 +43,7 @@ public class SeriviceService implements GenericImpService<Service> {
 	}
 	
 	@Override
-	public List<Service> where(String table, String columna, String valor) {
-		return (List<Service>) serviceRepository.where(table, columna, valor);
+	public List<Service> where(String columna, String valor) {
+		return (List<Service>) serviceRepository.where(columna, valor);
 	}
 }

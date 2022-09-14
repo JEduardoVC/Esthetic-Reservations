@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.esthetic.reservations.implemen.service.GenericImpService;
 import com.esthetic.reservations.model.Client;
-import com.esthetic.reservations.repository.GenericRepository;
+import com.esthetic.reservations.repository.ClientRepository;
 
 @Service
 public class ClientService implements GenericImpService<Client> {
 	
 	@Autowired
-	private GenericRepository<Client> usuarioRepository;
+	private ClientRepository usuarioRepository;
 
 	@Override
 	public Client save(Client usuario) {
@@ -33,18 +33,20 @@ public class ClientService implements GenericImpService<Client> {
 
 	@Override
 	public Client find(Integer id) {
-		Optional<Client> tarea = usuarioRepository.findById(id);
-		return tarea.orElse(null);
+		Optional<Client> obj = usuarioRepository.findById(id);
+		if(obj.isPresent()) {
+			return obj.get();
+		}
+		return null;
 	}
 
 	@Override
 	public void delete(Integer id) {
 		usuarioRepository.deleteById(id);
-		
 	}
 	
 	@Override
-	public List<Client> where(String table, String columna, String valor) {
-		return (List<Client>) usuarioRepository.where(table, columna, valor);
+	public List<Client> where(String columna, String valor) {
+		return (List<Client>) usuarioRepository.where(columna, valor);
 	}
 }

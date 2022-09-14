@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.esthetic.reservations.implemen.service.GenericImpService;
 import com.esthetic.reservations.model.Appointment;
-import com.esthetic.reservations.repository.GenericRepository;
+import com.esthetic.reservations.repository.AppointmentRepository;
 
 @Service
 public class AppointmentService implements GenericImpService<Appointment> {
 
 	@Autowired
-	private GenericRepository<Appointment> appointmentRepository;
+	private AppointmentRepository appointmentRepository;
 
 	@Override
 	public Appointment save(Appointment appointment) {
@@ -44,7 +44,7 @@ public class AppointmentService implements GenericImpService<Appointment> {
 	}
 	
 	@Override
-	public List<Appointment> where(String table, String columna, String valor) {
-		return (List<Appointment>) appointmentRepository.where(table, columna, valor);
+	public List<Appointment> where(String columna, String valor) {
+		return (List<Appointment>) appointmentRepository.where(columna, valor);
 	}
 }
