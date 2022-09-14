@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.esthetic.reservations.implemen.service.GenericImpService;
 import com.esthetic.reservations.model.Schedule;
-import com.esthetic.reservations.repository.GenericRepository;
+import com.esthetic.reservations.repository.ScheduleRepository;
 
 public class ScheduleService implements GenericImpService<Schedule> {
 	@Autowired
-	private GenericRepository<Schedule> scheduleRepository;
+	private ScheduleRepository scheduleRepository;
 
 	@Override
 	public Schedule save(Schedule schedule) {
@@ -41,7 +41,7 @@ public class ScheduleService implements GenericImpService<Schedule> {
 	}
 	
 	@Override
-	public List<Schedule> where(String table, String columna, String valor) {
-		return (List<Schedule>) scheduleRepository.where(table, columna, valor);
+	public List<Schedule> where(String columna, String valor) {
+		return (List<Schedule>) scheduleRepository.where(columna, valor);
 	}
 }

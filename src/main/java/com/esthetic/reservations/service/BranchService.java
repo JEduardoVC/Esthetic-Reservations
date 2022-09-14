@@ -8,13 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.esthetic.reservations.implemen.service.GenericImpService;
 import com.esthetic.reservations.model.Branch;
-import com.esthetic.reservations.repository.GenericRepository;
+
+import com.esthetic.reservations.repository.BranchRepository;
 
 @Service
 public class BranchService implements GenericImpService<Branch> {
 
 	@Autowired
-	private GenericRepository<Branch> BranchRepository;
+	private BranchRepository BranchRepository;
 
 	@Override
 	public Branch save(Branch branch) {
@@ -44,7 +45,7 @@ public class BranchService implements GenericImpService<Branch> {
 	}
 	
 	@Override
-	public List<Branch> where(String table, String columna, String valor) {
-		return (List<Branch>) BranchRepository.where(table, columna, valor);
+	public List<Branch> where(String columna, String valor) {
+		return (List<Branch>) BranchRepository.where(columna, valor);
 	}
 }

@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.esthetic.reservations.implemen.service.GenericImpService;
 import com.esthetic.reservations.model.Owner;
-import com.esthetic.reservations.repository.GenericRepository;
+import com.esthetic.reservations.repository.OwnerRepository;
 
 @Service
 public class OwnerService implements GenericImpService<Owner> {
 	@Autowired
-	private GenericRepository<Owner> ownerRepository;
+	private OwnerRepository ownerRepository;
 
 	@Override
 	public Owner save(Owner owner) {
@@ -43,7 +43,7 @@ public class OwnerService implements GenericImpService<Owner> {
 	}
 	
 	@Override
-	public List<Owner> where(String table, String columna, String valor) {
-		return (List<Owner>) ownerRepository.where(table, columna, valor);
+	public List<Owner> where(String columna, String valor) {
+		return (List<Owner>) ownerRepository.where(columna, valor);
 	}
 }
