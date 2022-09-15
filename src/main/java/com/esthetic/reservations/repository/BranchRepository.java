@@ -8,7 +8,6 @@ import com.esthetic.reservations.model.Branch;
 
 @Repository
 public interface BranchRepository extends CrudRepository<Branch, Integer> {
-	@Query(value = "select * from branch where :columna = :valor", nativeQuery = true)
-	Iterable<Branch> where(String columna, String valor);
+
 }
 

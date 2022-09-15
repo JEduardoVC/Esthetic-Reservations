@@ -39,9 +39,4 @@ public class ScheduleService implements GenericImpService<Schedule> {
 		scheduleRepository.deleteById(id);
 		
 	}
-	
-	@Override
-	public List<Schedule> where(String columna, String valor) {
-		return (List<Schedule>) scheduleRepository.where(columna, valor);
-	}
 }

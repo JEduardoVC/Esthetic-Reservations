@@ -41,9 +41,4 @@ public class SeriviceService implements GenericImpService<Service> {
 		serviceRepository.deleteById(id);
 		
 	}
-	
-	@Override
-	public List<Service> where(String columna, String valor) {
-		return (List<Service>) serviceRepository.where(columna, valor);
-	}
 }

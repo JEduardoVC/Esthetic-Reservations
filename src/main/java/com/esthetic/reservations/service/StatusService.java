@@ -39,9 +39,4 @@ public class StatusService implements GenericImpService<Status> {
 		statusRepository.deleteById(id);
 		
 	}
-	
-	@Override
-	public List<Status> where(String columna, String valor) {
-		return (List<Status>) statusRepository.where(columna, valor);
-	}
 }

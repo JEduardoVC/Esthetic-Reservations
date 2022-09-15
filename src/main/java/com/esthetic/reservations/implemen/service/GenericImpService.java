@@ -14,6 +14,4 @@ public interface GenericImpService<T> {
 	public T save(T t);
 	
 	public T update(T t);
-	
-	public List<T> where(String columna, String valor);
 }

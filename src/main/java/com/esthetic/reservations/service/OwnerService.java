@@ -41,9 +41,4 @@ public class OwnerService implements GenericImpService<Owner> {
 		ownerRepository.deleteById(id);
 		
 	}
-	
-	@Override
-	public List<Owner> where(String columna, String valor) {
-		return (List<Owner>) ownerRepository.where(columna, valor);
-	}
 }

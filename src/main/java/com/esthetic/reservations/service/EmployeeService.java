@@ -41,9 +41,4 @@ public class EmployeeService implements GenericImpService<Employee> {
 		employeeRepository.deleteById(id);
 		
 	}
-	
-	@Override
-	public List<Employee> where(String columna, String valor) {
-		return (List<Employee>) employeeRepository.where(columna, valor);
-	}
 }
