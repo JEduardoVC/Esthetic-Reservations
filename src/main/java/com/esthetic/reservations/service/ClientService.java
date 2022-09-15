@@ -44,9 +44,4 @@ public class ClientService implements GenericImpService<Client> {
 	public void delete(Integer id) {
 		usuarioRepository.deleteById(id);
 	}
-	
-	@Override
-	public List<Client> where(String columna, String valor) {
-		return (List<Client>) usuarioRepository.where(columna, valor);
-	}
 }

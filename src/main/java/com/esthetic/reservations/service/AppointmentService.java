@@ -42,9 +42,4 @@ public class AppointmentService implements GenericImpService<Appointment> {
 		appointmentRepository.deleteById(id);
 		
 	}
-	
-	@Override
-	public List<Appointment> where(String columna, String valor) {
-		return (List<Appointment>) appointmentRepository.where(columna, valor);
-	}
 }

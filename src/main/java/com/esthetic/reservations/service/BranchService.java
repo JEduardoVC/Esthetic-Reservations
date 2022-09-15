@@ -43,9 +43,4 @@ public class BranchService implements GenericImpService<Branch> {
 		BranchRepository.deleteById(id);
 		
 	}
-	
-	@Override
-	public List<Branch> where(String columna, String valor) {
-		return (List<Branch>) BranchRepository.where(columna, valor);
-	}
 }
