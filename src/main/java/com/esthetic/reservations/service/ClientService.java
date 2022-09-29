@@ -12,7 +12,7 @@ import com.esthetic.reservations.repository.ClientRepository;
 
 @Service
 public class ClientService implements GenericImpService<Client> {
-	
+
 	@Autowired
 	private ClientRepository usuarioRepository;
 
@@ -34,7 +34,7 @@ public class ClientService implements GenericImpService<Client> {
 	@Override
 	public Client find(Integer id) {
 		Optional<Client> obj = usuarioRepository.findById(id);
-		if(obj.isPresent()) {
+		if (obj.isPresent()) {
 			return obj.get();
 		}
 		return null;
