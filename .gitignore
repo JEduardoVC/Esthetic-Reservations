@@ -4,6 +4,14 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Dependencies ###
+/node_modules
+
+### Production ###
+/build
+*.json
+.gulpfile
+
 ### STS ###
 .apt_generated
 .classpath
