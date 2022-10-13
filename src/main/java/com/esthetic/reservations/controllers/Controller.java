@@ -74,7 +74,6 @@ public class Controller {
 			@RequestParam(name = "repeat_password") String repeat) {
 		Map<String, String> alertas = new HashMap<String, String>();
 		if (cliente.getFirst_name().equalsIgnoreCase("") ||
-				cliente.getMiddle_name().equalsIgnoreCase("") ||
 				cliente.getLast_name().equalsIgnoreCase("") ||
 				cliente.getPhone_number().equalsIgnoreCase("") ||
 				cliente.getEmail().equalsIgnoreCase("") ||
@@ -124,6 +123,6 @@ public class Controller {
 
 	@GetMapping("/Dashboard")
 	public ModelAndView Dashboard() {
-		return new ModelAndView("index");
+		return new ModelAndView("dashboard/dashboard");
 	}
 }

@@ -13,7 +13,9 @@
                 <div class="container-login">
                     <h1 class="text-primary">Esthetic Reservation</h1>
                     <div th:each="alerta : ${alertas}">
-                        <p th:class="${alerta.key}" th:text="${alerta.value}"></p>
+                        <div th:each="alert : ${alerta.value}">
+                            <p th:class="${alerta.key}" th:text="${alert}"></p>
+                        </div>
                     </div>
                     <div class="formulario">
                         <form method="post">
