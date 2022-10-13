@@ -14,13 +14,18 @@
                     </form>
                 </div>
                 <div class="formulario">
+                    <div th:each="alerta : ${alertas}">
+                        <div th:each="alert : ${alerta.value}">
+                            <p th:class="${alerta.key}" th:text="${alert}"></p>
+                        </div>
+                    </div>
                     <form method="post" action="/registro">
                         <label>
                             <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Nombre" required>
                             <span>Nombre</span>
                         </label>
                         <label>
-                            <input type="text" class="form-control" id="middle_name" name="middle_name" placeholder="Apellidos" required>
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Apellidos" required>
                             <span>Apellidos</span>
                         </label>
                         <label>
