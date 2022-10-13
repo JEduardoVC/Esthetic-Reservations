@@ -8,19 +8,21 @@
         <div class="container-small">
             <div class="ventana">
                 <div class="img-ventana">
-                    <img src="img/logo_logo.webp">
+                    <img src="/img/logo.webp">
                 </div>
                 <div class="container-login">
-                    <h1 class="titulo-login">Esthetic Reservation</h1>
-                    <!--<p th:class="${alerta.tipo}" th:text="${alerta.mensaje}"></p>-->
+                    <h1 class="text-primary">Esthetic Reservation</h1>
+                    <div th:each="alerta : ${alertas}">
+                        <p th:class="${alerta.key}" th:text="${alerta.value}"></p>
+                    </div>
                     <div class="formulario">
                         <form method="post">
                             <label>
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
                                 <span>Email</span>
                             </label>
                             <label>
-                                <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña" required>
+                                <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña">
                                 <span>Contraseña</span>
                             </label>
                             <button type="submit" class="btn-principal">Iniciar sesión</button>
