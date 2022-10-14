@@ -123,6 +123,6 @@ public class Controller {
 
 	@GetMapping("/Dashboard")
 	public ModelAndView Dashboard() {
-		return new ModelAndView("dashboard/dashboard");
+		return new ModelAndView("index");
 	}
 }

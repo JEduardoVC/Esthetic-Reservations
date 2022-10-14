@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html class="fondo-html" lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/genericos/header"></head>
 
 <body>
-    <div class="navegacion">
-        <div>
-            <p th:text="${Nombre usuario}">Nombre del usuario</p>
+    <div class="container-small">
+        <div class="seleccion-sucursal">
+            <h1>Esthetic Reservation</h1>
+            <div class="sucursal">
+                <div class="sucursal-contenido">
+                    <div class="nombre">
+                        <h1>Estetica Wendy</h1>
+                    </div> <!-- Nombre de la sucursal -->
+                    <div class="mapa">
+                        <img src="/img/Estetica Wendy.webp">
+                    </div> <!-- Mapa -->
+                    <div class="info">
+                        <p>Numero de telefono: <span>4191251439</span></p>
+                        <p>Numero de telefono: <span>4191207249</span></p>
+                        <p>Direccion: <span>Calle Guanajuato, Doctor Mora</span></p>
+                        <p>Estado: <span>Guanajuato</span></p>
+                        <form>
+                            <button class="btn-secundario">Seleccionar</button>
+                        </form>
+                    </div> <!-- Más informacion -->
+                </div> <!-- Sucursal contenido-->
+            </div> <!-- Sucursal -->
         </div>
-        <div>
-            <button class="btn-principal">Cerrar sesion</button>
-        </div>
-    </div> <!-- Navegacion -->
-    <div class="sidebar">
-
-    </div> <!-- Sidebar -->
-    <div class="dashboard">
-
-    </div><!-- Dashboard -->
+    </div> <!-- container-small -->
 </body>
 </html>

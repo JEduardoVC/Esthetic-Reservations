@@ -1,22 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html class="fondo-html" lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/genericos/header"></head>
 
 <body>
+    <div class="sidebar">
+        <h1>Esthetic</h1>
+    </div> <!-- Sidebar -->
     <div class="navegacion">
-        <div>
-            <p th:text="${Nombre usuario}">Nombre del usuario</p>
+        <div class="nombre-usuario">
+            <p class="text-center">José Eduardo Valencia Camacho</p>
         </div>
-        <div>
-            <button class="btn-principal">Cerrar sesion</button>
+        <div class="sucursal-nombre">
+            <p class="text-center">Sucursal av guanajuato, doctor mora, guanajuato</p>
+        </div>
+        <div class="acciones">
+            <form action="">
+                <button class="btn-secundario">Editar usuario</button>
+            </form>
+            <form action="/">
+                <button class="btn-secundario">Cerrar sesion</button>
+            </form>
         </div>
     </div> <!-- Navegacion -->
-    <div class="sidebar">
 
-    </div> <!-- Sidebar -->
     <div class="dashboard">
-
+        
     </div><!-- Dashboard -->
 </body>
 </html>
