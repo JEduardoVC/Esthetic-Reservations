@@ -62,49 +62,50 @@ public class Controller {
 		return new ModelAndView("Login/registro");
 	}
 	
-	public ModelAndView Registro(Map<String, String> alertas) {
+	public ModelAndView Registro(List<String> alertas, String tipo) {
+		Map<String, List<String>> alerts = new HashMap<String, List<String>>();
+		alerts.put(tipo, alertas);
 		ModelAndView registro = new ModelAndView("Login/registro");
-		registro.addObject("alertas", alertas);
-		System.out.println(alertas.toString());
+		registro.addObject("alertas", alerts);
 		return registro;
 	}
 
 	@PostMapping("/registro")
 	public ModelAndView Registro(@ModelAttribute Client cliente,
 			@RequestParam(name = "repeat_password") String repeat) {
-		Map<String, String> alertas = new HashMap<String, String>();
+		List<String> alertas = new ArrayList<String>();
 		if (cliente.getFirst_name().equalsIgnoreCase("") ||
 				cliente.getLast_name().equalsIgnoreCase("") ||
 				cliente.getPhone_number().equalsIgnoreCase("") ||
 				cliente.getEmail().equalsIgnoreCase("") ||
 				cliente.getPassword().equalsIgnoreCase("")) {
-			alertas.put("error", "Debes llenar todos los campos");
-			return Registro(alertas);
+			alertas.add("Debes llenar todos los campos");
+			return Registro(alertas, "error");
 		}
-		int cont = 0;
 		if (!repeat.equals(cliente.getPassword())) {
-			alertas.put("error" + cont++, "Las contraseñas no coinciden");
+			alertas.add("Las contraseñas no coinciden");
 		}
 		if (cliente.getPhone_number().length() != 10) {
-			alertas.put("error" + cont++, "El numero de telefono debe ser de 10 digitos");
+			alertas.add("El numero de telefono debe ser de 10 digitos");
 		}
 		if (!validateEmail(cliente.getEmail())) {
-			alertas.put("error" + cont++, "Introduce un correo electronico valido");
+			alertas.add("Introduce un correo electronico valido");
 		}
 		if (!validatePassword(cliente.getPassword())) {
-			alertas.put("error" + cont++, "Introduce una contraseña segura");
+			alertas.add("Introduce una contraseña segura");
 		}
 		if (!alertas.isEmpty()) {
-			return Registro(alertas);
+			return Registro(alertas, "error");
 		}
-		List<Client> clients = (List<Client>) clienteRepository.findByEmail(cliente.getEmail());
-		if (clients != null && clients.size() != 0) {
-			alertas.put("error" + cont++, "Correo ya está siendo usado");
+		Client client = clienteRepository.findByEmail(cliente.getEmail());
+		if (client != null) {
+			alertas.add("El correo ya está siendo usado");
+			return Registro(alertas, "error");
 		} else {
 			clienteRepository.save(cliente);
-			alertas.put("ok", "Usuario creado con éxito.");
+			alertas.add("Usuario creado con éxito.");
 		}
-		return Registro(alertas);
+		return Registro(alertas, "successful");
 	}
 
 	public static boolean validateEmail(String emailStr) {
