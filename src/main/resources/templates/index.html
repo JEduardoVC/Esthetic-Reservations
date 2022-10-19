@@ -1,32 +1,28 @@
 <!DOCTYPE html>
-<html class="fondo-html" lang=”es” xmlns:th=http://www.thymeleaf.org>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/genericos/header"></head>
 
 <body>
     <div class="container-small">
         <div class="seleccion-sucursal">
-            <h1>Esthetic Reservation</h1>
-            <div class="sucursal">
-                <div class="sucursal-contenido">
-                    <div class="nombre">
-                        <h1>Estetica Wendy</h1>
-                    </div> <!-- Nombre de la sucursal -->
-                    <div class="mapa">
-                        <img src="/img/Estetica Wendy.webp">
-                    </div> <!-- Mapa -->
-                    <div class="info">
-                        <p>Numero de telefono: <span>4191251439</span></p>
-                        <p>Numero de telefono: <span>4191207249</span></p>
-                        <p>Direccion: <span>Calle Guanajuato, Doctor Mora</span></p>
-                        <p>Estado: <span>Guanajuato</span></p>
-                        <form action="/Dashboard">
-                            <button class="btn-secundario">Seleccionar</button>
-                        </form>
-                    </div> <!-- Más informacion -->
-                </div> <!-- Sucursal contenido-->
-            </div> <!-- Sucursal -->
-        </div>
+            <h1 class="text-black">Esthetic Reservation</h1>
+            <div class="text-informativo">
+                <p class="text-black text-center">Seleccione el tipo de usuario</p>
+            </div>
+            <div class="seleccion-cliente-encargada">
+                <div class="botones-tipo-usuario">
+                    <form action="/login/login">
+                        <button class="btn-principal">Cliente</button>
+                    </form>
+                </div>
+                <div class="botones-tipo-usuario">
+                    <form action="/login-admin/loginA"> 
+                        <button class="btn-secundario">Encargada</button>
+                    </form>
+                </div>
+            </div> <!-- Seleccion cliente encargada -->
+        </div> <!-- Seleccion sucursal -->
     </div> <!-- container-small -->
 </body>
 </html>
