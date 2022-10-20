@@ -4,33 +4,34 @@
 <head th:insert="/genericos/header"></head>
 
 <body>
-    <div class="sidebar">
-        <h1>Esthetic</h1>
-    </div> <!-- Sidebar -->
-    <div class="navegacion">
-        <div class="nombre-usuario">
-            <p class="text-center">José Eduardo Valencia Camacho</p>
-        </div>
-        <div class="sucursal-nombre">
-            <p class="text-center">Sucursal av guanajuato, doctor mora, guanajuato</p>
-        </div>
-        <div class="acciones">
-            <form action="/Editar-usuario">
-                <button class="btn-secundario">Editar usuario</button>
-            </form>
-            <form action="/">
-                <button class="btn-secundario">Cerrar sesion</button>
-            </form>
-        </div>
-    </div> <!-- Navegacion -->
+    <div th:insert="/genericos/sidebar"></div>
+    <div th:insert="/genericos/navegacion-dashboard"></div>
     <div class="admin">
         <div class="dashboard">
-            <div class="btn-agregar">
-                <form action="/dashboard/agregar-servicio">
-                    <button class="btn-secundario">Agregar servicio</button>
-                </form>
+            <div class="ver-citas">
+                <label class="text-center">Cliente</label>
+                <label class="text-center">Teléfono</label>
+                <label class="text-center">Servicio</label>
+                <label class="text-center">Fecha</label>
+                <label class="text-center">Hora</label>
+                <label class="text-center">Acciones</label>
+            </div>
+            <div class="ver-citas">
+                <p class="text-center">José Eduardo Valencia Camacho</p>
+                <p class="text-center">4191208429</p>
+                <p class="text-center">Corte de cabello</p>
+                <p class="text-center">31 de Octubre del 2022</p>
+                <p class="text-center">4:00 pm</p>
+                <div>
+                    <form>
+                        <button>Lista</button>
+                    </form>
+                    <form>
+                        <button>Eliminar</button>
+                    </form>
+                </div>
             </div>
         </div><!-- Dashboard -->
-    </div>
+    </div> <!-- Admin -->
 </body>
 </html>
