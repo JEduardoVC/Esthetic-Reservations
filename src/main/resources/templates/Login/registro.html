@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="fondo-html" lang=”es” xmlns:th=http://www.thymeleaf.org>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/genericos/header.html"></head>
 
@@ -10,38 +10,34 @@
                 <h1 class="text-center">Esthetic Reservation</h1>
                 <div>
                     <form action="/">
-                        <button type="submit" class="btn-volver">Volver</button>
+                        <button type="submit" class="btn-secundario">Volver</button>
                     </form>
                 </div>
                 <div class="formulario">
-                    <div th:each="alerta : ${alertas}">
-                        <div th:each="alert : ${alerta.value}">
-                            <p th:class="${alerta.key}" th:text="${alert}"></p>
-                        </div>
-                    </div>
+                    <div th:insert="/genericos/alertas.html"></div>
                     <form method="post" action="/registro">
                         <label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Nombre" required>
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Nombre">
                             <span>Nombre</span>
                         </label>
                         <label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Apellidos" required>
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Apellidos">
                             <span>Apellidos</span>
                         </label>
                         <label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
-                            <span>Email</span>
-                        </label>
-                        <label>
-                            <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Télefono" required>
+                            <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Télefono">
                             <span>Télefono</span>
                         </label>
                         <label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                            <input type="tel" class="form-control" id="email" name="email" placeholder="Email">
+                            <span>Email</span>
+                        </label>
+                        <label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
                             <span>Contraseña</span>
                         </label>
                         <label>
-                            <input type="password" class="form-control" id="repeat_password" name="repeat_password" placeholder="Repetir contraseña" required>
+                            <input type="password" class="form-control" id="repeat_password" name="repeat_password" placeholder="Repetir contraseña">
                             <span>Repetir Contraseña</span>
                         </label>
                         <button type="submit" class="btn-principal">Registar</button>

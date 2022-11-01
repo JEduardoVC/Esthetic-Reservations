@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="fondo-html" lang=”es” xmlns:th=http://www.thymeleaf.org>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/genericos/header.html"></head>
 
@@ -12,11 +12,7 @@
                 </div>
                 <div class="container-login">
                     <h1 class="text-primary">Esthetic Reservation</h1>
-                    <div th:each="alerta : ${alertas}">
-                        <div th:each="alert : ${alerta.value}">
-                            <p th:class="${alerta.key}" th:text="${alert}"></p>
-                        </div>
-                    </div>
+                    <div th:insert="/genericos/alertas.html"></div>
                     <div class="formulario">
                         <form method="post">
                             <label>
@@ -27,12 +23,14 @@
                                 <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña">
                                 <span>Contraseña</span>
                             </label>
+                            <input type="hidden" value="cliente">
                             <button type="submit" class="btn-principal">Iniciar sesión</button>
                         </form>
                     </div>
                     <div class="btns-auxiliares">
                         <div class="text-center">
                             <form method="get" action="registro">
+                                <input type="hidden" value="cliente">
                                 <button type="submit" class="btn-secundario">Crear cuenta</button>
                             </form>
                         </div>

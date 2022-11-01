@@ -4,10 +4,17 @@
 <head th:insert="/genericos/header"></head>
 
 <body>
-    <div th:insert="/genericos/sidebar"></div>
+    <div class="sidebar">
+        <h1>Esthetic</h1>
+    </div> <!-- Sidebar -->
     <div th:insert="/genericos/navegacion-dashboard"></div>
     <div class="admin">
         <div class="dashboard">
+            <div class="btn-agregar">
+                <form action="/agregar-servicio">
+                    <button class="btn-secundario">Agregar servicio</button>
+                </form>
+            </div>
             <h1>31 de Octubre del 2022</h1>
             <div class="modulos-citas">
                 <div class="citas">

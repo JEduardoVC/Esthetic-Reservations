@@ -5,25 +5,39 @@
 
 <body>
     <div class="container-small">
+        <div class="navegacion-inicio">
+            <div>
+                <p class="text-center text-white">Esthetic Reservation</p>
+            </div>
+            <div class="acciones">
+                <form action="/login">
+                    <button class="btn-secundario">Iniciar sesion</button>
+                </form>
+                <form action="/registro">
+                    <button class="btn-secundario">Crear usuario</button>
+                </form>
+            </div>
+        </div>
         <div class="seleccion-sucursal">
-            <h1>Esthetic Reservation</h1>
+            <h1>Sucursales</h1>
             <div class="sucursal">
                 <div class="sucursal-contenido">
                     <div class="nombre">
-                        <h1>Estetica Wendy</h1>
+                        <h1 class="text-white">Estetica Wendy</h1>
                     </div> <!-- Nombre de la sucursal -->
-                    <div class="mapa">
-                        <img src="/img/Estetica Wendy.webp">
-                    </div> <!-- Mapa -->
                     <div class="info">
                         <p>Numero de telefono: <span>4191251439</span></p>
                         <p>Numero de telefono: <span>4191207249</span></p>
-                        <p>Direccion: <span>Calle Guanajuato, Doctor Mora</span></p>
+                        <p>Calle y numero: <span>Calle Guanajuato</span> <span>4</span></p>
+                        <p>Municipio: <span>Doctor Mora</span></p>
                         <p>Estado: <span>Guanajuato</span></p>
                         <form action="/Dashboard">
                             <button class="btn-secundario">Seleccionar</button>
                         </form>
                     </div> <!-- Más informacion -->
+                    <div class="mapa">
+                        <img src="/img/Estetica Wendy.webp">
+                    </div> <!-- Mapa -->
                 </div> <!-- Sucursal contenido-->
             </div> <!-- Sucursal -->
         </div>

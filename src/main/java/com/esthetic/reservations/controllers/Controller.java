@@ -123,7 +123,12 @@ public class Controller {
 	}
 
 	@GetMapping("/Sucursal")
-	public ModelAndView Dashboard() {
+	public ModelAndView Sucursal() {
 		return new ModelAndView("index");
+	}
+
+	@GetMapping("/Dashboard")
+	public ModelAndView Dashboard() {
+		return new ModelAndView("dashboard/dashboard");
 	}
 }
