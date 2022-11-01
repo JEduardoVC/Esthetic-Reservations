@@ -47,7 +47,7 @@ public class Controller {
 		if(client != null) {
 			if(client.getPassword().equals(cliente.getPassword())) {
 				clienteLogueado = client;
-				return new ModelAndView("redirect:Dashboard");
+				return new ModelAndView("redirect:Sucursal");
 			} else {
 				alertas.add("Contraseña incorrecta");
 			}
@@ -122,7 +122,7 @@ public class Controller {
 		return matcher.find();
 	}
 
-	@GetMapping("/Dashboard")
+	@GetMapping("/Sucursal")
 	public ModelAndView Dashboard() {
 		return new ModelAndView("index");
 	}
