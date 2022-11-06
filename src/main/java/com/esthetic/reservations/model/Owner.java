@@ -16,7 +16,7 @@ public class Owner {
 	private String middle_name;
 	private String last_name;
 	private String phone_number;
-	private String addres;
+	private String adress;
 	private String email;
 	private String password;
 	
@@ -50,11 +50,11 @@ public class Owner {
 	public void setPhone_number(String phone_number) {
 		this.phone_number = phone_number;
 	}
-	public String getAddres() {
-		return addres;
+	public String getAdress() {
+		return adress;
 	}
-	public void setAddres(String addres) {
-		this.addres = addres;
+	public void setAdress(String addres) {
+		this.adress = addres;
 	}
 	public String getEmail() {
 		return email;

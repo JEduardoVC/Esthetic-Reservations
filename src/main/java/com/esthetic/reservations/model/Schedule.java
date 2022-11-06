@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -18,6 +19,7 @@ public class Schedule {
 	private Timestamp time_bottom;
 	private Timestamp time_top;
 	
+	@JoinColumn(name = "id_employee")
 	@ManyToOne
 	private Employee id_employee;
 	
