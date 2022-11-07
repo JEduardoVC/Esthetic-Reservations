@@ -7,7 +7,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -164,8 +167,32 @@ public class Controller {
 	
 	@PostMapping("/sucursal/eliminar")
 	public ModelAndView eliminarSucursal(@RequestParam(name = "id_branch") int id_branch) {
-		branchRepository.deleteById(id_branch);
-		return new ModelAndView("redirect:/sucursal");
+		List<String> alertas = new ArrayList<String>();
+		if(branchRepository.findById(id_branch).orElse(null) == null) alertas.add("Sucursal no existe");
+		if(alertas.isEmpty()) {
+			formatearAlertas(alertas, "Error");
+			return new ModelAndView("redirect:/surcursal");
+		} else {			
+			branchRepository.deleteById(id_branch);
+			return new ModelAndView("redirect:/sucursal");
+		}
+	}
+	
+	@PostMapping("/api/surcursal/obtener")
+	public ResponseEntity<String> obtenerSucursal() {
+		JSONObject json = new JSONObject();
+		for (Branch sucursal : branchRepository.findAll()) {
+			JSONObject jsonSucursal = new JSONObject();
+			jsonSucursal.append("name", sucursal.getName());
+			jsonSucursal.append("location", sucursal.getLocation());
+			json.append("sucursal", jsonSucursal);
+		}
+		return new ResponseEntity<String>(String.valueOf(json), HttpStatus.OK);
+	}
+	
+	@GetMapping("/sucursal/dashboard")
+	public ModelAndView sucursal() {
+		return new ModelAndView("dashboard/dashboard");
 	}
 
 	public static boolean validateEmail(String emailStr) {
@@ -186,10 +213,5 @@ public class Controller {
 		Map<String, List<String>> alerts = new HashMap<String, List<String>>();
 		alerts.put(tipo, alertas);
 		return alerts;
-	}
-
-	@GetMapping("/dashboard")
-	public ModelAndView Dashboard() {
-		return new ModelAndView("dashboard/dashboard");
 	}
 }
