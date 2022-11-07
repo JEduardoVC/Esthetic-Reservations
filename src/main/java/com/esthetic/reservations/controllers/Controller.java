@@ -125,7 +125,7 @@ public class Controller {
 	
 	@GetMapping("/sucursal/registro")
 	public ModelAndView viewRegistroSucursal() {
-		return new ModelAndView("sucursal/registro").addObject("owners", ownerRepository.findAll());
+		return new ModelAndView("admin/sucursal/agregar-sucursal").addObject("owners", ownerRepository.findAll());
 	}
 	
 	public ModelAndView viewRegistroSucursal(List<String> alertas, String tipo) {
