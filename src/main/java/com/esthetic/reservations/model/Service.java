@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -17,6 +18,7 @@ public class Service {
 	private Integer duration;
 	private Integer price;
 	
+	@JoinColumn(name = "id_branch")
 	@ManyToOne
 	private Branch id_branch;
 	
