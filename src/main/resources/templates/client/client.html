@@ -4,36 +4,14 @@
 <head th:insert="/genericos/header"></head>
 
 <body>
-    <div th:insert="/genericos/sidebar"></div>
-    <div th:insert="/genericos/navegacion-dashboard"></div>
-    <div class="admin">
-        <div class="dashboard">
-            <h1>31 de Octubre del 2022</h1>
-            <div class="modulos-citas">
-                <div class="citas">
-                    <p class="text-center">José Eduardo Valencia Camacho</p>
-                    <p class="text-center">4191207249</p>
-                    <p class="text-center">Depilacion de ceja</p>
-                    <p class="text-center">Depilacion de barba</p>
-                    <p class="text-center">4:00 pm</p>
-                    <p class="text-center precio">$80</p>
-                </div>
-                <div class="citas">
-                    <p class="text-center">Ezequiel Gavidia Mejia</p>
-                    <p class="text-center">4427894512</p>
-                    <p class="text-center">Corte de cabello</p>
-                    <p class="text-center">12:00 pm</p>
-                    <p class="text-center precio">$100</p>
-                </div>
-                <div class="citas">
-                    <p class="text-center">Luis Gerardo Valencia Camacho</p>
-                    <p class="text-center">4191293884</p>
-                    <p class="text-center">Pintar parte del cabello</p>
-                    <p class="text-center">9:00 am</p>
-                    <p class="text-center precio">$250</p>
-                </div>
-            </div>
-        </div><!-- Dashboard -->
-    </div> <!-- Admin -->
+    <!--<div th:insert="/genericos/sidebar"></div>-->
+    <div th:insert="/client/navegacion-top"></div>
+    <div th:insert="/client/navegacion-bottom"></div>
+    <div class="cliente">
+        <h1>Servicios</h1>
+        <div class="servicios" id="servicios"></div>
+        <h1>Inventario</h1>
+        <div class="inventario" id="inventario"></div>
+    </div><!-- Cliente -->
 </body>
-</html>
+</html> 
