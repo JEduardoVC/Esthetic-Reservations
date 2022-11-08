@@ -129,12 +129,14 @@ public class Controller {
 	}
 	
 	public ModelAndView viewRegistroSucursal(List<String> alertas, String tipo) {
-		return new ModelAndView("sucursal/registro").addObject("alertas", formatearAlertas(alertas, tipo)).addObject("owners", ownerRepository.findAll());
+		return new ModelAndView("admin/sucursal/agregar-sucursal").addObject("alertas", formatearAlertas(alertas, tipo)).addObject("owners", ownerRepository.findAll());
 	}
 	
 	@PostMapping("/sucursal/registro")
 	public ModelAndView registroSucursal(@ModelAttribute Branch branch) {
 		List<String> alertas = new ArrayList<String>();
+		Branch bran = branchRepository.findByName(branch.getName());
+		if(bran.getLocation().equals(branch.getLocation())) alertas.add("Sucursal ya registrada");
 		if(branch.getName().equals("")) alertas.add("Nombre vacio");
 		if(branch.getLocation().equals("")) alertas.add("Ubicación Vacia");
 		if(branch.getId_owner() == null) alertas.add("Falto seleccionar dueño");
