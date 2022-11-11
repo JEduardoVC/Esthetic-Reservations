@@ -11,17 +11,18 @@
             <div class="formulario">
                 <form method="POST">
                     <label>
-                        <input type="text" placeholder="Nombre">
+                        <input th:if="branch.id_branch != null" type="text" placeholder="Nombre" name="name" th:value="branch.name">
+                        <input th:if="branch.id_branch == null" type="text" placeholder="Nombre" name="name">
                         <span>Nombre</span>
                     </label>
                     <label>
-                        <input type="text" placeholder="Ubicacion">
+                        <input type="text" placeholder="Ubicacion" name="location">
                         <span>Ubicacion</span>
                     </label>
                     <label>
-                        <select>
+                        <select name="id_owner">
                             <option selected>Usuarios</option>
-                            <option>José Eduardo</option>
+                            <option value="1">José Eduardo</option>
                         </select>
                         <span>Elegir dueña</span>
                     </label>
