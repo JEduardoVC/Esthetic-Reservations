@@ -23,45 +23,54 @@ import com.esthetic.reservations.repository.OwnerRepository;
 
 @RestController
 @RequestMapping
-public class BranchController {
+public class AdminController {
+	
 	@Autowired
 	OwnerRepository ownerRepository;
 	@Autowired
 	BranchRepository branchRepository;
 	
-	@GetMapping("/sucursal")
-	public ModelAndView Sucursal() {
-		return new ModelAndView("index");
+	@GetMapping("/admin")
+	public ModelAndView viewAdmin() {
+		return new ModelAndView("admin/admin");
 	}
 	
-	@GetMapping("/sucursal/registro")
+	@GetMapping("/admin/sucursales")
+	public ModelAndView viewUsuarios() {
+		return new ModelAndView("admin/branch/sucursales");
+	}
+	
+	@GetMapping("/admin/sucursales/agregar")
 	public ModelAndView viewRegistroSucursal() {
-		return new ModelAndView("admin/sucursal/agregar-sucursal").addObject("owners", ownerRepository.findAll());
+		return new ModelAndView("admin/branch/agregar").addObject("owners", ownerRepository.findAll());
 	}
 	
 	public ModelAndView viewRegistroSucursal(List<String> alertas, String tipo) {
-		return new ModelAndView("admin/sucursal/agregar-sucursal").addObject("alertas", formatearAlertas(alertas, tipo)).addObject("owners", ownerRepository.findAll());
+		return new ModelAndView("admin/branch/agregar").addObject("alertas", formatearAlertas(alertas, tipo)).addObject("owners", ownerRepository.findAll());
 	}
 	
-	@PostMapping("/sucursal/registro")
+	@PostMapping("/admin/sucursales/agregar")
 	public ModelAndView registroSucursal(@ModelAttribute Branch branch) {
 		List<String> alertas = new ArrayList<String>();
 		Branch bran = branchRepository.findByName(branch.getName());
-		if(bran.getLocation().equals(branch.getLocation())) alertas.add("Sucursal ya registrada");
+		//if(bran.getLocation().equals(branch.getLocation())) alertas.add("Sucursal ya registrada");
 		if(branch.getName().equals("")) alertas.add("Nombre vacio");
 		if(branch.getLocation().equals("")) alertas.add("Ubicación Vacia");
 		if(branch.getId_owner() == null) alertas.add("Falto seleccionar dueño");
 		if(alertas.isEmpty()) {
 			branchRepository.save(branch);
-			return new ModelAndView("redirect:/sucursal");
+			return new ModelAndView("redirect:/admin/sucursales");
 		} else {
 			return viewRegistroSucursal(alertas, "error");
 		}
 	}
 	
-	@PostMapping("/sucursal/actualizar")
+	@PostMapping("/admin/sucursales/actualizar")
 	public ModelAndView viewActualizarSucursal(@RequestParam(name = "id_branch") Integer id_branch) {
-		return new ModelAndView("sucursal/actualizar").addObject("owners", ownerRepository.findAll()).addObject("branch", branchRepository.findById(id_branch).orElse(null));
+		ModelAndView inicio = new ModelAndView("admin/branch/agregar");
+		inicio.addObject("owners", ownerRepository.findAll());
+		inicio.addObject("branch", branchRepository.findById(id_branch).orElse(null));
+		return inicio;
 	}
 	
 	@PostMapping("/sucursal/actualizando")
@@ -101,11 +110,6 @@ public class BranchController {
 			json.append("sucursal", jsonSucursal);
 		}
 		return new ResponseEntity<String>(String.valueOf(json), HttpStatus.OK);
-	}
-	
-	@GetMapping("/sucursal/dashboard")
-	public ModelAndView sucursal() {
-		return new ModelAndView("client/client");
 	}
 	
 	public static Map<String, List<String>> formatearAlertas(List<String> alertas, String tipo) {
