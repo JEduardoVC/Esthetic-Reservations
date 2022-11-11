@@ -43,29 +43,35 @@ public class LoginController {
 
 	@GetMapping
 	public ModelAndView index() {
+		ModelAndView inicio = new ModelAndView("index");
+		return inicio;
+	}
+	
+	@GetMapping("/login")
+	public ModelAndView viewLogin() {
 		ModelAndView inicio = new ModelAndView("Login/login");
 		return inicio;
 	}
 
-	public ModelAndView index(List<String> alertas, String tipo) {
+	public ModelAndView viewLogin(List<String> alertas, String tipo) {
 		return new ModelAndView("Login/login").addObject("alertas", formatearAlertas(alertas, tipo));
 	}
 
-	@PostMapping("/")
+	@PostMapping("/login")
 	public ModelAndView login(@ModelAttribute Client cliente) {
 		Client client = clienteRepository.findByEmail(cliente.getEmail());
 		List<String> alertas = new ArrayList<String>();
 		if (client != null) {
 			if (client.getPassword().equals(cliente.getPassword())) {
 				clienteLogueado = client;
-				return new ModelAndView("redirect:sucursal");
+				return new ModelAndView("redirect:client");
 			} else {
 				alertas.add("Contraseña incorrecta");
 			}
 		} else {
 			alertas.add("Usuario no existe");
 		}
-		return index(alertas, "error");
+		return viewLogin(alertas, "error");
 	}
 
 	@GetMapping("/registro")
