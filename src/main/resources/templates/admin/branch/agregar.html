@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+
+<body>
+    <div th:insert="/admin/navegacion"></div>
+    <div class="container-admin">
+        <div class="container-small">
+            <h1>Agregar sucursal</h1>
+            <div class="formulario">
+                <form method="POST">
+                    <label>
+                        <input type="text" placeholder="Nombre">
+                        <span>Nombre</span>
+                    </label>
+                    <label>
+                        <input type="text" placeholder="Ubicacion">
+                        <span>Ubicacion</span>
+                    </label>
+                    <label>
+                        <select>
+                            <option selected>Usuarios</option>
+                            <option>José Eduardo</option>
+                        </select>
+                        <span>Elegir dueña</span>
+                    </label>
+                    <button class="btn-principal">Añadir</button>
+                </form>
+            </div> <!-- Formulario -->
+        </div>
+    </div>
+</body>
+</html>
