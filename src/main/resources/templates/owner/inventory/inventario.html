@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+
+<body>
+    <div th:insert="/owner/navegacion"></div>
+    <div class="container-owner">
+        <h1>Modulo de inventario</h1>
+        <div>
+            <form action="/owner/inventario/agregar">
+                <button class="btn-secundario">Añadir producto</button>
+            </form>
+        </div>
+    </div>
+</body>

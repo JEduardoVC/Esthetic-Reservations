@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
-<head th:insert="/genericos/header"></head>
+<head th:insert="/generics/header"></head>
 
 <body>
-    <div th:insert="/genericos/sidebar"></div>
-    <div th:insert="/genericos/navegacion-dashboard"></div>
-    <div class="admin">
-        <div class="dashboard">
-            <div class="btn-agregar">
-                <form action="/dashboard/agregar-servicio">
-                    <button class="btn-secundario">Agregar servicio</button>
-                </form>
-            </div>
-        </div><!-- Dashboard -->
-    </div> <!-- Admin -->
+    <div th:insert="/owner/navegacion"></div>
+    <div class="container-owner">
+        <h1>Modulo servicios</h1>
+        <div class="btn-agregar">
+            <form action="/owner/servicios/agregar">
+                <button class="btn-secundario">Agregar servicio</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
