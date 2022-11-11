@@ -1,6 +1,8 @@
 package com.esthetic.reservations.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -55,6 +57,4 @@ public class Client {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
 }
