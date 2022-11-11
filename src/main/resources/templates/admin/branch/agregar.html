@@ -11,8 +11,7 @@
             <div class="formulario">
                 <form method="POST">
                     <label>
-                        <input th:if="${branch.id_branch} != null" type="text" placeholder="Nombre" name="name" th:value="${branch.name]">
-                        <input th:if="${branch.id_branch} == null" type="text" placeholder="Nombre" name="name">
+                        <input type="text" placeholder="Nombre" name="name">
                         <span>Nombre</span>
                     </label>
                     <label>
@@ -20,9 +19,9 @@
                         <span>Ubicacion</span>
                     </label>
                     <label>
-                        <select name="id_owner">
+                        <select>
                             <option selected>Usuarios</option>
-                            <option value="1">José Eduardo</option>
+                            <option>José Eduardo</option>
                         </select>
                         <span>Elegir dueña</span>
                     </label>
