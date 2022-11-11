@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,33 +31,33 @@ import com.esthetic.reservations.repository.OwnerRepository;
 
 @RestController
 @RequestMapping
-public class Controller {
-	
+public class LoginController {
+
 	private Client clienteLogueado;
-	
+
 	@Autowired
 	ClientRepository clienteRepository;
 	@Autowired
 	OwnerRepository ownerRepository;
 	@Autowired
 	BranchRepository branchRepository;
-	
+
 	@GetMapping
 	public ModelAndView index() {
 		ModelAndView inicio = new ModelAndView("Login/login");
 		return inicio;
 	}
-	
+
 	public ModelAndView index(List<String> alertas, String tipo) {
 		return new ModelAndView("Login/login").addObject("alertas", formatearAlertas(alertas, tipo));
 	}
-	
+
 	@PostMapping("/")
 	public ModelAndView login(@ModelAttribute Client cliente) {
 		Client client = clienteRepository.findByEmail(cliente.getEmail());
 		List<String> alertas = new ArrayList<String>();
-		if(client != null) {
-			if(client.getPassword().equals(cliente.getPassword())) {
+		if (client != null) {
+			if (client.getPassword().equals(cliente.getPassword())) {
 				clienteLogueado = client;
 				return new ModelAndView("redirect:sucursal");
 			} else {
@@ -63,12 +68,12 @@ public class Controller {
 		}
 		return index(alertas, "error");
 	}
-	
+
 	@GetMapping("/registro")
 	public ModelAndView Register() {
 		return new ModelAndView("Login/registro");
 	}
-	
+
 	public ModelAndView registro(List<String> alertas, String tipo) {
 		Map<String, List<String>> alerts = new HashMap<String, List<String>>();
 		alerts.put(tipo, alertas);
@@ -81,11 +86,9 @@ public class Controller {
 	public ModelAndView registro(@ModelAttribute Client cliente,
 			@RequestParam(name = "repeat_password") String repeat) {
 		List<String> alertas = new ArrayList<String>();
-		if (cliente.getFirst_name().equalsIgnoreCase("") ||
-				cliente.getLast_name().equalsIgnoreCase("") ||
-				cliente.getPhone_number().equalsIgnoreCase("") ||
-				cliente.getEmail().equalsIgnoreCase("") ||
-				cliente.getPassword().equalsIgnoreCase("")) {
+		if (cliente.getFirst_name().equalsIgnoreCase("") || cliente.getLast_name().equalsIgnoreCase("")
+				|| cliente.getPhone_number().equalsIgnoreCase("") || cliente.getEmail().equalsIgnoreCase("")
+				|| cliente.getPassword().equalsIgnoreCase("")) {
 			alertas.add("Debes llenar todos los campos");
 			return registro(alertas, "error");
 		}
@@ -114,59 +117,6 @@ public class Controller {
 		}
 		return registro(alertas, "successful");
 	}
-	
-	@GetMapping("/sucursal")
-	public ModelAndView Sucursal() {
-		return new ModelAndView("index");
-	}
-	
-	@GetMapping("/sucursal/registro")
-	public ModelAndView viewRegistroSucursal() {
-		return new ModelAndView("sucursal/registro").addObject("owners", ownerRepository.findAll());
-	}
-	
-	public ModelAndView viewRegistroSucursal(List<String> alertas, String tipo) {
-		return new ModelAndView("sucursal/registro").addObject("alertas", formatearAlertas(alertas, tipo)).addObject("owners", ownerRepository.findAll());
-	}
-	
-	@PostMapping("/sucursal/registro")
-	public ModelAndView registroSucursal(@ModelAttribute Branch branch) {
-		List<String> alertas = new ArrayList<String>();
-		if(branch.getName().equals("")) alertas.add("Nombre vacio");
-		if(branch.getLocation().equals("")) alertas.add("Ubicación Vacia");
-		if(branch.getId_owner() == null) alertas.add("Falto seleccionar dueño");
-		if(alertas.isEmpty()) {
-			branchRepository.save(branch);
-			return new ModelAndView("redirect:/sucursal");
-		} else {
-			return viewRegistroSucursal(alertas, "error");
-		}
-	}
-	
-	@PostMapping("/sucursal/actualizar")
-	public ModelAndView viewActualizarSucursal(@RequestParam(name = "id_branch") Integer id_branch) {
-		return new ModelAndView("sucursal/actualizar").addObject("owners", ownerRepository.findAll()).addObject("branch", branchRepository.findById(id_branch).orElse(null));
-	}
-	
-	@PostMapping("/sucursal/actualizando")
-	public ModelAndView actualizarSucursal(@ModelAttribute Branch branch) {
-		List<String> alertas = new ArrayList<String>();
-		if(branch.getName().equals("")) alertas.add("Nombre vacio");
-		if(branch.getLocation().equals("")) alertas.add("Ubicación Vacia");
-		if(branch.getId_owner() == null) alertas.add("Falto seleccionar dueño");
-		if(alertas.isEmpty()) {
-			branchRepository.save(branch);
-			return new ModelAndView("redirect:/sucursal");
-		} else {
-			return viewRegistroSucursal(alertas, "error");
-		}
-	}
-	
-	@PostMapping("/sucursal/eliminar")
-	public ModelAndView eliminarSucursal(@RequestParam(name = "id_branch") int id_branch) {
-		branchRepository.deleteById(id_branch);
-		return new ModelAndView("redirect:/sucursal");
-	}
 
 	public static boolean validateEmail(String emailStr) {
 		Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
@@ -181,15 +131,10 @@ public class Controller {
 		Matcher matcher = VALID_PASSWORD_REGEX.matcher(passwordStr);
 		return matcher.find();
 	}
-	
+
 	public static Map<String, List<String>> formatearAlertas(List<String> alertas, String tipo) {
 		Map<String, List<String>> alerts = new HashMap<String, List<String>>();
 		alerts.put(tipo, alertas);
 		return alerts;
-	}
-
-	@GetMapping("/dashboard")
-	public ModelAndView Dashboard() {
-		return new ModelAndView("dashboard/dashboard");
 	}
 }
