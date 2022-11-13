@@ -19,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.esthetic.reservations.api.exception.EstheticAppException;
 import com.esthetic.reservations.api.exception.UnauthorizedException;
-import com.esthetic.reservations.implemen.service.UserDetailsServiceImpl;
+import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -68,7 +68,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return new AntPathMatcher().match("/api/auth/**", request.getServletPath());
+        AntPathMatcher antPathMatcher = new AntPathMatcher();
+        return antPathMatcher.match("/api/auth/**", request.getServletPath()) || antPathMatcher.match("/app/**", request.getServletPath())
+        || antPathMatcher.match("/css/**", request.getServletPath()) || antPathMatcher.match("/img/**", request.getServletPath())
+        || antPathMatcher.match("/js/**", request.getServletPath());
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

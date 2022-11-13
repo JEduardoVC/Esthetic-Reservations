@@ -7,11 +7,21 @@ public class ErrorDetailsDTO {
     private Date timestamp;
     private String message;
     private String details;
+    private Integer errorCode;
 
-    public ErrorDetailsDTO(Date timestamp, String message, String details) {
+    public ErrorDetailsDTO(Date timestamp, String message, String details, Integer errorCode) {
         this.timestamp = timestamp;
         this.message = message;
         this.details = details;
+        this.errorCode = errorCode;
+    }
+
+    public Integer getErrorCode() {
+        return this.errorCode;
+    }
+
+    public void setErrorCode(Integer errorCode) {
+        this.errorCode = errorCode;
     }
 
     public Date getTimestamp() {

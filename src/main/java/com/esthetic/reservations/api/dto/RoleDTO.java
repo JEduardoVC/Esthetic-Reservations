@@ -1,25 +1,15 @@
 package com.esthetic.reservations.api.dto;
 
-public class RoleDTO {
-
-    private Long roleId;
+public class RoleDTO extends GenericModelDTO {
 
     private String name;
 
     public RoleDTO() {
     }
 
-    public RoleDTO(Long roleId, String name) {
-        this.roleId = roleId;
+    public RoleDTO(Long id, String name) {
+        super(id);
         this.name = name;
-    }
-
-    public Long getRoleId() {
-        return this.roleId;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
     }
 
     public String getName() {

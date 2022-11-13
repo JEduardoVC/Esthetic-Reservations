@@ -24,7 +24,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest webRequest) {
 
         ErrorDetailsDTO errorDetailsDTO = new ErrorDetailsDTO(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
+                webRequest.getDescription(false),HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(errorDetailsDTO, HttpStatus.NOT_FOUND);
 
     }
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest webRequest) {
 
         ErrorDetailsDTO errorDetailsDTO = new ErrorDetailsDTO(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
+                webRequest.getDescription(false), HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(errorDetailsDTO, HttpStatus.CONFLICT);
 
     }
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest webRequest) {
 
         ErrorDetailsDTO errorDetailsDTO = new ErrorDetailsDTO(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
+                webRequest.getDescription(false), HttpStatus.UNAUTHORIZED.value());
         return new ResponseEntity<>(errorDetailsDTO, HttpStatus.UNAUTHORIZED);
 
     }
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest webRequest) {
 
         ErrorDetailsDTO errorDetailsDTO = new ErrorDetailsDTO(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
+                webRequest.getDescription(false), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorDetailsDTO, HttpStatus.BAD_REQUEST);
 
     }
@@ -63,8 +63,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorDetailsDTO> handleGlobalException(Exception exception,
             WebRequest webRequest) {
 
-        ErrorDetailsDTO errorDetailsDTO = new ErrorDetailsDTO(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
+        ErrorDetailsDTO errorDetailsDTO = new ErrorDetailsDTO(new Date(), exception.getMessage() + exception.getClass(),
+                webRequest.getDescription(false), HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(errorDetailsDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
@@ -79,10 +79,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             String message = error.getDefaultMessage();
             validationErrors.put(fieldName, message);
         });
-        errors.put("validationErrors", validationErrors);
         errors.put("timestamp", new Date());
-        errors.put("exception", ex.getMessage());
+        errors.put("message", validationErrors);
         errors.put("details", request.getDescription(false));
+        errors.put("errorCode", HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 

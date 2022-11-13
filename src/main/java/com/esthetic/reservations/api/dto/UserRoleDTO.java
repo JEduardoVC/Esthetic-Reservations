@@ -1,7 +1,7 @@
 package com.esthetic.reservations.api.dto;
 
-import com.esthetic.reservations.model.Role;
-import com.esthetic.reservations.model.UserEntity;
+import com.esthetic.reservations.api.model.Role;
+import com.esthetic.reservations.api.model.UserEntity;
 
 public class UserRoleDTO {
 

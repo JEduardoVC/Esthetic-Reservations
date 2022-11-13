@@ -8,11 +8,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.esthetic.reservations.model.Role;
+import com.esthetic.reservations.api.model.Role;
 
-public class UserEntityDTO {
-
-    private Long userId;
+public class UserEntityDTO extends GenericModelDTO {
 
     @NotBlank
     private String username;
@@ -41,14 +39,20 @@ public class UserEntityDTO {
     private List<Role> userRoles;
 
     public UserEntityDTO() {
+        super();
     }
 
-    public Long getUserId() {
-        return this.userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public UserEntityDTO(Long id, String username, String name, String lastName, String phoneNumber, String address,
+            String email, String password, List<Role> userRoles) {
+        super(id);
+        this.username = username;
+        this.name = name;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.email = email;
+        this.password = password;
+        this.userRoles = userRoles;
     }
 
     public String getUsername() {
