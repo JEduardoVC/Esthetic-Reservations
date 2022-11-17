@@ -4,11 +4,41 @@
 <head th:insert="/generics/header"></head>
 
 <body>
+    <div class="navegacion-inicio">
+        <div>
+
+        </div>
+        <div class="acciones">
+            <form action="">
+                <button class="btn-secundario">Soy cliente</button>
+            </form>
+            <form action="">
+                <button class="btn-secundario">Soy encargado</button>
+            </form>
+        </div>
+    </div>
     <div class="container-small">
         <div class="seleccion-sucursal">
             <h1>Sucursales</h1>
             <div class="sucursal">
                 <div class="sucursal-contenido">
+                    <div class="nombre">
+                        <h1 class="text-white">Estetica Wendy</h1>
+                    </div> <!-- Nombre de la sucursal -->
+                    <div class="info">
+                        <p>Numero de telefono: <span>4191251439</span></p>
+                        <p>Calle y numero: <span>Calle Guanajuato</span> <span>4</span></p>
+                        <p>Municipio: <span>Doctor Mora</span></p>
+                        <p>Estado: <span>Guanajuato</span></p>
+                        <div class="seleccion-no-sucursal">
+                            <form action="/app/login">
+                                <button class="btn-secundario">Seleccionar</button>
+                            </form>
+                        </div>
+                    </div> <!-- Más informacion -->
+                    <div class="mapa">
+                        <img src="/img/Estetica Wendy.webp">
+                    </div> <!-- Mapa -->
                     <div class="nombre"></div>
                     <div class="info"></div>
                     <div class="mapa"></div>

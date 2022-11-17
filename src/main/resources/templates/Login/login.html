@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+<html lang=”es” class="html-auxiliar" xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/generics/header.html"></head>
 
@@ -29,13 +29,13 @@
                     </div>
                     <div class="btns-auxiliares">
                         <div class="text-center">
-                            <form method="get" action="registro">
+                            <form method="get" action="/app/registro">
                                 <input type="hidden" value="cliente">
                                 <button type="submit" class="btn-secundario">Crear cuenta</button>
                             </form>
                         </div>
                         <div class="text-center">
-                            <form method="get" action="olvidePassword.html">
+                            <form method="get" action="/app/olvidePassword">
                                 <button type="submit" class="btn-secundario">Restablecer contraseña</button>
                             </form>
                         </div>
