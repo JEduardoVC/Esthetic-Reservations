@@ -12,19 +12,19 @@
                 </div>
                 <div class="container-login">
                     <h1 class="text-primary">Esthetic Reservation</h1>
-                    <div th:insert="/generics/alertas.html"></div>
+                    <div id="alertas"></div>
                     <div class="formulario">
-                        <form method="post">
+                        <form>
                             <label>
-                                <input type="email" class="form-control" name="email" id="email" placeholder="Email">
-                                <span>Email</span>
+                                <input type="text" class="form-control" name="username" id="username" placeholder="Username">
+                                <span>Username</span>
                             </label>
                             <label>
                                 <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña">
                                 <span>Contraseña</span>
                             </label>
                             <input type="hidden" value="cliente">
-                            <button type="submit" class="btn-principal">Iniciar sesión</button>
+                            <button type="button" class="btn-principal" id="btn-login">Iniciar sesión</button>
                         </form>
                     </div>
                     <div class="btns-auxiliares">
@@ -46,5 +46,5 @@
         </div>
     </main>
 </body>
-
+<script src="/js/login.js"></script>
 </html>

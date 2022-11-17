@@ -1,10 +1,13 @@
 package com.esthetic.reservations.api.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,10 +19,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.esthetic.reservations.api.dto.LoginDTO;
 import com.esthetic.reservations.api.dto.LoginResponseDTO;
+import com.esthetic.reservations.api.dto.RoleDTO;
+import com.esthetic.reservations.api.dto.UserEntityDTO;
+import com.esthetic.reservations.api.dto.UserRoleDTO;
+import com.esthetic.reservations.api.exception.BadRequestException;
+import com.esthetic.reservations.api.exception.ConflictException;
+import com.esthetic.reservations.api.model.Role;
+import com.esthetic.reservations.api.security.JwtUtil;
+import com.esthetic.reservations.api.service.MailService;
+import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
@@ -37,6 +50,9 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
     private JwtUtil jwtUtil;
+    
+    @Autowired
+	MailService mailService;
 
     @Autowired
     public AuthController(UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager,
@@ -71,6 +87,7 @@ public class AuthController {
     }
 
     @PostMapping("/user/login")
+    public ResponseEntity<ArrayList<Object>> login(@Valid @RequestBody LoginDTO loginDTO) {
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication;
         try {
@@ -78,6 +95,10 @@ public class AuthController {
                     loginDTO.getUsername(), loginDTO.getPassword()));
         } catch (BadCredentialsException e) {
             // Test with email
+            if (!userService.existsByUsername(loginDTO.getUsername())) {
+                throw new BadCredentialsException("Username No Existe");
+            } else if(!loginDTO.getPassword().equals(userService.findByUsername(loginDTO.getUsername()).getPassword())) {
+            	throw new BadCredentialsException("Contraseña Incorrecta");
             if (!userService.existsByEmail(loginDTO.getUsername())) {
                 throw new BadCredentialsException("Bad credentials");
             }
@@ -87,6 +108,28 @@ public class AuthController {
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
+        List<Role> roles = userService.findByUsername(loginDTO.getUsername()).getUserRoles();
+        String token = this.jwtUtil.generateToken(userDetails);
+        ArrayList<Object> arr = new ArrayList<>();
+        arr.add(new LoginResponseDTO(token));
+        arr.add(roles.get(0));
+        return ResponseEntity.ok(arr);
+    }
+    
+	@PostMapping("/sendMail")
+    public ResponseEntity<String> sendMail(@RequestParam("mail") String mail) {
+		UserEntityDTO usuario = userService.findByEmail(mail);
+        String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
+        		+ usuario.getName() + " " + usuario.getLastName() + "\n"
+        		+ "Hacer click en el siguiente enlace para cambiar tu contraseña \n\n"
+        		+ "De no haber requerido este correo, favor de ignorarlo";
+        try {
+        	mailService.sendMail("gevalencia99@gmail.com",mail,"Esthetic Reservation",message);
+		} catch (MailException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+        return new ResponseEntity<String>("Enviado", HttpStatus.OK);
+    }
         String token = this.jwtUtil.generateToken(userDetails);
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }

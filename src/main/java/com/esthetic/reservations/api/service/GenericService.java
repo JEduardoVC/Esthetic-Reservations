@@ -1,6 +1,7 @@
 package com.esthetic.reservations.api.service;
 
 import com.esthetic.reservations.api.dto.ResponseDTO;
+import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.model.BaseModel;
 
 public interface GenericService<T extends BaseModel<T>, D> {
@@ -18,5 +19,4 @@ public interface GenericService<T extends BaseModel<T>, D> {
 	public D update(D dto, Long id);
 
 	public void delete(Long id);
-
 }
