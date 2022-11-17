@@ -1,31 +1,39 @@
 (function() {
 	obtenerServios();
 	
-	obtenerInventario();
+	//obtenerInventario();
 })();
 
 async function obtenerServios() {
-	const resultado = await fetch("http://localhost:5500/api/servicios/obtener", {
-		method: "POST"
-	});
-	const servicios = await resultado.json();
-	mostrarServicios(servicios.servicio);
+	var formdata = new FormData();
+	formdata.append("id_branch", "1");
+	
+	var requestOptions = {
+	  method: 'POST',
+	  body: formdata,
+	  redirect: 'follow'
+	};
+	await fetch("http://localhost:5500/api/client/obtener/sevicios", requestOptions)
+	.then(response => response.json())
+	.then(data => {
+		mostrarServicios(data);
+	})
 }
 
 function mostrarServicios(servicios) {
-	const servicio = document.querySelector("#servicios");
+	const service = document.querySelector("#servicios");
 	const div = document.createElement("DIV");
 	servicios.forEach(servicio => {
 		const divServicio = document.createElement("DIV");
 		divServicio.innerHTML = `
 		<div>
-    		<h3>${servicio.service_name}</h3>        		
+    		<h3>${servicio.service_name}</h3>   		
 			<p>${servicio.price}</p>
     		<span>${servicio.duration}</span>
     	</div>`;
     	div.appendChild(divServicio);
 	})
-	servicio.appendChild(div);
+	service.appendChild(div);
 }
 
 async function obtenerInventario() {
