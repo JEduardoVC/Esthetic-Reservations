@@ -2,7 +2,6 @@ package com.esthetic.reservations.api.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +33,10 @@ import com.esthetic.reservations.api.model.Role;
 import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.MailService;
 import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
+import com.esthetic.reservations.api.dto.UserEntityDTO;
+import com.esthetic.reservations.api.exception.BadRequestException;
+import com.esthetic.reservations.api.exception.ConflictException;
+import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
@@ -85,6 +88,7 @@ public class AuthController {
 
     @PostMapping("/user/login")
     public ResponseEntity<ArrayList<Object>> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -95,6 +99,8 @@ public class AuthController {
                 throw new BadCredentialsException("Username No Existe");
             } else if(!loginDTO.getPassword().equals(userService.findByUsername(loginDTO.getUsername()).getPassword())) {
             	throw new BadCredentialsException("Contraseña Incorrecta");
+            if (!userService.existsByEmail(loginDTO.getUsername())) {
+                throw new BadCredentialsException("Bad credentials");
             }
             loginDTO.setUsername(userService.findByEmail(loginDTO.getUsername()).getUsername());
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -124,4 +130,8 @@ public class AuthController {
 		}
         return new ResponseEntity<String>("Enviado", HttpStatus.OK);
     }
+        String token = this.jwtUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new LoginResponseDTO(token));
+    }
+
 }

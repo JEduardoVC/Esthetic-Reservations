@@ -72,6 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return antPathMatcher.match("/api/auth/**", request.getServletPath()) || antPathMatcher.match("/app/**", request.getServletPath())
         || antPathMatcher.match("/css/**", request.getServletPath()) || antPathMatcher.match("/img/**", request.getServletPath())
         || antPathMatcher.match("/js/**", request.getServletPath()) || antPathMatcher.match("/api/client/**", request.getServletPath());
+        || antPathMatcher.match("/js/**", request.getServletPath());
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
