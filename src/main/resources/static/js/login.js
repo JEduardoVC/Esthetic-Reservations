@@ -21,24 +21,14 @@ async function presionarBoton() {
 	})
 	.then(response => response.json())
 	.then(data => {
-		if(data.length == 2) {
+		if(data.length == 3) {
+			console.log(data);
 			const token = data[0].token;
 			const rol = data[1].id;
 			document.cookie = `token=${token}`;
+			document.cookie = `id_usuario=${data[2]}`;
 			if(rol == 1) window.location.href = "http://localhost:5500/app/admin";
-			if(rol == 4) {
-				fetch("http://localhost:5500/app/client", {
-					method: 'POST',
-					headers: {
-						'Accept': 'application/json',
-			            'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						"username": username
-					}),
-					redirect: 'follow'
-				});	
-			}
+			if(rol == 4) window.location.href = "http://localhost:5500/app/client";
 		} else {			
 			if(data.errorCode == 500) {
 				mostrarAlerta(data.message);

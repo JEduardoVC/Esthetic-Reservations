@@ -25,15 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.esthetic.reservations.api.dto.LoginDTO;
 import com.esthetic.reservations.api.dto.LoginResponseDTO;
-import com.esthetic.reservations.api.dto.RoleDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
-import com.esthetic.reservations.api.dto.UserRoleDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
 import com.esthetic.reservations.api.model.Role;
 import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.MailService;
-import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
@@ -107,6 +104,7 @@ public class AuthController {
         ArrayList<Object> arr = new ArrayList<>();
         arr.add(new LoginResponseDTO(token));
         arr.add(roles.get(0));
+        arr.add(userService.findByUsername(loginDTO.getUsername()).getId());
         return ResponseEntity.ok(arr);
     }
     
