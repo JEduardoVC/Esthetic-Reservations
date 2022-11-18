@@ -4,7 +4,6 @@ import com.esthetic.reservations.api.model.Role;
 import com.esthetic.reservations.api.model.UserEntity;
 
 public class UserRoleDTO extends GenericModelDTO {
-public class UserRoleDTO {
 
     private Long userRoleId;
 
@@ -18,7 +17,6 @@ public class UserRoleDTO {
 		this.user = user;
 	}
 
-	public UserRoleDTO() {
     public UserRoleDTO() {
     }
 
