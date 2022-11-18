@@ -34,36 +34,3 @@ public class ClientController {
 		return serviceRep.findAllById_branch(id_branch);
 	}	
 }
-	BranchRepository branchRepository;
-	
-	@Autowired
-	ServiceRepository serviceRepository;
-	
-	@PostMapping("/api/surcursal/obtener")
-	public ResponseEntity<String> obtenerSucursal() {
-		JSONObject json = new JSONObject();
-		for (Branch sucursal : branchRepository.findAll()) {
-			JSONObject jsonSucursal = new JSONObject();
-			jsonSucursal.append("name", sucursal.getName());
-			jsonSucursal.append("location", sucursal.getLocation());
-			json.append("sucursal", jsonSucursal);
-		}
-		return new ResponseEntity<String>(String.valueOf(json), HttpStatus.OK);
-	}
-	
-	@PostMapping("/api/servicios/obtener")
-	public ResponseEntity<String> obtenerServicios() {
-		JSONObject json = new JSONObject();
-		for (Service services : serviceRepository.findAllById_branch(1)) {
-			JSONObject jsonService = new JSONObject();
-			jsonService.append("id_service", services.getId());
-			jsonService.append("id_branch", services.getId_branch().getId());
-			jsonService.append("service_name", services.getService_name());
-			jsonService.append("duration", services.getDuration());
-			jsonService.append("price", services.getPrice());
-			json.append("servicio", jsonService);
-		}
-		return new ResponseEntity<String>(String.valueOf(json), HttpStatus.OK);
-	}
-	
-}
