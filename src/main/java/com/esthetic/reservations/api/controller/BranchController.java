@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.esthetic.reservations.api.dto.BranchCreationDTO;
+import com.esthetic.reservations.api.dto.MinBranchDTO;
 import com.esthetic.reservations.api.dto.BranchDTO;
 import com.esthetic.reservations.api.dto.GenericEntityValueDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
@@ -44,7 +44,7 @@ public class BranchController {
     }
 
     @GetMapping("/all/filter")
-    public ResponseDTO<BranchDTO> findAllBy(
+    public ResponseDTO<MinBranchDTO> findAllBy(
             @RequestParam(value = "pageNum", defaultValue = AppConstants.PAGE_NUMBER, required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
@@ -67,12 +67,12 @@ public class BranchController {
     }
 
     @PostMapping
-    public ResponseEntity<BranchDTO> save(@Valid @RequestBody BranchCreationDTO branchDTO) {
+    public ResponseEntity<BranchDTO> save(@Valid @RequestBody MinBranchDTO branchDTO) {
         return new ResponseEntity<>(branchService.save(branchDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BranchDTO> update(@Valid @RequestBody BranchCreationDTO branchDTO,
+    public ResponseEntity<BranchDTO> update(@Valid @RequestBody MinBranchDTO branchDTO,
             @PathVariable(name = "id") Long id) {
         BranchDTO branchResponse = branchService.update(branchDTO, id);
         return new ResponseEntity<>(branchResponse, HttpStatus.OK);

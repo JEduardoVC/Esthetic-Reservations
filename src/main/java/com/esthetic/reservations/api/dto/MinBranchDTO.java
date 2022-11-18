@@ -3,7 +3,7 @@ package com.esthetic.reservations.api.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class BranchCreationDTO extends GenericModelDTO {
+public class MinBranchDTO extends GenericModelDTO {
 
     @NotNull
     @NotEmpty
@@ -14,10 +14,10 @@ public class BranchCreationDTO extends GenericModelDTO {
     @NotNull
     private Long ownerId;
 
-    public BranchCreationDTO() {
+    public MinBranchDTO() {
     }
 
-    public BranchCreationDTO(Long id, String name, String location, Long ownerId) {
+    public MinBranchDTO(Long id, String name, String location, Long ownerId) {
         super(id);
         this.name = name;
         this.location = location;

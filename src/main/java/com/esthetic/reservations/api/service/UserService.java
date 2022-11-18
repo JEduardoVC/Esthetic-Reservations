@@ -14,6 +14,10 @@ public interface UserService extends GenericService<UserEntity, UserEntityDTO> {
     public Boolean existsByUsername(String username);
 
     public Boolean existsByEmail(String email);
+    
+    public boolean existsById(Long id);
+
+    public boolean validOwnerId(Long id);
 
     public UserEntityDTO grantRoleToUser(Long userId, String role);
 
