@@ -2,7 +2,6 @@ package com.esthetic.reservations.api.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +91,8 @@ public class AuthController {
                 throw new BadCredentialsException("Username No Existe");
             } else if(!loginDTO.getPassword().equals(userService.findByUsername(loginDTO.getUsername()).getPassword())) {
             	throw new BadCredentialsException("Contraseña Incorrecta");
+            if (!userService.existsByEmail(loginDTO.getUsername())) {
+                throw new BadCredentialsException("Bad credentials");
             }
             loginDTO.setUsername(userService.findByEmail(loginDTO.getUsername()).getUsername());
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -109,9 +110,9 @@ public class AuthController {
     }
     
 	@PostMapping("/sendMail")
-    public ResponseEntity<String> sendMail(@RequestParam("mail") String mail) {
+    	public ResponseEntity<String> sendMail(@RequestParam("mail") String mail) {
 		UserEntityDTO usuario = userService.findByEmail(mail);
-        String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
+        	String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
         		+ usuario.getName() + " " + usuario.getLastName() + "\n"
         		+ "Hacer click en el siguiente enlace para cambiar tu contraseña \n\n"
         		+ "De no haber requerido este correo, favor de ignorarlo";
