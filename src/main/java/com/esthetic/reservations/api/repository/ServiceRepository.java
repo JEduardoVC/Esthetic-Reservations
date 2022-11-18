@@ -15,7 +15,6 @@ import com.esthetic.reservations.api.model.Service;
 @Component("ServiceRepository")
 public interface ServiceRepository extends GenericRepository<Service, Long> {
 
-	@Query(value = "select * from service where id = :id", nativeQuery = true)
+	@Query(value = "select * from service where id_branch = :id", nativeQuery = true)
 	List<Service> findAllById_branch(int id);
-
 }

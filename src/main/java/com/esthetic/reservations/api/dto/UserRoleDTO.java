@@ -3,13 +3,19 @@ package com.esthetic.reservations.api.dto;
 import com.esthetic.reservations.api.model.Role;
 import com.esthetic.reservations.api.model.UserEntity;
 
-public class UserRoleDTO {
+public class UserRoleDTO extends GenericModelDTO {
 
     private Long userRoleId;
 
     private Role role;
 
     private UserEntity user;
+
+    public UserRoleDTO(Long id, Role role, UserEntity user) {
+		super(id);
+		this.role = role;
+		this.user = user;
+	}
 
     public UserRoleDTO() {
     }
