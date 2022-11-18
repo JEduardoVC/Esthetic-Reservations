@@ -91,9 +91,7 @@ public class AuthController {
                 throw new BadCredentialsException("Username No Existe");
             } else if(!loginDTO.getPassword().equals(userService.findByUsername(loginDTO.getUsername()).getPassword())) {
             	throw new BadCredentialsException("Contraseña Incorrecta");
-            if (!userService.existsByEmail(loginDTO.getUsername())) {
-                throw new BadCredentialsException("Bad credentials");
-            }
+	    }
             loginDTO.setUsername(userService.findByEmail(loginDTO.getUsername()).getUsername());
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginDTO.getUsername(), loginDTO.getPassword()));
