@@ -88,7 +88,6 @@ public class AuthController {
 
     @PostMapping("/user/login")
     public ResponseEntity<ArrayList<Object>> login(@Valid @RequestBody LoginDTO loginDTO) {
-    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -117,9 +116,9 @@ public class AuthController {
     }
     
 	@PostMapping("/sendMail")
-    public ResponseEntity<String> sendMail(@RequestParam("mail") String mail) {
+    	public ResponseEntity<String> sendMail(@RequestParam("mail") String mail) {
 		UserEntityDTO usuario = userService.findByEmail(mail);
-        String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
+        	String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
         		+ usuario.getName() + " " + usuario.getLastName() + "\n"
         		+ "Hacer click en el siguiente enlace para cambiar tu contraseña \n\n"
         		+ "De no haber requerido este correo, favor de ignorarlo";
@@ -130,8 +129,4 @@ public class AuthController {
 		}
         return new ResponseEntity<String>("Enviado", HttpStatus.OK);
     }
-        String token = this.jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new LoginResponseDTO(token));
-    }
-
 }
