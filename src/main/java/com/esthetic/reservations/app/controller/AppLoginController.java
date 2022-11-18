@@ -52,19 +52,3 @@ public class AppLoginController {
     	return new ModelAndView("Login/olvide");
     }
 }
-
-    public ModelAndView registro(List<String> alertas, String tipo) {
-        Map<String, List<String>> alerts = new HashMap<String, List<String>>();
-        alerts.put(tipo, alertas);
-        ModelAndView registro = new ModelAndView("Login/registro");
-        registro.addObject("alertas", alerts);
-        return registro;
-    }
-
-    public static Map<String, List<String>> formatearAlertas(List<String> alertas, String tipo) {
-        Map<String, List<String>> alerts = new HashMap<String, List<String>>();
-        alerts.put(tipo, alertas);
-        return alerts;
-    }
-
-}
