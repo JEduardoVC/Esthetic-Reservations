@@ -1,7 +1,5 @@
 package com.esthetic.reservations.api.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,6 @@ import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
 import com.esthetic.reservations.api.exception.ResourceNotFoundException;
 import com.esthetic.reservations.api.exception.UnauthorizedException;
-import com.esthetic.reservations.api.model.Role;
 import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.MailService;
@@ -48,10 +45,9 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     private JwtUtil jwtUtil;
     private Util util;
-    
+
     @Autowired
     MailService mailService;
-    
 
     @Autowired
     public AuthController(UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager,
@@ -91,32 +87,33 @@ public class AuthController {
         UserEntity userEntity;
         Authentication authentication;
         boolean emailAuth = util.isValidEmail(loginDTO.getUsername());
-        if(emailAuth){
+        if (emailAuth) {
             try {
                 userEntity = userService.mapToModel(userService.findByEmail(loginDTO.getUsername()));
                 loginDTO.setUsername(userEntity.getUsername());
             } catch (ResourceNotFoundException e) {
-                throw new UnauthorizedException("Correo electrónico", "no existe", "correo electrónico", loginDTO.getUsername());
+                throw new UnauthorizedException("Correo electrónico", "no existe", "correo electrónico",
+                        loginDTO.getUsername());
             }
         } else {
             try {
                 userEntity = userService.mapToModel(userService.findByUsername(loginDTO.getUsername()));
             } catch (ResourceNotFoundException e) {
-                throw new UnauthorizedException("Nombre de usuario", "no existe", "nombre de usuario", loginDTO.getUsername());
+                throw new UnauthorizedException("Nombre de usuario", "no existe", "nombre de usuario",
+                        loginDTO.getUsername());
             }
         }
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDTO.getUsername(), loginDTO.getPassword()));
+                    loginDTO.getUsername(), loginDTO.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new UnauthorizedException("Contraseña","incorrecta", "contraseña", "secret");
+            throw new UnauthorizedException("Contraseña", "incorrecta", "contraseña", "secret");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
-        List<Role> roles = userService.findByUsername(loginDTO.getUsername()).getUserRoles().subList(0, 1);
         String token = this.jwtUtil.generateToken(userDetails);
-        Long id = userService.findByUsername(loginDTO.getUsername()).getId();
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, roles, id);
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, userEntity.getUserRoles().subList(0, 1),
+                userEntity.getId());
         return new ResponseEntity<>(loginResponseDTO, HttpStatus.OK);
     }
 
