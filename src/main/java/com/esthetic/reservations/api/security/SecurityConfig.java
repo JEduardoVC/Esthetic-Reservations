@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.esthetic.reservations.api.util.Util;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -62,6 +64,11 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();
+    }
+
+    @Bean
+    public Util util() {
+        return new Util();
     }
 
 }

@@ -1,5 +1,8 @@
 package com.esthetic.reservations.api.service;
 
-public interface AppointmentService{
-    
+import com.esthetic.reservations.api.dto.AppointmentDTO;
+import com.esthetic.reservations.api.model.Appointment;
+
+public interface AppointmentService extends GenericService<Appointment, AppointmentDTO> {
+
 }

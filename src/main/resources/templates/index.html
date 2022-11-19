@@ -5,43 +5,29 @@
 
 <body>
     <div class="navegacion-inicio">
-        <div>
-
-        </div>
+        <div class="nombre-usuario text-center" id="nombreUsuario"></div>
         <div class="acciones">
-            <form action="">
+            <form action="/app/login">
+                <input type="hidden" name="rol" value="3">
                 <button class="btn-secundario">Soy cliente</button>
             </form>
-            <form action="">
+            <form action="/app/login">
+                <input type="hidden" name="rol" value="2">
                 <button class="btn-secundario">Soy encargado</button>
+            </form>
+            <form action="/app/login">
+                <input type="hidden" name="rol" value="1">
+                <button class="btn-secundario">Soy administrador</button>
             </form>
         </div>
     </div>
     <div class="container-small">
         <div class="seleccion-sucursal">
             <h1>Sucursales</h1>
-            <div class="sucursal">
-                <div class="sucursal-contenido">
-                    <div class="nombre">
-                        <h1 class="text-white">Estetica Wendy</h1>
-                    </div> <!-- Nombre de la sucursal -->
-                    <div class="info">
-                        <p>Numero de telefono: <span>4191251439</span></p>
-                        <p>Calle y numero: <span>Calle Guanajuato</span> <span>4</span></p>
-                        <p>Municipio: <span>Doctor Mora</span></p>
-                        <p>Estado: <span>Guanajuato</span></p>
-                        <div class="seleccion-no-sucursal">
-                            <form action="/app/login">
-                                <button class="btn-secundario">Seleccionar</button>
-                            </form>
-                        </div>
-                    </div> <!-- Más informacion -->
-                    <div class="mapa">
-                        <img src="/img/Estetica Wendy.webp">
-                    </div> <!-- Mapa -->
-                </div> <!-- Sucursal contenido-->
+            <div id="sucursal" class="sucursal">
             </div> <!-- Sucursal -->
         </div>
     </div> <!-- container-small -->
 </body>
+<script src="/js/branch.min.js" type="text/javascript"></script>
 </html>

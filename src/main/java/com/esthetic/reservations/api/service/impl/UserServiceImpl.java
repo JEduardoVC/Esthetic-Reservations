@@ -16,6 +16,7 @@ import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.repository.RoleRepository;
 import com.esthetic.reservations.api.repository.UserRepository;
 import com.esthetic.reservations.api.service.UserService;
+import com.esthetic.reservations.api.util.AppConstants;
 
 @Service
 public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDTO>
@@ -23,13 +24,14 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
-        
+
     @Autowired
-    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper, @Qualifier("RoleRepository") RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository repository, ModelMapper modelMapper,
+            @Qualifier("RoleRepository") RoleRepository roleRepository) {
         super(repository, modelMapper, UserEntity.class, UserEntityDTO.class);
         this.userRepository = repository;
         this.roleRepository = roleRepository;
-    }  
+    }
 
     @Override
     public UserEntityDTO findByUsername(String username) {
@@ -41,7 +43,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
 
     @Override
     public UserEntityDTO findByEmail(String email) {
-        UserEntity user =  userRepository.findByEmail(email)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(
                         () -> new ResourceNotFoundException("Usuario", "no encontrado", "correo electrónico", email));
         return mapToDTO(user);
@@ -61,7 +63,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         // Not exists
         // Convert DTO to Model
         UserEntity user = mapToModel(userEntityDTO);
-        
+
         // Default role
         Role roles = roleRepository.findByName(role).get();
         user.setUserRoles(Collections.singletonList(roles));
@@ -88,8 +90,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     public UserEntityDTO grantRoleToUser(Long userId, String role) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(userId)));
-        Role roleEntity = roleRepository.findByName(role)
-                .orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", role));
+        Role roleEntity = roleRepository.findByName(role).get();
         if (userEntity.getUserRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "ya tiene", "rol", role);
         }
@@ -103,8 +104,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     public UserEntityDTO revokeRoleToUser(Long userId, String role) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(userId)));
-        Role roleEntity = roleRepository.findByName(role)
-                .orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", role));
+        Role roleEntity = roleRepository.findByName(role).get();
         if (!userEntity.getUserRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "no es", "rol", role);
         }
@@ -112,6 +112,20 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         newRoles.remove(roleEntity);
         userEntity.setUserRoles(newRoles);
         return mapToDTO(userRepository.save(userEntity));
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
+    @Override
+    public boolean validOwnerId(Long id) {
+        UserEntity owner = userRepository.findById(id).get();
+        Role ownerRole = roleRepository.findByName(AppConstants.OWNER_ROLE_NAME).get();
+        boolean aver =owner.getUserRoles().contains(ownerRole);
+        System.out.println(aver);
+        return aver;
     }
 
 }

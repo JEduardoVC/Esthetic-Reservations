@@ -13,6 +13,7 @@ import com.esthetic.reservations.api.model.Role;
 public class UserEntityDTO extends GenericModelDTO {
 
     @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9._-]{3,}$", message = "El nombre de usuario debe tener al menos 3 letras y/o números sin símbolos especiales.")
     private String username;
 
     @NotBlank

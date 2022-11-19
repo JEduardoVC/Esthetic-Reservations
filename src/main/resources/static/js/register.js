@@ -67,7 +67,6 @@ function register() {
     })
         .then((response) => response.json())
         .then(data => {
-            alert(typeof data.errorCode);
             if (typeof data.errorCode !== 'undefined') {
                 if (data.errorCode == 400) {
                     for (const message in data.message) {

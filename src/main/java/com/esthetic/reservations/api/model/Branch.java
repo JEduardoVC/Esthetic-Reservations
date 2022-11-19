@@ -1,5 +1,6 @@
 package com.esthetic.reservations.api.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -9,30 +10,38 @@ import javax.persistence.Table;
 @Table(name = "branch")
 public class Branch extends BaseModel<Branch> {
 
+	@Column(name = "name", length = 30)
 	private String name;
 
+	@Column(name = "location", length = 200)
 	private String location;
 
-	@JoinColumn(name = "id_owner")
 	@ManyToOne
-	private UserEntity id_owner;
+	@JoinColumn(name = "id_owner", referencedColumnName = "id")
+	private UserEntity owner;
 
 	public Branch() {
 		super();
 	}
 
-	public Branch(Long id, String name, String location, UserEntity id_owner) {
+	public Branch(String name, String location, UserEntity owner) {
+		this.name = name;
+		this.location = location;
+		this.owner = owner;
+	}
+
+	public Branch(Long id, String name, String location, UserEntity owner) {
 		super(id);
 		this.name = name;
 		this.location = location;
-		this.id_owner = id_owner;
+		this.owner = owner;
 	}
 
-	public String getName() {
+	public String getBranchName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setBranchName(String name) {
 		this.name = name;
 	}
 
@@ -44,19 +53,19 @@ public class Branch extends BaseModel<Branch> {
 		this.location = location;
 	}
 
-	public UserEntity getId_owner() {
-		return this.id_owner;
+	public UserEntity getOwner() {
+		return this.owner;
 	}
 
-	public void setId_owner(UserEntity id_owner) {
-		this.id_owner = id_owner;
+	public void setOwner(UserEntity owner) {
+		this.owner = owner;
 	}
 
 	@Override
 	public void copy(Branch branch) {
 		this.name = branch.name;
 		this.location = branch.location;
-		this.id_owner = branch.id_owner;
+		this.owner = branch.owner;
 	}
 
 }
