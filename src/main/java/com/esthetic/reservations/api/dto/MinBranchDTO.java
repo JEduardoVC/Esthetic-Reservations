@@ -3,9 +3,7 @@ package com.esthetic.reservations.api.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import com.esthetic.reservations.api.model.UserEntity;
-
-public class BranchDTO extends GenericModelDTO {
+public class MinBranchDTO extends GenericModelDTO {
 
     @NotNull
     @NotEmpty
@@ -14,22 +12,16 @@ public class BranchDTO extends GenericModelDTO {
     private String location;
 
     @NotNull
-    private UserEntity owner;
+    private Long ownerId;
 
-    public BranchDTO() {
+    public MinBranchDTO() {
     }
 
-    public BranchDTO(String name, String location, UserEntity owner) {
-        this.name = name;
-        this.location = location;
-        this.owner = owner;
-    }
-
-    public BranchDTO(Long id, String name, String location, UserEntity owner) {
+    public MinBranchDTO(Long id, String name, String location, Long ownerId) {
         super(id);
         this.name = name;
         this.location = location;
-        this.owner = owner;
+        this.ownerId = ownerId;
     }
 
     public String getName() {
@@ -48,12 +40,12 @@ public class BranchDTO extends GenericModelDTO {
         this.location = location;
     }
 
-    public UserEntity getOwner() {
-        return this.owner;
+    public Long getOwnerId() {
+        return this.ownerId;
     }
 
-    public void setOwner(UserEntity owner) {
-        this.owner = owner;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
 }

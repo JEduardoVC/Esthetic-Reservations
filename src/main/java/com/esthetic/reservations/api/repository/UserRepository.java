@@ -19,6 +19,8 @@ public interface UserRepository extends GenericRepository<UserEntity, Long> {
     public Boolean existsByUsername(String username);
 
     public Boolean existsByEmail(String email);
+    
+    public boolean existsById(Long id);
 
     public Optional<UserEntity> findByEmail(String email);
 

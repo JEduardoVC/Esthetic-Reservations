@@ -1,8 +1,9 @@
 package com.esthetic.reservations.api.service;
 
 import com.esthetic.reservations.api.dto.UserEntityDTO;
+import com.esthetic.reservations.api.model.UserEntity;
 
-public interface UserService {
+public interface UserService extends GenericService<UserEntity, UserEntityDTO> {
 
     public UserEntityDTO register(UserEntityDTO userEntityDTO, String role);
 
@@ -13,6 +14,10 @@ public interface UserService {
     public Boolean existsByUsername(String username);
 
     public Boolean existsByEmail(String email);
+    
+    public boolean existsById(Long id);
+
+    public boolean validOwnerId(Long id);
 
     public UserEntityDTO grantRoleToUser(Long userId, String role);
 

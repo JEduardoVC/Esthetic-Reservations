@@ -108,7 +108,7 @@ public class GenericServiceImpl<T extends BaseModel<T>, D extends GenericModelDT
     @Override
     public D update(D dto, Long id) {
         T entity = getRepository().findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
+                .orElseThrow(() -> new ResourceNotFoundException(getType().getSimpleName(), "no encontrado", "id", String.valueOf(id)));
         T editedEntity = mapToModel(dto);
         entity.copy(editedEntity);
         getRepository().save(entity);
@@ -118,7 +118,7 @@ public class GenericServiceImpl<T extends BaseModel<T>, D extends GenericModelDT
     @Override
     public void delete(Long id) {
         T entity = getRepository().findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
+                .orElseThrow(() -> new ResourceNotFoundException(getType().getSimpleName(), "no encontrado", "id", String.valueOf(id)));
         getRepository().delete(entity);
     }
 
