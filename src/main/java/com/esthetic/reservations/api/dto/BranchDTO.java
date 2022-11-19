@@ -9,7 +9,7 @@ public class BranchDTO extends GenericModelDTO {
 
     @NotNull
     @NotEmpty
-    private String name;
+    private String branch_name;
 
     private String location;
 
@@ -19,25 +19,25 @@ public class BranchDTO extends GenericModelDTO {
     public BranchDTO() {
     }
 
-    public BranchDTO(String name, String location, UserEntity owner) {
-        this.name = name;
+    public BranchDTO(String branch_name, String location, UserEntity owner) {
+        this.branch_name = branch_name;
         this.location = location;
         this.owner = owner;
     }
 
-    public BranchDTO(Long id, String name, String location, UserEntity owner) {
+    public BranchDTO(Long id, String branch_name, String location, UserEntity owner) {
         super(id);
-        this.name = name;
+        this.branch_name = branch_name;
         this.location = location;
         this.owner = owner;
     }
 
-    public String getName() {
-        return this.name;
+    public String getBranchName() {
+        return this.branch_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBranchName(String branch_name) {
+        this.branch_name = branch_name;
     }
 
     public String getLocation() {

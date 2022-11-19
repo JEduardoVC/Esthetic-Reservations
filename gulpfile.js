@@ -31,7 +31,7 @@ function css() {
 
 function javascript() {
     return src(paths.js)
-        //.pipe(sourcemaps.init())
+        .pipe(sourcemaps.init())
         .pipe(sourcemaps.init())
         //.pipe(concat('bundle.js'))
         .pipe(terser())

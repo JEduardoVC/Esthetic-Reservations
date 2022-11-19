@@ -7,7 +7,7 @@ public class MinBranchDTO extends GenericModelDTO {
 
     @NotNull
     @NotEmpty
-    private String name;
+    private String branch_name;
 
     private String location;
 
@@ -17,19 +17,19 @@ public class MinBranchDTO extends GenericModelDTO {
     public MinBranchDTO() {
     }
 
-    public MinBranchDTO(Long id, String name, String location, Long ownerId) {
+    public MinBranchDTO(Long id, String branch_name, String location, Long ownerId) {
         super(id);
-        this.name = name;
+        this.branch_name = branch_name;
         this.location = location;
         this.ownerId = ownerId;
     }
 
-    public String getName() {
-        return this.name;
+    public String getBranchName() {
+        return this.branch_name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBranchName(String branch_name) {
+        this.branch_name = branch_name;
     }
 
     public String getLocation() {

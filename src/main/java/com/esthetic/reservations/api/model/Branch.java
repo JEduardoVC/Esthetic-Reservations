@@ -37,11 +37,11 @@ public class Branch extends BaseModel<Branch> {
 		this.owner = owner;
 	}
 
-	public String getName() {
+	public String getBranchName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setBranchName(String name) {
 		this.name = name;
 	}
 

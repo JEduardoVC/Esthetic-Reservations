@@ -40,7 +40,7 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 	public BranchDTO save(MinBranchDTO branchDTO) {
 		UserEntityDTO ownerDTO = userService.findById(branchDTO.getOwnerId());
 		UserEntity owner = userService.mapToModel(ownerDTO);
-		Branch newBranch = new Branch(branchDTO.getName(), branchDTO.getLocation(), owner);
+		Branch newBranch = new Branch(branchDTO.getBranchName(), branchDTO.getLocation(), owner);
 		return mapToDTO(getRepository().save(newBranch));
 	}
 
@@ -49,7 +49,7 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 				() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id", String.valueOf(id)));
 		UserEntityDTO ownerDTO = userService.findById(editedBranchDTO.getOwnerId());
 		UserEntity owner = userService.mapToModel(ownerDTO);
-		Branch editedBranch = new Branch(editedBranchDTO.getName(), editedBranchDTO.getLocation(), owner);
+		Branch editedBranch = new Branch(editedBranchDTO.getBranchName(), editedBranchDTO.getLocation(), owner);
 		branch.copy(editedBranch);
 		return mapToDTO(getRepository().save(branch));
 	}
@@ -67,7 +67,7 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 		Page<Branch> branches = branchRepository.findAllByOwnerId(ownerId, pageable);
 		ArrayList<Branch> entitiesList = new ArrayList<>(branches.getContent());
 		// To JSON list
-		ArrayList<MinBranchDTO> content = entitiesList.stream().map(entity -> new MinBranchDTO(entity.getId(), entity.getName(), entity.getLocation(), entity.getOwner().getId()))
+		ArrayList<MinBranchDTO> content = entitiesList.stream().map(entity -> new MinBranchDTO(entity.getId(), entity.getBranchName(), entity.getLocation(), entity.getOwner().getId()))
 				.collect(Collectors.toCollection(ArrayList::new));
 		ResponseDTO<MinBranchDTO> userResponseDTO = new ResponseDTO<>();
 		userResponseDTO.setContent(content);
