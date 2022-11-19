@@ -38,10 +38,6 @@ public class AppLoginController {
         return inicio;
     }
 
-    public ModelAndView viewLogin(List<String> alertas, String tipo) {
-        return new ModelAndView("Login/login").addObject("alertas", formatearAlertas(alertas, tipo));
-    }
-
     @GetMapping("/registro")
     public ModelAndView Register() {
         return new ModelAndView("Login/registro");
