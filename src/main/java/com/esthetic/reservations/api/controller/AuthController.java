@@ -27,12 +27,16 @@ import com.esthetic.reservations.api.dto.LoginResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
+import com.esthetic.reservations.api.exception.ResourceNotFoundException;
+import com.esthetic.reservations.api.exception.UnauthorizedException;
 import com.esthetic.reservations.api.model.Role;
+import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.MailService;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
+import com.esthetic.reservations.api.util.Util;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -43,18 +47,21 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
     private JwtUtil jwtUtil;
-
+    private Util util;
+    
     @Autowired
     MailService mailService;
+    
 
     @Autowired
     public AuthController(UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder, UserServiceImpl userService, JwtUtil jwtUtil) {
+            PasswordEncoder passwordEncoder, UserServiceImpl userService, JwtUtil jwtUtil, Util util) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.util = util;
     }
 
     @PostMapping("/{role}/register")
@@ -81,27 +88,32 @@ public class AuthController {
 
     @PostMapping("/user/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+        UserEntity userEntity;
         Authentication authentication;
+        boolean emailAuth = util.isValidEmail(loginDTO.getUsername());
+        if(emailAuth){
+            try {
+                userEntity = userService.mapToModel(userService.findByEmail(loginDTO.getUsername()));
+                loginDTO.setUsername(userEntity.getUsername());
+            } catch (ResourceNotFoundException e) {
+                throw new UnauthorizedException("Correo electrónico", "no existe", "correo electrónico", loginDTO.getUsername());
+            }
+        } else {
+            try {
+                userEntity = userService.mapToModel(userService.findByUsername(loginDTO.getUsername()));
+            } catch (ResourceNotFoundException e) {
+                throw new UnauthorizedException("Nombre de usuario", "no existe", "nombre de usuario", loginDTO.getUsername());
+            }
+        }
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginDTO.getUsername(), loginDTO.getPassword()));
+                loginDTO.getUsername(), loginDTO.getPassword()));
         } catch (BadCredentialsException e) {
-            // Test with email
-            if (!userService.existsByUsername(loginDTO.getUsername())) {
-                throw new BadCredentialsException("Username No Existe");
-            } else if (!loginDTO.getPassword()
-                    .equals(userService.findByUsername(loginDTO.getUsername()).getPassword())) {
-                throw new BadCredentialsException("Contraseña Incorrecta");
-            } else if (!userService.existsByEmail(loginDTO.getUsername())) {
-                throw new BadCredentialsException("Bad credentials");
-            }
-            loginDTO.setUsername(userService.findByEmail(loginDTO.getUsername()).getUsername());
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginDTO.getUsername(), loginDTO.getPassword()));
+            throw new UnauthorizedException("Contraseña","incorrecta", "contraseña", "secret");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
-        List<Role> roles = userService.findByUsername(loginDTO.getUsername()).getUserRoles();
+        List<Role> roles = userService.findByUsername(loginDTO.getUsername()).getUserRoles().subList(0, 1);
         String token = this.jwtUtil.generateToken(userDetails);
         Long id = userService.findByUsername(loginDTO.getUsername()).getId();
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, roles, id);
