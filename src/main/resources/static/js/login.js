@@ -28,6 +28,7 @@ async function presionarBoton() {
 			document.cookie = `token=${token}`;
 			document.cookie = `id_usuario=${data[2]}`;
 			if(rol == 1) window.location.href = "http://localhost:5500/app/admin";
+			if(rol == 2) window.location.href = "http://localhost:5500/app/owner";
 			if(rol == 4) window.location.href = "http://localhost:5500/app/client";
 		} else {			
 			if(data.errorCode == 500) {
