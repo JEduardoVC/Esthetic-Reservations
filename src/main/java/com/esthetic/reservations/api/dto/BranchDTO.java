@@ -1,5 +1,7 @@
 package com.esthetic.reservations.api.dto;
 
+import java.security.Timestamp;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -9,35 +11,56 @@ public class BranchDTO extends GenericModelDTO {
 
     @NotNull
     @NotEmpty
-    private String branch_name;
+    private String branchName;
 
     private String location;
 
     @NotNull
     private UserEntity owner;
 
+    @NotNull
+    private Timestamp scheduleOpen;
+
+    @NotNull
+    private Timestamp scheduleClose;
+
+    private String state;
+
+    private String municipality;
+
     public BranchDTO() {
+        super();
     }
 
-    public BranchDTO(String branch_name, String location, UserEntity owner) {
-        this.branch_name = branch_name;
+    public BranchDTO(String branchName, String location, UserEntity owner, Timestamp scheduleOpen,
+            Timestamp scheduleClose, String state, String municipality) {
+        this.branchName = branchName;
         this.location = location;
         this.owner = owner;
+        this.scheduleOpen = scheduleOpen;
+        this.scheduleClose = scheduleClose;
+        this.state = state;
+        this.municipality = municipality;
     }
 
-    public BranchDTO(Long id, String branch_name, String location, UserEntity owner) {
+    public BranchDTO(Long id, String branchName, String location, UserEntity owner, Timestamp scheduleOpen,
+            Timestamp scheduleClose, String state, String municipality) {
         super(id);
-        this.branch_name = branch_name;
+        this.branchName = branchName;
         this.location = location;
         this.owner = owner;
+        this.scheduleOpen = scheduleOpen;
+        this.scheduleClose = scheduleClose;
+        this.state = state;
+        this.municipality = municipality;
     }
 
     public String getBranchName() {
-        return this.branch_name;
+        return this.branchName;
     }
 
-    public void setBranchName(String branch_name) {
-        this.branch_name = branch_name;
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 
     public String getLocation() {
@@ -54,6 +77,38 @@ public class BranchDTO extends GenericModelDTO {
 
     public void setOwner(UserEntity owner) {
         this.owner = owner;
+    }
+
+    public Timestamp getScheduleOpen() {
+        return this.scheduleOpen;
+    }
+
+    public void setScheduleOpen(Timestamp scheduleOpen) {
+        this.scheduleOpen = scheduleOpen;
+    }
+
+    public Timestamp getScheduleClose() {
+        return this.scheduleClose;
+    }
+
+    public void setScheduleClose(Timestamp scheduleClose) {
+        this.scheduleClose = scheduleClose;
+    }
+
+    public String getState() {
+        return this.state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getMunicipality() {
+        return this.municipality;
+    }
+
+    public void setMunicipality(String municipality) {
+        this.municipality = municipality;
     }
 
 }
