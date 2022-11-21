@@ -35,9 +35,6 @@ public class ServiceController {
 	@Autowired
 	SeriviceServiceImpl seriviceServiceImpl;
 	
-	@Autowired
-	BranchRepository branchServiceImpl;
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<ServiceDTO> obtenerServicio(@PathVariable("id") Long id) {
 		return new ResponseEntity<ServiceDTO>(seriviceServiceImpl.findById(id), HttpStatus.OK);
@@ -57,8 +54,8 @@ public class ServiceController {
 		return new ResponseEntity<>(seriviceServiceImpl.save(servicio), HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/actualizar")
-	public ResponseEntity<ServiceDTO> actualizarServicio(@RequestBody MinService servicio, @RequestParam("id") Long id) {
+	@PutMapping("/actualizar/{id}")
+	public ResponseEntity<ServiceDTO> actualizarServicio(@RequestBody MinService servicio, @PathVariable("id") Long id) {
 		return new ResponseEntity<ServiceDTO>(seriviceServiceImpl.update(servicio, id), HttpStatus.ACCEPTED);
 	}
 	

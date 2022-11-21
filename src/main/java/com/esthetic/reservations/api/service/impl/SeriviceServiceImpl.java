@@ -1,8 +1,6 @@
 package com.esthetic.reservations.api.service.impl;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,24 +18,29 @@ import com.esthetic.reservations.api.service.ServiceService;
 public class SeriviceServiceImpl extends GenericServiceImpl<Service, ServiceDTO>
 		implements ServiceService {
 
+	private BranchServiceImpl branchServiceImpl;
 	private ServiceRepository serviceRespository;
-	private BranchRepository branchRepository;
 	
 	@Autowired
-	public SeriviceServiceImpl(ServiceRepository repository, ModelMapper modelMapper) {
+	public SeriviceServiceImpl(ServiceRepository repository, ModelMapper modelMapper, BranchServiceImpl branchServiceImpl) {
 		super(repository, modelMapper, Service.class, ServiceDTO.class);
+		this.branchServiceImpl = branchServiceImpl;
+		this.serviceRespository = repository;
 	}
 	
 	public ServiceDTO save(MinService servicio) {
-		Branch sucursal = branchRepository.findById(servicio.getId_branch()).orElseThrow(() -> new BadRequestException("Sucrusal", "No Existe", "", ""));
-		Service service = new Service(servicio.getService_name(), servicio.getDuration(), servicio.getPrice(), sucursal);
+		BranchDTO sucursal = branchServiceImpl.findById(servicio.getId_branch());
+		Branch newSucursal = branchServiceImpl.mapToModel(sucursal);
+		Service service = new Service(servicio.getService_name(), servicio.getDuration(), servicio.getPrice(), newSucursal);
 		return mapToDTO(getRepository().save(service));
 	}
 	
 	public ServiceDTO update(MinService servicio, Long id) {
-		Branch sucursal = branchRepository.findById(servicio.getId_branch()).orElseThrow(() -> new BadRequestException("Sucrusal", "No Existe", "", ""));
-		Service service = new Service(id, servicio.getService_name(), servicio.getDuration(), servicio.getPrice(), sucursal);
-		return mapToDTO(getRepository().save(service));
+		Service service = getRepository().findById(id).orElseThrow(() -> new BadRequestException("Servicio", "No existe", null, null));
+		BranchDTO sucursal = branchServiceImpl.findById(servicio.getId_branch());
+		Branch newSucursal = branchServiceImpl.mapToModel(sucursal);
+		Service newService = new Service(id, servicio.getService_name(), servicio.getDuration(), servicio.getPrice(), newSucursal);
+		return mapToDTO(getRepository().save(newService));
 	}
 
 	@Override
