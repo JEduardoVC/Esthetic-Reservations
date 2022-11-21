@@ -47,5 +47,4 @@ public class MinBranchDTO extends GenericModelDTO {
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
-
 }

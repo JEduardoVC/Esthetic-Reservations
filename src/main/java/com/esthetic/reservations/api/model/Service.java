@@ -30,6 +30,13 @@ public class Service extends BaseModel<Service> {
 		this.price = price;
 		this.id_branch = id_branch;
 	}
+	
+	public Service(String service_name, Integer duration, Double price, Branch id_branch) {
+		this.service_name = service_name;
+		this.duration = duration;
+		this.price = price;
+		this.id_branch = id_branch;
+	}
 
 	public String getService_name() {
 		return this.service_name;

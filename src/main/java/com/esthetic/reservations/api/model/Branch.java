@@ -1,5 +1,7 @@
 package com.esthetic.reservations.api.model;
 
+import java.sql.Time;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

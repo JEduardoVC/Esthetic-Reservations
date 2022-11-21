@@ -1,4 +1,4 @@
-<div th:each="alerta : ${alertas}">
+<div th:each="alerta : ${alertas}" id="alertas">
     <div th:each="alert : ${alerta.value}">
         <p th:class="${alerta.key}" th:text="${alert}"></p>
     </div>
