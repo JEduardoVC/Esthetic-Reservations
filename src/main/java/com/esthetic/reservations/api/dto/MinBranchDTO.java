@@ -115,5 +115,4 @@ public class MinBranchDTO extends GenericModelDTO {
     public void setMunicipality(String municipality) {
         this.municipality = municipality;
     }
-
 }
