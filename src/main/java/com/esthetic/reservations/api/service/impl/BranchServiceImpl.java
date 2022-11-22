@@ -40,7 +40,9 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 	public BranchDTO save(MinBranchDTO branchDTO) {
 		UserEntityDTO ownerDTO = userService.findById(branchDTO.getOwnerId());
 		UserEntity owner = userService.mapToModel(ownerDTO);
-		Branch newBranch = new Branch(branchDTO.getBranchName(), branchDTO.getLocation(), owner);
+		Branch newBranch = new Branch(branchDTO.getBranchName(), branchDTO.getLocation(), owner,
+				branchDTO.getScheduleOpen(), branchDTO.getScheduleClose(), branchDTO.getState(),
+				branchDTO.getMunicipality());
 		return mapToDTO(getRepository().save(newBranch));
 	}
 
@@ -49,7 +51,9 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 				() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id", String.valueOf(id)));
 		UserEntityDTO ownerDTO = userService.findById(editedBranchDTO.getOwnerId());
 		UserEntity owner = userService.mapToModel(ownerDTO);
-		Branch editedBranch = new Branch(editedBranchDTO.getBranchName(), editedBranchDTO.getLocation(), owner);
+		Branch editedBranch = new Branch(editedBranchDTO.getBranchName(), editedBranchDTO.getLocation(), owner,
+				editedBranchDTO.getScheduleOpen(), editedBranchDTO.getScheduleClose(), editedBranchDTO.getState(),
+				editedBranchDTO.getMunicipality());
 		branch.copy(editedBranch);
 		return mapToDTO(getRepository().save(branch));
 	}
@@ -58,16 +62,20 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 	public ResponseDTO<MinBranchDTO> findAllByOwnerId(int pageNumber, int pageSize, String sortBy, String sortDir,
 			Long ownerId) {
 		// Throws error when no vaild owner id
-		if(!userService.validOwnerId(ownerId)){
+		if (!userService.validOwnerId(ownerId)) {
 			throw new BadRequestException("Usuario", "no es", "rol", AppConstants.OWNER_ROLE_NAME);
-		};
+		}
+		;
 		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
 				: Sort.by(sortBy).descending();
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 		Page<Branch> branches = branchRepository.findAllByOwnerId(ownerId, pageable);
 		ArrayList<Branch> entitiesList = new ArrayList<>(branches.getContent());
 		// To JSON list
-		ArrayList<MinBranchDTO> content = entitiesList.stream().map(entity -> new MinBranchDTO(entity.getId(), entity.getBranchName(), entity.getLocation(), entity.getOwner().getId()))
+		ArrayList<MinBranchDTO> content = entitiesList.stream()
+				.map(entity -> new MinBranchDTO(entity.getId(), entity.getBranchName(), entity.getLocation(),
+						entity.getOwner().getId(), entity.getScheduleOpen(), entity.getScheduleClose(),
+						entity.getState(), entity.getMunicipality()))
 				.collect(Collectors.toCollection(ArrayList::new));
 		ResponseDTO<MinBranchDTO> userResponseDTO = new ResponseDTO<>();
 		userResponseDTO.setContent(content);

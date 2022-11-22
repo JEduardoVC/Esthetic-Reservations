@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/client/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/branch/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/").permitAll()
                 .antMatchers("/app/**").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/img/**").permitAll()
