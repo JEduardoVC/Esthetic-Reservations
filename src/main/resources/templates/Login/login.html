@@ -5,11 +5,20 @@
 
 <body>
     <main>
+        <div class="navegacion-dark-mode">
+            <button type="button" class="dark-mode-boton">DarkMode</button>
+        </div>
         <div class="container-small">
             <div class="ventana-tab">
                 <!--<img src="/img/Fondo_1.webp">-->
             </div>
             <div class="ventana">
+                <div class="div-btn-volver">
+                    <form action="/app">
+                        <button class="btn-volver">Volver</button>
+                    </form>
+                </div>
+                <div></div>
                 <div class="img-ventana">
                     <img src="/img/logo.webp">
                 </div>
@@ -26,7 +35,12 @@
                                 <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña">
                                 <span>Contraseña</span>
                             </label>
-                            <input type="hidden" value="cliente">
+                            <label>
+                                <input type="radio" value="1" name="usuario">Cliente
+                                <input type="radio" value="2" name="usuario">Encargado
+                                <input type="radio" value="3" name="usuario">Administrador
+                                <span>Tipo de usuario</span>
+                            </label>
                             <button type="button" id="btn-login" class="btn-principal">Iniciar sesión</button>
                         </form>
                     </div>
@@ -46,8 +60,10 @@
                 </div>
             </div>
         </div>
-        </div>
     </main>
+    <footer>
+        <div></div>
+    </footer>
 </body>
-
+<script src="/js/login.js"></script>
 </html>
