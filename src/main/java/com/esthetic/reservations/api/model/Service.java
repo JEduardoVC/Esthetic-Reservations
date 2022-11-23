@@ -17,7 +17,7 @@ public class Service extends BaseModel<Service> {
 
 	@JoinColumn(name = "id_branch")
 	@ManyToOne
-	private Branch id_branch;
+	private Branch idBranch;
 
 	public Service() {
 		super();
@@ -28,7 +28,14 @@ public class Service extends BaseModel<Service> {
 		this.service_name = service_name;
 		this.duration = duration;
 		this.price = price;
-		this.id_branch = id_branch;
+		this.idBranch = id_branch;
+	}
+	
+	public Service(String service_name, Integer duration, Double price, Branch id_branch) {
+		this.service_name = service_name;
+		this.duration = duration;
+		this.price = price;
+		this.idBranch = id_branch;
 	}
 
 	public String getService_name() {
@@ -56,11 +63,11 @@ public class Service extends BaseModel<Service> {
 	}
 
 	public Branch getId_branch() {
-		return this.id_branch;
+		return this.idBranch;
 	}
 
 	public void setId_branch(Branch id_branch) {
-		this.id_branch = id_branch;
+		this.idBranch = id_branch;
 	}
 
 	@Override
@@ -68,7 +75,7 @@ public class Service extends BaseModel<Service> {
 		this.service_name = service.service_name;
 		this.duration = service.duration;
 		this.price = service.price;
-		this.id_branch = service.id_branch;
+		this.idBranch = service.idBranch;
 	}
 
 }

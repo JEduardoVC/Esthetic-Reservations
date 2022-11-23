@@ -86,28 +86,16 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
         UserEntity userEntity;
         Authentication authentication;
-        boolean emailAuth = util.isValidEmail(loginDTO.getUsername());
-        if (emailAuth) {
-            try {
-                userEntity = userService.mapToModel(userService.findByEmail(loginDTO.getUsername()));
-                loginDTO.setUsername(userEntity.getUsername());
-            } catch (ResourceNotFoundException e) {
-                throw new UnauthorizedException("Correo electrónico", "no existe", "correo electrónico",
-                        loginDTO.getUsername());
-            }
-        } else {
-            try {
-                userEntity = userService.mapToModel(userService.findByUsername(loginDTO.getUsername()));
-            } catch (ResourceNotFoundException e) {
-                throw new UnauthorizedException("Nombre de usuario", "no existe", "nombre de usuario",
-                        loginDTO.getUsername());
-            }
+        try {
+            userEntity = userService.mapToModel(userService.findByUsername(loginDTO.getUsername()));
+        } catch (ResourceNotFoundException e) {
+            throw new UnauthorizedException("Username", "no existe");
         }
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     loginDTO.getUsername(), loginDTO.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new UnauthorizedException("Contraseña", "incorrecta", "contraseña", "secret");
+            throw new UnauthorizedException("Contraseña", "incorrecta");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());

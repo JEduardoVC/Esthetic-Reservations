@@ -9,4 +9,8 @@ public class UnauthorizedException extends UtilException {
     public UnauthorizedException(String resourceName, String reason, String fieldName, String fieldValue) {
         super(resourceName, reason, fieldName, fieldValue);
     }
+    
+    public UnauthorizedException(String resourceName, String reason) {
+        super(resourceName, reason);
+    }
 }
