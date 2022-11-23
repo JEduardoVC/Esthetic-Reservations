@@ -37,8 +37,8 @@ public class ServiceController {
 	}
 	
 	@GetMapping("/branch/{id}")
-	public ResponseEntity<ServiceDTO> obtenerServicioBranch(@PathVariable Long id) {
-		return new ResponseEntity<ServiceDTO>(seriviceServiceImpl.findAllIdBranch(id), HttpStatus.OK);
+	public ResponseDTO<ServiceDTO> obtenerServicioBranch(@PathVariable Long id) {
+		return seriviceServiceImpl.findAllIdBranch(id);
 	}
 	
 	@GetMapping("/all")

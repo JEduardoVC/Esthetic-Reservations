@@ -8,5 +8,5 @@ import com.esthetic.reservations.api.dto.ServiceDTO;
 import com.esthetic.reservations.api.model.Service;
 
 public interface ServiceService {
-	ServiceDTO findAllIdBranch(Long id);
+	ResponseDTO<ServiceDTO> findAllIdBranch(Long id);
 }
