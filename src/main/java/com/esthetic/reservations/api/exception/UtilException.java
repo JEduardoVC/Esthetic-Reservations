@@ -12,6 +12,11 @@ public class UtilException extends RuntimeException {
         this.fieldName = fieldName;
         this.fieldValue = fieldValue;
     }
+    
+    public UtilException(String resourceName, String reason) {
+        super(String.format("%s %s", resourceName, reason));
+        this.resourceName = resourceName;
+    }
 
     public String getResourceName() {
         return this.resourceName;
