@@ -40,7 +40,7 @@ async function presionarBoton() {
 				case 3:
 					document.location = "http://localhost:5500/app/employee";
 				case 4:
-					document.location = "http://localhost:5500/app/client";
+					document.location = "http://localhost:5500/app";
 			}
 		}
 		mostrarAlerta(alertas);
