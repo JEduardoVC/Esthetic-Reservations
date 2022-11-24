@@ -31,20 +31,37 @@ async function presionarBoton() {
 			document.cookie = `token=${data.token}; samesite=lax`;
 			document.cookie = `userId=${data.userId}; samesite=lax`;
 			document.cookie = `rol=${data.userRoles[0].id}; samesite=lax`;
-			console.info(document.cookie);
 			switch(data.userRoles[0].id) {
 				case 1:
-					document.location = "http://localhost:5500/app/admin";
+					//document.location = "http://localhost:5500/app/admin";
 				case 2:
-					document.location = "http://localhost:5500/app/owner";
+					obtenerBranch(data.userId);
+					//document.cookie = `branchId=${}`;
+					//document.location = "http://localhost:5500/app/owner";
 				case 3:
-					document.location = "http://localhost:5500/app/employee";
+					//document.location = "http://localhost:5500/app/employee";
 				case 4:
-					document.location = "http://localhost:5500/app";
+					//document.location = "http://localhost:5500/app";
 			}
 		}
 		mostrarAlerta(alertas);
 	})
+}
+
+async function obtenerBranch(id_owner) {
+	const resultado = await fetch("http://localhost:5500/api/branch/all/filter?filterBy=owner", {
+		method: "GET",
+		headers: {
+			'Accept': 'application/json',
+            'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			"value": id_owner	
+		}),
+		redirect: 'follow'
+	});
+	const branch = resultado.json();
+	console.info(branch);
 }
 
 function mostrarAlerta(alertas) {
