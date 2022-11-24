@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.esthetic.reservations.api.dto.MinBranchDTO;
 import com.esthetic.reservations.api.dto.BranchDTO;
-import com.esthetic.reservations.api.dto.GenericEntityValueDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
@@ -50,11 +49,11 @@ public class BranchController {
             @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir,
             @RequestParam(value = "filterBy", defaultValue = "owner", required = true) String filterBy,
-            @Valid @RequestBody GenericEntityValueDTO genericEntityValueDTO) {
+            @RequestParam(value = "filterTo",required = true) String filterTo) {
         
         switch (filterBy) {
             case "owner":
-                Long ownerId = Long.parseLong(genericEntityValueDTO.getValue());
+                Long ownerId = Long.parseLong(filterTo);
                 return branchService.findAllByOwnerId(pageNumber, pageSize, sortBy, sortBy, ownerId);
             default:
                 throw new BadRequestException("Filtro", "no esta implementado", "filtro", filterBy);
