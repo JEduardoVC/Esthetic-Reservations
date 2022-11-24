@@ -56,9 +56,8 @@ async function obtenerBranch(id_owner) {
             'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
-			"value": id_owner	
-		}),
-		redirect: 'follow'
+			"value": id_owner
+		})
 	});
 	const branch = resultado.json();
 	console.info(branch);
