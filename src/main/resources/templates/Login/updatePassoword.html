@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang=”es” class="html-auxiliar" xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header.html"></head>
+
+<body>
+    <main>
+        <div class="navegacion-dark-mode">
+            <img class="login-img dark-mode-boton" src="/img/luna.webp">
+        </div>
+        <div class="container-small">
+            <div class="ventana">
+                <div class="img-ventana">
+                    <img src="/img/logo.webp">
+                </div>
+                <div class="container-login">
+                    <h1 class="text-primary">Reestableciendo contraseña</h1>
+                    <div id="alertas"></div>
+                    <div class="formulario">
+                        <form method="post">
+                            <label>
+                                <input type="text" class="form-control" name="username" id="username" placeholder="">
+                                <span>Contraseña</span>
+                            </label>
+                            <button type="button" id="btn-login" class="btn-principal">Reestablecer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div></div>
+    </footer>
+</body>
+<script src="/js/register.js"></script>
+</html>
