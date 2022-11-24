@@ -9,9 +9,14 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/app/owner")
 public class AppOwnerController {
 	
-	@GetMapping
-	public ModelAndView viewOwner() {
-		return new ModelAndView("owner/owner");
+	@GetMapping("/servicios")
+	public ModelAndView viewServices() {
+		return new ModelAndView("owner/services/servicios");
+	}
+	
+	@GetMapping("/inventario")
+	public ModelAndView viewInventory() {
+		return new ModelAndView("owner/inventory/inventario");
 	}
 
 }
