@@ -16,20 +16,19 @@ async function enviarCorreo() {
 	await fetch("http://localhost:5500/api/auth/sendMail", requestOptions)
 	  .then(response => response.json())
 	  .then(data => {
-		console.info(data);
 		let alertas = []
-		if(data.errorCode == 404) alertas.push(data.message);
+		alertas.push(data.message)
+		if(data.errorCode == 404) mostrarAlerta(alertas, "error");
 		else {
-			console.info(data);
+			mostrarAlerta(alertas, "successful");
 		}
-		mostrarAlerta(alertas);
 	});
 }
 
-function mostrarAlerta(alertas) {
+function mostrarAlerta(alertas, tipo) {
 	const div = document.querySelector("#alertas");
 	while(div.childNodes.length != 0) div.removeChild(div.firstChild);
 	alertas.forEach(message => {
-		div.innerHTML += `<p class="error">${message}</p>`
+		div.innerHTML += `<p class="${tipo}">${message}</p>`
 	});
 }

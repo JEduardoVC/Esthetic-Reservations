@@ -1,6 +1,8 @@
 package com.esthetic.reservations.api.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -109,19 +111,24 @@ public class AuthController {
     }
 
     @PostMapping("/sendMail")
-    public ResponseEntity<String> sendMail(@RequestParam("mail") String mail) {
+    public ResponseEntity<Object> sendMail(@RequestParam("mail") String mail) {
     	if(mail == "") new ResourceNotFoundException("Email", "Vacio");
         UserEntityDTO usuario = userService.findByEmail(mail);
         if(usuario == null) new BadRequestException("Email", "No existe");
+        Map<String, String> map = new HashMap<String, String>();
         String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
                 + usuario.getName() + " " + usuario.getLastName() + "\n"
                 + "Hacer click en el siguiente enlace para cambiar tu contraseña \n\n"
+                + "http://localhost:5500/app/reestablecer/password/update/" + usuario.getId()
+                + "\n\n"
                 + "De no haber requerido este correo, favor de ignorarlo";
         try {
             mailService.sendMail("gevalencia99@gmail.com", mail, "Esthetic Reservation", message);
-            return new ResponseEntity<String>("Enviado", HttpStatus.OK);
+        	map.put("message", "Correo Enviado Correctamente");
+            return new ResponseEntity<Object>(map, HttpStatus.OK);
         } catch (MailException e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        	map.put("message", e.getMessage());
+        	return new ResponseEntity<Object>(map, HttpStatus.OK);
         }
     }
 }
