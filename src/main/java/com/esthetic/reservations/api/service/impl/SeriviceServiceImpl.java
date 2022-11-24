@@ -46,9 +46,15 @@ public class SeriviceServiceImpl extends GenericServiceImpl<Service, ServiceDTO>
 		return mapToDTO(getRepository().save(newService));
 	}
 
-	public ServiceDTO findAllIdBranch(Long id) {
-		ArrayList<ServiceDTO> arrayServices = new ArrayList<ServiceDTO>();
-		ServiceDTO services = serviceRespository.findAllByIdBranch(id);
-		return serviceRespository.findAllByIdBranch(id);
+	public ResponseDTO<ServiceDTO> findAllIdBranch(Long id) {
+		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(id));
+		ArrayList<Service> services = serviceRespository.findAllByIdBranch(sucursal);
+		ArrayList<ServiceDTO> newServices = new ArrayList<>();
+		for (Service service : services) {
+			newServices.add(mapToDTO(service));
+		}		
+		ResponseDTO<ServiceDTO> response = new ResponseDTO<>();
+		response.setContent(newServices);
+		return response;
 	}
 }
