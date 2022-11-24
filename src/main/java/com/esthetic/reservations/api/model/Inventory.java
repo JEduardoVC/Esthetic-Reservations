@@ -14,28 +14,32 @@ public class Inventory extends BaseModel<Inventory> {
 	
 	private Integer store;
 	
+	private String imagen;
+	
 	@JoinColumn(name = "id_branch")
 	@ManyToOne
-	private Branch id_branch;
+	private Branch idBranch;
 
 	public Inventory() {
 		super();
 	}
 
-	public Inventory(Long id, String inventory_name, Integer price, Integer store, Branch id_branch) {
+	public Inventory(Long id, String inventory_name, Integer price, Integer store, String imagen, Branch id_branch) {
 		super(id);
 		this.inventory_name = inventory_name;
 		this.price = price;
 		this.store = store;
-		this.id_branch = id_branch;
+		this.idBranch = id_branch;
+		this.imagen = imagen;
 	}
 	
-	public Inventory(String inventory_name, Integer price, Integer store, Branch id_branch) {
+	public Inventory(String inventory_name, Integer price, Integer store, String imagen, Branch id_branch) {
 		super();
 		this.inventory_name = inventory_name;
 		this.price = price;
 		this.store = store;
-		this.id_branch = id_branch;
+		this.idBranch = id_branch;
+		this.imagen = imagen;
 	}
 
 	public String getInventory_name() {
@@ -63,11 +67,19 @@ public class Inventory extends BaseModel<Inventory> {
 	}
 
 	public Branch getId_branch() {
-		return id_branch;
+		return idBranch;
 	}
 
 	public void setId_branch(Branch id_branch) {
-		this.id_branch = id_branch;
+		this.idBranch = id_branch;
+	}
+
+	public String getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
 	}
 
 	@Override
@@ -75,7 +87,8 @@ public class Inventory extends BaseModel<Inventory> {
 		this.inventory_name = object.inventory_name;
 		this.price = object.price;
 		this.store = object.store;
-		this.id_branch = object.id_branch;
+		this.idBranch = object.idBranch;
+		this.imagen = object.imagen;
 	}
 	
 	

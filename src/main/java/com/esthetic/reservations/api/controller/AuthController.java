@@ -1,5 +1,7 @@
 package com.esthetic.reservations.api.controller;
 
+import java.util.ArrayList;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.esthetic.reservations.api.dto.LoginDTO;
 import com.esthetic.reservations.api.dto.LoginResponseDTO;
+import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
@@ -107,16 +110,18 @@ public class AuthController {
 
     @PostMapping("/sendMail")
     public ResponseEntity<String> sendMail(@RequestParam("mail") String mail) {
+    	if(mail == "") new ResourceNotFoundException("Email", "Vacio");
         UserEntityDTO usuario = userService.findByEmail(mail);
+        if(usuario == null) new BadRequestException("Email", "No existe");
         String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
                 + usuario.getName() + " " + usuario.getLastName() + "\n"
                 + "Hacer click en el siguiente enlace para cambiar tu contraseña \n\n"
                 + "De no haber requerido este correo, favor de ignorarlo";
         try {
             mailService.sendMail("gevalencia99@gmail.com", mail, "Esthetic Reservation", message);
+            return new ResponseEntity<String>("Enviado", HttpStatus.OK);
         } catch (MailException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<String>("Enviado", HttpStatus.OK);
     }
 }
