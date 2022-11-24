@@ -9,7 +9,7 @@ public class MinBranchDTO extends GenericModelDTO {
 
     @NotNull
     @NotEmpty
-    private String branch_name;
+    private String branchName;
 
     private String location;
 
@@ -29,9 +29,9 @@ public class MinBranchDTO extends GenericModelDTO {
     public MinBranchDTO() {
     }
 
-    public MinBranchDTO(String branch_name, String location, Long ownerId, Time scheduleOpen, Time scheduleClose,
+    public MinBranchDTO(String branchName, String location, Long ownerId, Time scheduleOpen, Time scheduleClose,
             String state, String municipality) {
-        this.branch_name = branch_name;
+        this.branchName = branchName;
         this.location = location;
         this.ownerId = ownerId;
         this.scheduleOpen = scheduleOpen;
@@ -40,10 +40,10 @@ public class MinBranchDTO extends GenericModelDTO {
         this.municipality = municipality;
     }
 
-    public MinBranchDTO(Long id, String branch_name, String location, Long ownerId, Time scheduleOpen,
+    public MinBranchDTO(Long id, String branchName, String location, Long ownerId, Time scheduleOpen,
             Time scheduleClose, String state, String municipality) {
         super(id);
-        this.branch_name = branch_name;
+        this.branchName = branchName;
         this.location = location;
         this.ownerId = ownerId;
         this.scheduleOpen = scheduleOpen;
@@ -53,11 +53,11 @@ public class MinBranchDTO extends GenericModelDTO {
     }
 
     public String getBranchName() {
-        return this.branch_name;
+        return this.branchName;
     }
 
-    public void setBranchName(String branch_name) {
-        this.branch_name = branch_name;
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 
     public String getLocation() {
@@ -74,14 +74,6 @@ public class MinBranchDTO extends GenericModelDTO {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
-    }
-
-    public String getBranch_name() {
-        return this.branch_name;
-    }
-
-    public void setBranch_name(String branch_name) {
-        this.branch_name = branch_name;
     }
 
     public Time getScheduleOpen() {
