@@ -21,7 +21,6 @@ async function presionarBoton() {
 	.then(response => response.json())
 	.then(data => {
 		let alertas = []
-		console.log(data);
 		if(data.errorCode == 400) {
 			if(data.message.username != null) alertas.push(`Username ${data.message.username}`);
 			if(data.message.password != null) alertas.push(`Password ${data.message.password}`);
@@ -33,15 +32,17 @@ async function presionarBoton() {
 			document.cookie = `rol=${data.userRoles[0].id}; samesite=lax`;
 			switch(data.userRoles[0].id) {
 				case 1:
-					//document.location = "http://localhost:5500/app/admin";
+					document.location = "http://localhost:5500/app/admin";
 				case 2:
-					obtenerBranch(data.userId);
-					//document.cookie = `branchId=${}`;
-					//document.location = "http://localhost:5500/app/owner";
+					obtenerBranch(data.userId)
+					.then(data => {						
+						document.cookie = `branchId=${data}; samesite=lax`;
+						document.location = "http://localhost:5500/app/owner";
+					})
 				case 3:
-					//document.location = "http://localhost:5500/app/employee";
+					ocument.location = "http://localhost:5500/app/employee";
 				case 4:
-					//document.location = "http://localhost:5500/app";
+					document.location = "http://localhost:5500/app";
 			}
 		}
 		mostrarAlerta(alertas);
@@ -49,18 +50,17 @@ async function presionarBoton() {
 }
 
 async function obtenerBranch(id_owner) {
-	const resultado = await fetch("http://localhost:5500/api/branch/all/filter?filterBy=owner", {
+	const resultado = await fetch(`http://localhost:5500/api/branch/all/filter?filterBy=owner&filterTo=${id_owner}`, {
 		method: "GET",
 		headers: {
 			'Accept': 'application/json',
             'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({
-			"value": id_owner
-		})
+		redirect: "follow"
 	});
-	const branch = resultado.json();
-	console.info(branch);
+	const branch = await resultado.json();
+	const id = branch.content[0].id;
+	return id;
 }
 
 function mostrarAlerta(alertas) {
