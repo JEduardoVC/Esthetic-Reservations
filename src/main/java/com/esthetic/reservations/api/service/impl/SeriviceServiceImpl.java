@@ -12,6 +12,7 @@ import com.esthetic.reservations.api.dto.MinService;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.ServiceDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
+import com.esthetic.reservations.api.exception.ResourceNotFoundException;
 import com.esthetic.reservations.api.model.Branch;
 import com.esthetic.reservations.api.model.Service;
 import com.esthetic.reservations.api.repository.ServiceRepository;
@@ -52,7 +53,7 @@ public class SeriviceServiceImpl extends GenericServiceImpl<Service, ServiceDTO>
 		ArrayList<ServiceDTO> newServices = new ArrayList<>();
 		for (Service service : services) {
 			newServices.add(mapToDTO(service));
-		}		
+		}
 		ResponseDTO<ServiceDTO> response = new ResponseDTO<>();
 		response.setContent(newServices);
 		return response;

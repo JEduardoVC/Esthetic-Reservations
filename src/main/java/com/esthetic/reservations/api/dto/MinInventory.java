@@ -1,13 +1,6 @@
 package com.esthetic.reservations.api.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import com.esthetic.reservations.api.model.Branch;
-
-@Entity
-@Table(name = "inventory")
-public class InventoryDTO extends GenericModelDTO {
+public class MinInventory extends GenericModelDTO {
 	private String inventory_name;
 	
 	private Integer price;
@@ -16,13 +9,13 @@ public class InventoryDTO extends GenericModelDTO {
 	
 	private String imagen;
 	
-	private Branch id_branch;
+	private Long id_branch;
 
-	public InventoryDTO() {
+	public MinInventory() {
 		super();
 	}
 
-	public InventoryDTO(Long id, String inventory_name, Integer price, Integer store, String imagen, Branch id_branch) {
+	public MinInventory(Long id, String inventory_name, Integer price, Integer store, String imagen, Long id_branch) {
 		super(id);
 		this.inventory_name = inventory_name;
 		this.price = price;
@@ -63,11 +56,11 @@ public class InventoryDTO extends GenericModelDTO {
 		this.imagen = imagen;
 	}
 
-	public Branch getId_branch() {
+	public Long getId_branch() {
 		return id_branch;
 	}
 
-	public void setId_branch(Branch id_branch) {
+	public void setId_branch(Long id_branch) {
 		this.id_branch = id_branch;
 	}
 }

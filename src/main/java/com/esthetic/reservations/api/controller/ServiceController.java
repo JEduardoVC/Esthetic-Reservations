@@ -16,20 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.esthetic.reservations.api.dto.MinService;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.ServiceDTO;
-import com.esthetic.reservations.api.repository.ServiceRepository;
-import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
 import com.esthetic.reservations.api.service.impl.SeriviceServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
 
 @RestController
-@RequestMapping("/api/admin/servicios")
+@RequestMapping("/api/owner/servicios")
 public class ServiceController {
 	
 	@Autowired
 	SeriviceServiceImpl seriviceServiceImpl;
-	
-	@Autowired
-	BranchServiceImpl branchServiceImpl;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<ServiceDTO> obtenerServicio(@PathVariable Long id) {
