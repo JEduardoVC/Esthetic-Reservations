@@ -5,15 +5,18 @@
 
 
 <body>
+    <div class="navegacion-dark-mode">
+        <img class="login-img dark-mode-boton" src="/img/luna.webp">
+    </div>
     <div class="container-small">
-        <div class="ventana">
+        <div class="ventana-registro">
             <div class="container-login">
-                <h1 class="text-center">Esthetic Reservation</h1>
-                <div>
-                    <form action="/app/login">
-                        <button type="submit" class="btn-secundario">Volver</button>
-                    </form>
+                <div class="solo-icono">
+                    <a href="/app/login">
+                        <img src="/img/volver.webp">
+                    </a>
                 </div>
+                <h1 class="text-center">Esthetic Reservation</h1>
                 <div class="formulario">
                     <div id="alertas"></div>
                     <form>
@@ -55,8 +58,8 @@
                                 placeholder="Repetir contraseña">
                             <span>Repetir Contraseña</span>
                         </label>
+                        <button type="button" id="btn-registrar" class="btn-principal">Registar</button>
                     </form>
-                    <button id="btn-registrar" class="btn-principal">Registar</button>
                 </div>
             </div>
             <div class="img-ventana">
@@ -64,8 +67,8 @@
             </div>
         </div>
     </div>
+    <footer></footer>
 </body>
-
 <script src="/js/register.js" type="text/javascript"></script>
 
 </html>
