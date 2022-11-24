@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.esthetic.reservations.api.dto.GenericEntityValueDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.exception.EstheticAppException;
@@ -37,12 +36,12 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<UserEntityDTO> findBy(@RequestParam(value = "by", required = true) String filterBy,
-            @RequestBody(required = true) GenericEntityValueDTO data) {
+            @RequestParam(value = "filterTo", required = true) String filterTo) {
         switch (filterBy) {
             case "username":
-                return ResponseEntity.ok(userService.findByUsername(data.getValue()));
+                return ResponseEntity.ok(userService.findByUsername(filterTo));
             case "email":
-                return ResponseEntity.ok(userService.findByEmail(data.getValue()));
+                return ResponseEntity.ok(userService.findByEmail(filterTo));
             default:
                 throw new EstheticAppException(HttpStatus.BAD_REQUEST, "Campo no válido");
         }
