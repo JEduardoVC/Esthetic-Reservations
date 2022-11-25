@@ -9,19 +9,7 @@
         <h1>Agregar producto</h1>
         <div class="formulario">
             <form method="post">
-                <label>
-                    <input type="text" placeholder="Producto">
-                    <span>Producto</span>
-                </label>
-                <label>
-                    <input type="file" placeholder="Imagen" accept="image/*">
-                    <span>Imagen</span>
-                </label>
-                <label>
-                    <input type="number" placeholder="Precio">
-                    <span>Precio</span>
-                </label>
-                <button class="btn-secundario">Añadir</button>
+                <div th:insert="/owner/inventory/formulario"></div>
             </form>
         </div> <!-- Formulario -->
 
