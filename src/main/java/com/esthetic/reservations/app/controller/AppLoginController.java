@@ -40,4 +40,9 @@ public class AppLoginController {
     public ModelAndView reestablecerPassword(@PathVariable("id") Long id_usuario) {
     	return new ModelAndView("Login/updatePassword").addObject("usuario", userServiceImpl.findById(id_usuario));
     }
+    
+    @GetMapping("/cerrar")
+    public ModelAndView cerrarSesion() {
+    	return new ModelAndView("redirect: ");
+    }
 }
