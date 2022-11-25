@@ -32,6 +32,11 @@ public class SeriviceServiceImpl extends GenericServiceImpl<Service, ServiceDTO>
 		this.serviceRespository = repository;
 	}
 	
+	public ServiceDTO findById(Long id) {
+        Service entity = getRepository().findById(id).orElseThrow(() -> new ResourceNotFoundException("Servicio", "no encontrado"));
+        return mapToDTO(entity);
+    }
+	
 	public ServiceDTO save(MinService servicio) {
 		BranchDTO sucursal = branchServiceImpl.findById(servicio.getId_branch());
 		Branch newSucursal = branchServiceImpl.mapToModel(sucursal);
