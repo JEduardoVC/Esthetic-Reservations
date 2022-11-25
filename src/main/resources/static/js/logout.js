@@ -9,5 +9,5 @@ function cerrarSesion() {
 	document.cookie.split(";").forEach(c => {
 		document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDay(), hoy.getHours(), hoy.getMinutes()));
 	})
-	//document.location = "http://localhost:5500/app/cerrar";
+	document.location = "http://localhost:5500/app/cerrar";
 }

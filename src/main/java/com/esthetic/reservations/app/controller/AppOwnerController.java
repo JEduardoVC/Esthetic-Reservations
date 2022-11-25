@@ -26,11 +26,11 @@ public class AppOwnerController {
 	
 	@GetMapping("/servicios/agregar")
 	public ModelAndView viewCreateService() {
-		return new ModelAndView("owner/services/formulario-servicio");
+		return new ModelAndView("owner/services/agregar");
 	}
 	
 	@GetMapping("/inventario/agregar")
 	public ModelAndView viewCreateInventory() {
-		return new ModelAndView("owner/inventory/formulario");
+		return new ModelAndView("owner/inventory/agregar");
 	}
 }
