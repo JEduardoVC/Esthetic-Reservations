@@ -26,6 +26,8 @@ async function presionarBoton() {
 			if(data.message.password != null) alertas.push(`Password ${data.message.password}`);
 		} else if(data.errorCode == 401) {
 			if(data.message != null) alertas.push(`${data.message}`);
+		} else if(data.userRoles[0].id != obtenerRol()) {
+			alertas.push("Rol de usuario incorrecto");
 		} else {
 			document.cookie = `token=${data.token}; samesite=lax`;
 			document.cookie = `userId=${data.userId}; samesite=lax`;
@@ -33,16 +35,20 @@ async function presionarBoton() {
 			switch(data.userRoles[0].id) {
 				case 1:
 					document.location = "http://localhost:5500/app/admin";
+					break;
 				case 2:
 					obtenerBranch(data.userId)
 					.then(data => {						
 						document.cookie = `branchId=${data}; samesite=lax`;
 						document.location = "http://localhost:5500/app/owner";
 					})
+					break;
 				case 3:
-					ocument.location = "http://localhost:5500/app/employee";
+					document.location = "http://localhost:5500/app/employee";
+					break;
 				case 4:
 					document.location = "http://localhost:5500/app";
+					break;
 			}
 		}
 		mostrarAlerta(alertas);
@@ -61,6 +67,13 @@ async function obtenerBranch(id_owner) {
 	const branch = await resultado.json();
 	const id = branch.content[0].id;
 	return id;
+}
+
+function obtenerRol() {
+	if(document.querySelector("#admin").checked) return 1;
+	if(document.querySelector("#owner").checked) return 2;
+	if(document.querySelector("#employee").checked) return 3;
+	if(document.querySelector("#cliente").checked) return 4;
 }
 
 function mostrarAlerta(alertas) {

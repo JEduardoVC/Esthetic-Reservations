@@ -23,4 +23,14 @@ public class AppOwnerController {
 	public ModelAndView viewInventory() {
 		return new ModelAndView("owner/inventory/inventario");
 	}
+	
+	@GetMapping("/servicios/agregar")
+	public ModelAndView viewCreateService() {
+		return new ModelAndView("owner/services/formulario-servicio");
+	}
+	
+	@GetMapping("/inventario/agregar")
+	public ModelAndView viewCreateInventory() {
+		return new ModelAndView("owner/inventory/formulario");
+	}
 }
