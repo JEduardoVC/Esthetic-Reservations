@@ -8,23 +8,27 @@
     <div class="container-small">
         <h1>Agregar producto</h1>
         <div class="formulario">
-            <form method="post">
+            <form  method="post">
                 <label>
-                    <input type="text" placeholder="Producto">
-                    <span>Producto</span>
+                    <input type="text" placeholder="Nombre del producto" id="nombre">
+                    <span>Nombre del producto</span>
                 </label>
                 <label>
-                    <input type="file" placeholder="Imagen" accept="image/*">
-                    <span>Imagen</span>
+                    <input type="number" placeholder="" id="precio">
+                    <span>Precio del producto</span>
                 </label>
                 <label>
-                    <input type="number" placeholder="Precio">
-                    <span>Precio</span>
+                    <input type="file" placeholder="" id="imagen" accept="image/*">
+                    <span>Imagen del producto</span>
                 </label>
-                <button class="btn-secundario">Añadir</button>
+                <label>
+                    <input type="number" id="cantidad" placeholder="">
+                    <span>Cantidad del producto</span>
+                </label>
+                <button id="btn-agregar" class="btn-formulario btn-principal">Actualizar</button>
             </form>
-        </div> <!-- Formulario -->
-
+        </div>
     </div>
 </body>
+<script src="/js/logout.js"></script>
 </html>

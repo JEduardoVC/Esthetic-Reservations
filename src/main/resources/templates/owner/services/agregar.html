@@ -7,27 +7,27 @@
     <div th:insert="/owner/navegacion"></div>
     <div class="container-small">
         <h1>Agregar servicio</h1>
-        <div class="formulario">
-            <form method="POST">
-                    <label>
-                        <input type="text" placeholder="Servicio">
-                        <span>Servicio</span>
-                    </label>
-                    <label>
-                        <input type="file" placeholder="Imagen">
-                        <span>Imagen</span>
-                    </label>
-                    <label>
-                        <input type="number" placeholder="Precio">
-                        <span>Precio</span>
-                    </label>
-                    <label>
-                        <input type="number" placeholder="Tiempo estimado">
-                        <span>Tiempo estimado</span>
-                    </label>
-                    <button class="btn-secundario">Añadir</button>
+        <div class="solo-icono">
+            <form action="/app/owner/servicios">
+                <button class="btn-navegacion-barra">
+                    <img class="login-img" src="/img/volver.webp"> Volver
+                </button>
             </form>
-        </div> <!-- Formulario -->
+        </div>
+        <div class="formulario">
+            <form  method="post">
+                <label>
+                    <input type="text" placeholder="Nombre del producto" id="nombre">
+                    <span>Nombre del servicio</span>
+                </label>
+                <label>
+                    <input type="number" placeholder="" id="precio">
+                    <span>Precio del servicio</span>
+                </label>
+                <button id="btn-agregar" class="btn-formulario btn-principal">Añadir</button>
+            </form>
+        </div>
     </div>
 </body>
+<script src="/js/logout.js"></script>
 </html>
