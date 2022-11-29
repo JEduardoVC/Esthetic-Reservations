@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.esthetic.reservations.api.dto.InventoryDTO;
 import com.esthetic.reservations.api.dto.MinInventory;
 import com.esthetic.reservations.api.dto.ResponseDTO;
-import com.esthetic.reservations.api.dto.ServiceDTO;
 import com.esthetic.reservations.api.model.Branch;
 import com.esthetic.reservations.api.model.Inventory;
 import com.esthetic.reservations.api.repository.InventoryRepository;
