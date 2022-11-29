@@ -29,9 +29,9 @@ async function presionarBoton() {
 		} else if(data.userRoles[0].id != obtenerRol()) {
 			alertas.push("Rol de usuario incorrecto");
 		} else {
-			document.cookie = `token=${data.token}; samesite=lax`;
-			document.cookie = `userId=${data.userId}; samesite=lax`;
-			document.cookie = `rol=${data.userRoles[0].id}; samesite=lax`;
+			sessionStorage.setItem("token", data.token);
+			sessionStorage.setItem("userId", data.userId);
+			sessionStorage.setItem("rol", data.userRoles[0].id);
 			switch(data.userRoles[0].id) {
 				case 1:
 					document.location = "http://localhost:5500/app/admin";
@@ -39,8 +39,8 @@ async function presionarBoton() {
 				case 2:
 					obtenerBranch(data.userId)
 					.then(data => {						
-						document.cookie = `branchId=${data}; samesite=lax`;
-						document.location = "http://localhost:5500/app/owner";
+						sessionStorage.setItem("branchId", data);
+						location = "http://localhost:5500/app/owner";
 					})
 					break;
 				case 3:

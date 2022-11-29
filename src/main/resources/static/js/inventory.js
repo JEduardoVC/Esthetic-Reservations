@@ -14,7 +14,7 @@ async function agregarInventory() {
 	if(imagen == null) alertas.push("Falta seleccionar imagen");
 	if(store == "") alertas.push("Cantidad de producto vacio");
 	if(alertas.length == 0) {
-		const id_branch = await obtenerBranch(readCookie("branchId")).then(data => data.id);
+		const id_branch = await obtenerBranch(sessionStorage.getItem("branchId")).then(data => data.id);
 		var formdata = new FormData();
 		formdata.append("inventory_name", nombre);
 		formdata.append("price", precio);
@@ -22,12 +22,11 @@ async function agregarInventory() {
 		formdata.append("imagen", null);
 		formdata.append("file", imagen.files[0]);
 		formdata.append("id_branch", id_branch);
-		console.info(formdata);
 		await fetch("http://localhost:5500/api/owner/inventario/agregar", {
 			method: "POST",
 			headers: {
 				'Accept': 'application/json',
-	            "Authorization": `Bearer ${readCookie("token")}`
+	            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
 			},
 			body: formdata,
 			redirect: 'follow'
@@ -59,9 +58,4 @@ function mostrarAlerta(alertas) {
 	alertas.forEach(message => {
 		div.innerHTML += `<p class="error">${message}</p>`
 	});
-}
-
-function readCookie(name) {
-  return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + name.replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
-
 }
