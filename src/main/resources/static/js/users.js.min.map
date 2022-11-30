@@ -1,1 +1,0 @@
-{"version":3,"sources":["users.js"],"names":["document","addEventListener"],"mappings":"AAAAA,SAASC,iBAAiB,oBAAoB","file":"users.js","sourcesContent":["document.addEventListener('DOMContentLoaded', function() {\r\n    \r\n});"]}
