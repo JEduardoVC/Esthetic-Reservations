@@ -5,14 +5,16 @@
 
 <body>
     <div th:insert="/owner/navegacion"></div>
-    <div class="container-owner">
-        <h1>Modulo servicios</h1>
-        <div class="btn-agregar">
-            <form action="/app/owner/servicios/agregar">
-                <button class="btn-secundario">Agregar servicio</button>
-            </form>
+    <div class="body-owner">
+        <div class="container-owner">
+            <h1>Modulo servicios</h1>
+            <div class="btn-agregar">
+                <form action="/app/owner/servicios/agregar">
+                    <button class="btn-secundario">Agregar servicio</button>
+                </form>
+            </div>
+            <div id="mostrar-servicios"></div>
         </div>
-        <div id="mostrar-servicios"></div>
     </div>
 </body>
 <script src="/js/logout.js"></script>
