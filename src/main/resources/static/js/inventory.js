@@ -1,4 +1,68 @@
 (function() {	
+	obtenerInventory();
+	
+	let inventarioObj = [];
+
+	function mostrarInventory() {
+		const div = document.querySelector("#mostrar-productos");
+		const titulos = document.createElement("DIV");
+		titulos.style = `display: grid;grid-template-columns: repeat(5, 1fr);`
+		titulos.innerHTML = `
+			<div style="text-align: center;">
+				<p>Nombre</p>
+			</div>
+			<div style="text-align: center;">
+				<p>Imagen</p>
+			</div>
+			<div style="text-align: center;">
+				<p>Precio</p>
+			</div>
+			<div style="text-align: center;">
+				<p>En Almacen</p>
+			</div>
+			<div style="text-align: center;">
+				<p>Acciones</p>
+			</div>
+		`;
+		div.appendChild(titulos);
+		inventarioObj.forEach(producto => {
+			const productos = document.createElement("DIV");
+			productos.style = `display: grid;grid-template-columns: repeat(5, 1fr);`;
+			productos.innerHTML = `
+				<div>
+					<p>${producto.inventory_name}</p>
+				</div>
+				<div>
+					<img src="C:/Esthetic-Reservation/Inventario/${producto.imagen}.jpg">
+				</div>
+				<div style="text-align: center;">
+					<p>${producto.price}</p>
+				</div>
+				<div style="text-align: center;">
+					<p>${producto.store}</p>
+				</div>
+				<div>
+					<button id="btn-editar" value="${producto.id}">Actualizar</button>
+					<button id="btn-eliminar" value="${producto.id}">Eliminar</button>
+				</div>
+			`;
+			div.appendChild(productos);
+		})
+	}
+	
+	async function obtenerInventory() {
+		const resultado = await fetch(`http://localhost:5500/api/owner/inventario/branch/${sessionStorage.getItem("branchId")}`, {
+			method: "GET",
+			headers: {
+		            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+				},
+			redirect: 'follow'
+		})
+		const respuesta = await resultado.json();
+		inventarioObj = respuesta.content;
+		mostrarInventory();
+	}
+	
 	const btn = document.querySelector("#btn-agregar");
 	btn.addEventListener("click", agregarInventory);
 })();
@@ -11,7 +75,7 @@ async function agregarInventory() {
 	const imagen = document.querySelector("#imagen");
 	if(nombre == "") alertas.push("Nombre vacio");
 	if(precio == "") alertas.push("Precio vacio");
-	if(imagen == null) alertas.push("Falta seleccionar imagen");
+	if(imagen.files[0] == null) alertas.push("Falta seleccionar imagen");
 	if(store == "") alertas.push("Cantidad de producto vacio");
 	if(alertas.length == 0) {
 		const id_branch = await obtenerBranch(sessionStorage.getItem("branchId")).then(data => data.id);
