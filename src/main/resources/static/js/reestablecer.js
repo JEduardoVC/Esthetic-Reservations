@@ -13,7 +13,7 @@ async function enviarCorreo() {
 	  redirect: 'follow'
 	};
 	
-	await fetch("http://localhost:5500/api/auth/sendMail", requestOptions)
+	await fetch(BASE_URL + "api/auth/sendMail", requestOptions)
 	  .then(response => response.json())
 	  .then(data => {
 		let alertas = []

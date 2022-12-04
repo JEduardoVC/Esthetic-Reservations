@@ -51,7 +51,7 @@
 	}
 	
 	async function obtenerInventory() {
-		const resultado = await fetch(`http://localhost:5500/api/owner/inventario/branch/${sessionStorage.getItem("branchId")}`, {
+		const resultado = await fetch(BASE_URL + `api/owner/inventario/branch/${sessionStorage.getItem("branchId")}`, {
 			method: "GET",
 			headers: {
 		            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
@@ -86,7 +86,7 @@ async function agregarInventory() {
 		formdata.append("imagen", null);
 		formdata.append("file", imagen.files[0]);
 		formdata.append("id_branch", id_branch);
-		await fetch("http://localhost:5500/api/owner/inventario/agregar", {
+		await fetch(BASE_URL + "api/owner/inventario/agregar", {
 			method: "POST",
 			headers: {
 				'Accept': 'application/json',
@@ -97,14 +97,14 @@ async function agregarInventory() {
 		})
 		.then(response => response.json())
 		.then(data => {
-			document.location = "http://localhost:5500/app/owner/inventario";
+			document.location = BASE_URL + "app/owner/inventario";
 		})
 	} 
 	else mostrarAlerta(alertas);
 }
 
 async function obtenerBranch(id) {
-	const resultado = await fetch(`http://localhost:5500/api/branch/${id}`, {
+	const resultado = await fetch(BASE_URL + `api/branch/${id}`, {
 		method: "GET",
 		headers: {
 			'Accept': 'application/json',
