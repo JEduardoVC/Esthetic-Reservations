@@ -1,6 +1,6 @@
 package com.esthetic.reservations.api.dto;
 
-import java.security.Timestamp;
+import java.sql.Time;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -19,10 +19,10 @@ public class BranchDTO extends GenericModelDTO {
     private UserEntity owner;
 
     @NotNull
-    private Timestamp scheduleOpen;
+    private Time scheduleOpen;
 
     @NotNull
-    private Timestamp scheduleClose;
+    private Time scheduleClose;
 
     private String state;
 
@@ -32,8 +32,8 @@ public class BranchDTO extends GenericModelDTO {
         super();
     }
 
-    public BranchDTO(String branchName, String location, UserEntity owner, Timestamp scheduleOpen,
-            Timestamp scheduleClose, String state, String municipality) {
+    public BranchDTO(String branchName, String location, UserEntity owner, Time scheduleOpen,
+            Time scheduleClose, String state, String municipality) {
         this.branchName = branchName;
         this.location = location;
         this.owner = owner;
@@ -43,8 +43,8 @@ public class BranchDTO extends GenericModelDTO {
         this.municipality = municipality;
     }
 
-    public BranchDTO(Long id, String branchName, String location, UserEntity owner, Timestamp scheduleOpen,
-            Timestamp scheduleClose, String state, String municipality) {
+    public BranchDTO(Long id, String branchName, String location, UserEntity owner, Time scheduleOpen,
+            Time scheduleClose, String state, String municipality) {
         super(id);
         this.branchName = branchName;
         this.location = location;
@@ -79,19 +79,19 @@ public class BranchDTO extends GenericModelDTO {
         this.owner = owner;
     }
 
-    public Timestamp getScheduleOpen() {
+    public Time getScheduleOpen() {
         return this.scheduleOpen;
     }
 
-    public void setScheduleOpen(Timestamp scheduleOpen) {
+    public void setScheduleOpen(Time scheduleOpen) {
         this.scheduleOpen = scheduleOpen;
     }
 
-    public Timestamp getScheduleClose() {
+    public Time getScheduleClose() {
         return this.scheduleClose;
     }
 
-    public void setScheduleClose(Timestamp scheduleClose) {
+    public void setScheduleClose(Time scheduleClose) {
         this.scheduleClose = scheduleClose;
     }
 

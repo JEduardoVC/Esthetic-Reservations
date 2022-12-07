@@ -1,1 +1,1 @@
-const BASE_URL = 'http://localhost:5501/'
+const BASE_URL = 'http://localhost:5500/'

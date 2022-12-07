@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="/css/jquery.dataTables.min.css">
+<style>
+    input.form-control {
+        font-size: 12px;
+    }
+</style>
+
+<head th:insert="/generics/header">
+</head>
+
+<body>
+    <div th:insert="/admin/navegacion"></div>
+    <div class="body-admin">
+        <div class="container-admin">
+            <h1>Usuarios</h1>
+            <button id="createuser" class="btn btn-principal fs-4 m-3 p-3" data-bs-toggle="modal" data-bs-target="#modalUsersForm" onclick="GetInfo('add');">Agregar usuario</button>
+            <table class="table" id="usersTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </tfoot>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+            <div id="modalUsersForm" class="modal fade">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content ">
+                        <div class="modal-header">
+                            <h1 class="modal-title">Usuario</h1>
+                        </div>
+                        <div class="modal-body">
+                            <form class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="user-username" class="form-label">Username</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">@</span>
+                                        <input type="text" class="form-control fs-4" id="user-username"
+                                            name="user-username" placeholder="Nombre de usario">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="user-name" class="form-label">Nombre</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1"></span>
+                                        <input type="text" class="form-control fs-4" id="user-name" name="user-name"
+                                            placeholder="Nombre">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label for="user-lastname" class="form-label">Apellidos</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1"></span>
+                                        <input type="text" class="form-control fs-4" id="user-lastname"
+                                            name="user-lastname" placeholder="Apellidos">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="user-address" class="form-label">Dirección</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1"></span>
+                                        <input type="text" class="form-control fs-4" id="user-address"
+                                            name="user-address" placeholder="Dirección">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="user-email" class="form-label">Correo</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1"></span>
+                                        <input type="email" class="form-control fs-4" id="user-email" name="user-email"
+                                            placeholder="Correo">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="user-phone" class="form-label">Teléfono</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1"></span>
+                                        <input type="phone" class="form-control fs-4" id="user-phone" name="user-phone"
+                                            placeholder="Teléfono">
+                                    </div>
+                                </div>
+                                <div id="passworddiv" class="col-md-12">
+                                    <label for="user-password" class="form-label">Contraseña</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1"></span>
+                                        <input type="phone" class="form-control fs-4" id="user-password" name="user-password"
+                                            placeholder="Contraseña">
+                                    </div>
+                                </div>
+
+                                <div id="cpassworddiv" class="col-md-12">
+                                    <label for="user-cpassword" class="form-label">Confirmar Contraseña</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1"></span>
+                                        <input type="phone" class="form-control fs-4" id="user-cpassword" name="cuser-password"
+                                            placeholder="Confirma la contraseña">
+                                    </div>
+                                </div>
+                                
+                                <label for="" class="form-label">Roles</label>
+                                <div id="roles-sw" class="col-md-12">
+
+                                </div>
+                                <div class="col-12">
+                                    <button type="button" id="btnModal"
+                                        class="btn btn-principal fs-4 p-3">Confirmar</button>
+                                </div>
+                            </form>
+
+                        </div>
+
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
+    </div>
+</body>
+
+<script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/admin.user.js"></script>
+<script src="/js/logout.js"></script>
+
+</html>

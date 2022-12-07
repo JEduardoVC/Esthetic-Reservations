@@ -3,7 +3,7 @@ package com.esthetic.reservations.api.util;
 public class AppConstants {
 
     public static final String PAGE_NUMBER = "0";
-    public static final String PAGE_SIZE = "10";
+    public static final String PAGE_SIZE = "2147483647";
     public static final String DEFAULT_SORT_ORDER = "id";
     public static final String DEFAULT_SORT_DIR = "asc";
 
