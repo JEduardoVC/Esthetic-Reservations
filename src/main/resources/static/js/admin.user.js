@@ -85,7 +85,7 @@ function actionDeleteUser(id) {
         })
 }
 
-function GetInfo(action, id=0) {
+function GetInfo(action, id = 0) {
     let userId = 0;
     document.getElementById("user-password").value = '';
     document.getElementById("user-cpassword").value = '';
@@ -132,7 +132,7 @@ function GetInfo(action, id=0) {
     };
 }
 
-function getRoles(userRoles=[]) {
+function getRoles(userRoles = []) {
     var url = BASE_URL + `api/role/all`;
     fetch(url + new URLSearchParams({
 
@@ -223,21 +223,21 @@ function actionUser(action, id) {
         errors += 'Debes introducir el teléfono\n';
         error = true;
     }
-    if(action == 'add'){
-        if(password == '' || cpassword == ''){
+    if (action == 'add') {
+        if (password == '' || cpassword == '') {
             errors += 'Debes ingresar una contraseña y confirmarla.\n';
             error = true;
         }
-        if(password !== cpassword){
+        if (password !== cpassword) {
             errors += 'Las contraseñas no coinciden.\n';
             error = true;
         }
-    } else if(password !== '') { // Edita y cambia contraseña
-        if(cpassword == ''){
+    } else if (password !== '') { // Edita y cambia contraseña
+        if (cpassword == '') {
             errors += 'Debes ingresar una contraseña y confirmarla.\n';
             error = true;
         }
-        if(password !== cpassword){
+        if (password !== cpassword) {
             errors += 'Las contraseñas no coinciden.\n';
             error = true;
         }
@@ -254,7 +254,7 @@ function actionUser(action, id) {
 async function AddUser(userUsername, userName, lastname, userAddress, userEmail, phone, selectedRoles, unselectedRoles, password) {
     const roleId = selectedRoles[0];
     let id = -1;
-    const createResponse = await addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId ,password);
+    const createResponse = await addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password);
     if (isValidResponse(createResponse)) {
         id = createResponse.id;
         alert('Se creó el usuario.');
@@ -300,7 +300,7 @@ async function UpdateUser(userUsername, userName, lastname, userAddress, userEma
     }
 }
 
-async function editUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, id,password) {
+async function editUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, id, password) {
     var url = BASE_URL + `api/user/`;
     const response = await fetch(url + `${id}` + new URLSearchParams({
 
@@ -395,7 +395,7 @@ function deleteUser(id) {
 
 async function actionDeleteUser(id) {
     const response = await deleteUserRequest(id);
-    if(!isValidResponse(response)){
+    if (!isValidResponse(response)) {
         alert(response.message);
     }
     alert('Usuario eliminado.');
@@ -421,3 +421,33 @@ async function deleteUserRequest(id) {
 function isValidResponse(response) {
     return typeof response.errorCode === 'undefined';
 }
+
+const togglePassword = document.querySelector('#togglePassword');
+const toggleCPassword = document.querySelector('#toggleCPassword');
+
+const password = document.querySelector('#user-password');
+const cpassword = document.querySelector('#user-cpassword');
+
+togglePassword.addEventListener('click', () => {
+
+    // Toggle the type attribute using
+    // getAttribure() method
+    const type = password.getAttribute('type') === 'password' ?'text' : 'password';
+
+    password.setAttribute('type', type);
+
+    // Toggle the eye and bi-eye icon
+    togglePassword.classList.toggle('bi-eye');
+});
+
+toggleCPassword.addEventListener('click', () => {
+
+    // Toggle the type attribute using
+    // getAttribure() method
+    const type = cpassword.getAttribute('type') === 'password' ?'text' : 'password';
+
+    cpassword.setAttribute('type', type);
+
+    // Toggle the eye and bi-eye icon
+    toggleCPassword.classList.toggle('bi-eye');
+});

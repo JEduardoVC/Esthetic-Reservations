@@ -6,7 +6,7 @@
 async function presionarBoton() {
 	const username = document.querySelector("#username").value;
 	const password = document.querySelector("#password").value;
-	await fetch(BASE_URL + "api/auth/user/login",  {
+	await fetch("http://localhost:5500/api/auth/user/login",  {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -34,20 +34,20 @@ async function presionarBoton() {
 			sessionStorage.setItem("rol", data.userRoles[0].id);
 			switch(data.userRoles[0].id) {
 				case 1:
-					document.location = BASE_URL + "app/admin";
+					document.location = "http://localhost:5500/app/admin";
 					break;
 				case 2:
 					obtenerBranch(data.userId)
 					.then(data => {						
 						sessionStorage.setItem("branchId", data);
-						location = BASE_URL + "app/owner";
+						location = "http://localhost:5500/app/owner";
 					})
 					break;
 				case 3:
-					document.location = BASE_URL + "app/employee";
+					document.location = "http://localhost:5500/app/employee";
 					break;
 				case 4:
-					document.location = BASE_URL + "app";
+					document.location = "http://localhost:5500/app";
 					break;
 			}
 		}

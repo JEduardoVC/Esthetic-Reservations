@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
-<link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
 <link rel="stylesheet" href="/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-icons/font/bootstrap-icons.css">
 <style>
     input.form-control {
         font-size: 12px;
@@ -51,68 +52,8 @@
                         <div class="modal-header">
                             <h1 class="modal-title">Sucursal</h1>
                         </div>
-                        <div class="modal-body">
-                            <form class="row g-3">
-                                <div class="col-md-12">
-                                    <label for="branch-name" class="form-label">Nombre</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1"></span>
-                                        <input type="text" class="form-control fs-4" id="branch-name" name="branch-name"
-                                            placeholder="Nombre de la sucursal">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="branch-address" class="form-label">Dirección</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1"></span>
-                                        <input type="text" class="form-control fs-4" id="branch-address"
-                                            name="branch-address" placeholder="Nombre de la sucursal">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="branch-state" class="form-label">Estado</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1"></span>
-                                        <input type="text" class="form-control fs-4" id="branch-state"
-                                            name="branch-state" placeholder="Nombre de la sucursal">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="branch-municipality" class="form-label">Municipio</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1"></span>
-                                        <input type="text" class="form-control fs-4" id="branch-municipality"
-                                            name="branch-municipality" placeholder="Nombre de la sucursal">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="select-owner" class="form-label">Dueño</label>
-                                    <select id="select-owner" class="form-select fs-4" aria-label="Dueño de la sucursal">
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="branch-open" class="form-label">Hora de Apertura</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1"></span>
-                                        <input type="text" class="form-control fs-4" id="branch-open" name="branch-open"
-                                            placeholder="Nombre">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="branch-close" class="form-label">Hora de Cierre</label>
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1"></span>
-                                        <input type="text" class="form-control fs-4" id="branch-close"
-                                            name="branch-close" placeholder="Nombre">
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <button type="button" id="btnModal"
-                                        class="btn btn-principal fs-4 p-3">Confirmar</button>
-                                </div>
-                            </form>
-
+                        <div class="modal-body" th:insert="/admin/branch/formulario-sucursal.html">
+                            
                         </div>
 
                         </form>
@@ -127,6 +68,7 @@
 <script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="/js/jquery.dataTables.min.js"></script>
 <script src="/js/admin.branch.js"></script>
+<script src="/js/jquery.timepicker.min.js"></script>
 <script src="/js/logout.js"></script>
 
 </html>
