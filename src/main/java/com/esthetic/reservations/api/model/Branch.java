@@ -8,6 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "branch")
 public class Branch extends BaseModel<Branch> {
@@ -19,6 +22,7 @@ public class Branch extends BaseModel<Branch> {
 	private String location;
 
 	@ManyToOne
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "id_owner", referencedColumnName = "id")
 	private UserEntity owner;
 
@@ -129,7 +133,11 @@ public class Branch extends BaseModel<Branch> {
 	public void copy(Branch branch) {
 		this.name = branch.name;
 		this.location = branch.location;
+		this.state = branch.state;
+		this.municipality = branch.municipality;
 		this.owner = branch.owner;
+		this.scheduleOpen = branch.scheduleOpen;
+		this.scheduleClose = branch.scheduleClose;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.esthetic.reservations.api.service.impl;
 
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.esthetic.reservations.api.dto.UserEntityDTO;
+import com.esthetic.reservations.api.dto.UserEntityEditDTO;
 import com.esthetic.reservations.api.exception.ConflictException;
 import com.esthetic.reservations.api.exception.ResourceNotFoundException;
 import com.esthetic.reservations.api.model.Role;
@@ -77,6 +79,33 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     }
 
     @Override
+    public UserEntityDTO register(UserEntityDTO userEntityDTO, Long role) {
+        // Check if exists
+        if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
+            throw new ConflictException("Usuario", "ya esta siendo usado", "nombre de usuario",
+                    userEntityDTO.getUsername());
+        }
+        if (!userRepository.findByEmail(userEntityDTO.getEmail()).isEmpty()) {
+            throw new ConflictException("Usuario", "ya esta siendo usado", "correo electrónico",
+                    userEntityDTO.getEmail());
+        }
+        // Not exists
+        // Convert DTO to Model
+        UserEntity user = mapToModel(userEntityDTO);
+
+        // Default role
+        Role roles = roleRepository.findById(role).get();
+        user.setUserRoles(Collections.singletonList(roles));
+
+        UserEntity newUser = userRepository.save(user); // Database
+
+        // Convert Model to DTO
+        UserEntityDTO userResponse = mapToDTO(newUser);
+
+        return userResponse;
+    }
+
+    @Override
     public Boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
@@ -90,9 +119,16 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     public UserEntityDTO grantRoleToUser(Long userId, String role) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(userId)));
-        Role roleEntity = roleRepository.findByName(role).get();
+        Role roleEntity = null;
+        try {
+            Long roleId = Long.parseLong(role);
+            roleEntity = roleRepository.findById(roleId).get();
+        } catch (NumberFormatException e) {
+            // TODO: handle exception
+            roleEntity = roleRepository.findByName(role).get();
+        }
         if (userEntity.getUserRoles().contains(roleEntity)) {
-            throw new ConflictException("Usuario", "ya tiene", "rol", role);
+            throw new ConflictException("Usuario", "ya tiene", "rol", roleEntity.getName());
         }
         List<Role> newRoles = userEntity.getUserRoles();
         newRoles.add(roleEntity);
@@ -104,9 +140,16 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     public UserEntityDTO revokeRoleToUser(Long userId, String role) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(userId)));
-        Role roleEntity = roleRepository.findByName(role).get();
+        Role roleEntity = null;
+        try {
+            Long roleId = Long.parseLong(role);
+            roleEntity = roleRepository.findById(roleId).get();
+        } catch (NumberFormatException e) {
+            // TODO: handle exception
+            roleEntity = roleRepository.findByName(role).get();
+        }
         if (!userEntity.getUserRoles().contains(roleEntity)) {
-            throw new ConflictException("Usuario", "no es", "rol", role);
+            throw new ConflictException("Usuario", "no es", "rol", roleEntity.getName());
         }
         List<Role> newRoles = userEntity.getUserRoles();
         newRoles.remove(roleEntity);
@@ -123,9 +166,23 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     public boolean validOwnerId(Long id) {
         UserEntity owner = userRepository.findById(id).get();
         Role ownerRole = roleRepository.findByName(AppConstants.OWNER_ROLE_NAME).get();
-        boolean aver =owner.getUserRoles().contains(ownerRole);
+        boolean aver = owner.getUserRoles().contains(ownerRole);
         System.out.println(aver);
         return aver;
+    }
+
+    @Override
+    public UserEntityDTO updateNoPassword(UserEntityEditDTO dto, Long id) {
+        UserEntity entity = getRepository().findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(getType().getSimpleName(), "no encontrado", "id",
+                        String.valueOf(id)));
+        dto.setPassword(entity.getPassword());
+        UserEntity editedEntity = new UserEntity(0l, dto.getUsername(), dto.getName(), dto.getLastName(),
+                dto.getPhoneNumber(), dto.getAddress(),
+                dto.getEmail(),dto.getPassword());
+        entity.copy(editedEntity);
+        getRepository().save(entity);
+        return mapToDTO(entity);
     }
 
 }
