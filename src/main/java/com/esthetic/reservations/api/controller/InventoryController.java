@@ -37,7 +37,7 @@ public class InventoryController {
 	}
 	
 	@PostMapping(value = "/agregar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<InventoryDTO> agregar(@ModelAttribute MinInventory inventario, @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<?> agregar(@ModelAttribute MinInventory inventario, @RequestParam("file") MultipartFile file) {
 		return new ResponseEntity<InventoryDTO>(inventoryServiceImpl.save(inventario, file), HttpStatus.ACCEPTED);
 	}	
 	

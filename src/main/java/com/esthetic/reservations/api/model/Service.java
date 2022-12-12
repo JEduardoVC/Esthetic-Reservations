@@ -1,5 +1,7 @@
 package com.esthetic.reservations.api.model;
 
+import java.sql.Time;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -11,7 +13,7 @@ public class Service extends BaseModel<Service> {
 
 	private String service_name;
 
-	private Integer duration;
+	private Time duration;
 
 	private Double price;
 
@@ -23,7 +25,7 @@ public class Service extends BaseModel<Service> {
 		super();
 	}
 
-	public Service(Long id, String service_name, Integer duration, Double price, Branch id_branch) {
+	public Service(Long id, String service_name, Time duration, Double price, Branch id_branch) {
 		super(id);
 		this.service_name = service_name;
 		this.duration = duration;
@@ -31,7 +33,7 @@ public class Service extends BaseModel<Service> {
 		this.idBranch = id_branch;
 	}
 	
-	public Service(String service_name, Integer duration, Double price, Branch id_branch) {
+	public Service(String service_name, Time duration, Double price, Branch id_branch) {
 		this.service_name = service_name;
 		this.duration = duration;
 		this.price = price;
@@ -46,11 +48,11 @@ public class Service extends BaseModel<Service> {
 		this.service_name = service_name;
 	}
 
-	public Integer getDuration() {
+	public Time getDuration() {
 		return this.duration;
 	}
 
-	public void setDuration(Integer duration) {
+	public void setDuration(Time duration) {
 		this.duration = duration;
 	}
 

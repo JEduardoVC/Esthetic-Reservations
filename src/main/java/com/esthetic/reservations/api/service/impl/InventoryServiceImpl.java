@@ -1,5 +1,6 @@
 package com.esthetic.reservations.api.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,6 +8,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
+import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,14 +49,17 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 	
 	public InventoryDTO save(MinInventory inventario, MultipartFile file) {
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(inventario.getId_branch()));
-		String rutaAbsoluta = "C://Esthetic-Reservation/Inventario";
-		String nameImage = "";		
+		String rutaAbsoluta = "/Esthetic-Reservations/src/main/resources/static/img";
+		File directorio = new File(rutaAbsoluta + "/Inventario");
+		if(!directorio.exists()) directorio.mkdir();
+		String nameImage = "";
 		try {
 			byte[] imagenBytes = file.getBytes();
 			nameImage = generateRandomString(20);
 			Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + nameImage + ".jpg");
 			Files.write(rutaCompleta, imagenBytes);
 		} catch (IOException e) {
+			System.err.println(e);
 			return null;
 		}
 		Inventory newInventory = new Inventory(inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), nameImage, sucursal);
@@ -90,7 +95,6 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
             char rndChar = DATA_FOR_RANDOM_STRING.charAt(rndCharAt);
             sb.append(rndChar);
         }
-
         return sb.toString();
 	}
 }

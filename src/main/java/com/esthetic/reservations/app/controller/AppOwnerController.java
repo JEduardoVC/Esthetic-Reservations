@@ -29,6 +29,11 @@ public class AppOwnerController {
 		return new ModelAndView("owner/services/agregar");
 	}
 	
+	@GetMapping("/servicios/actualizar")
+	public ModelAndView viewUpdateService() {
+		return new ModelAndView("owner/services/agregar");
+	}
+	
 	@GetMapping("/inventario/agregar")
 	public ModelAndView viewCreateInventory() {
 		return new ModelAndView("owner/inventory/agregar");
