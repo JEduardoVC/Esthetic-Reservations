@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.esthetic.reservations.api.dto.MinBranchDTO;
 import com.esthetic.reservations.api.dto.BranchDTO;
+import com.esthetic.reservations.api.dto.MessageDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
@@ -78,9 +79,9 @@ public class BranchController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<MessageDTO> delete(@PathVariable(name = "id") Long id) {
         branchService.delete(id);
-        return new ResponseEntity<>("Sucursal eliminada", HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDTO("Sucursal eliminada"), HttpStatus.OK);
     }
 
 }

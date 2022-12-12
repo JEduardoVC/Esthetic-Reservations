@@ -1,11 +1,15 @@
 package com.esthetic.reservations.api.controller;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +19,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.esthetic.reservations.api.dto.MessageDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
+import com.esthetic.reservations.api.dto.UserEntityEditDTO;
+import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.EstheticAppException;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
@@ -61,29 +68,52 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    
     @PutMapping("/{id}/grant/{role}")
-    public ResponseEntity<UserEntityDTO> grantRoleToUser(@PathVariable(name = "id", required = true) Long userId, @PathVariable(name = "role", required = true) String role){
+    public ResponseEntity<UserEntityDTO> grantRoleToUser(@PathVariable(name = "id", required = true) Long userId,
+            @PathVariable(name = "role", required = true) String role) {
         return new ResponseEntity<>(userService.grantRoleToUser(userId, role), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/revoke/{role}")
-    public ResponseEntity<UserEntityDTO> revokeRoleToUser(@PathVariable(name = "id", required = true) Long userId, @PathVariable(name = "role", required = true) String role){
+    public ResponseEntity<UserEntityDTO> revokeRoleToUser(@PathVariable(name = "id", required = true) Long userId,
+            @PathVariable(name = "role", required = true) String role) {
         return new ResponseEntity<>(userService.revokeRoleToUser(userId, role), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserEntityDTO> update(@Valid @RequestBody UserEntityDTO userDTO,
+    public ResponseEntity<UserEntityDTO> update(@Valid @RequestBody UserEntityEditDTO userDTO,
             @PathVariable(name = "id") Long id) {
+        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+            UserEntityDTO userReponse = userService.updateNoPassword(userDTO, id);
+            return new ResponseEntity<>(userReponse, HttpStatus.OK);
+        } else {
+            @Valid UserEntityDTO editUserDTO = new @Valid UserEntityDTO(0l, userDTO.getUsername(), userDTO.getName(),
+                    userDTO.getLastName(), userDTO.getPhoneNumber(), userDTO.getAddress(),
+                    userDTO.getEmail(), userDTO.getPassword(), null);
+            return updatePassword(editUserDTO, id);
+        }
+    }
+
+    private ResponseEntity<UserEntityDTO> updatePassword(@Valid UserEntityDTO userDTO, Long id) {
+        if(!isValidPassword(userDTO.getPassword())){
+            throw new BadRequestException("Contraseña", "inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)");
+        }
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         UserEntityDTO userReponse = userService.update(userDTO, id);
         return new ResponseEntity<>(userReponse, HttpStatus.OK);
     }
 
+    private Boolean isValidPassword(String password){
+        final String PATTERN = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[@#$%^&+=!])\\S{8,}\\z";
+        Pattern pattern = Pattern.compile(PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<MessageDTO> delete(@PathVariable(name = "id") Long id) {
         userService.delete(id);
-        return new ResponseEntity<>("Usuario eliminado", HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDTO("Usuario eliminado"), HttpStatus.OK);
     }
 
 }

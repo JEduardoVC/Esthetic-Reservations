@@ -1,0 +1,82 @@
+<form class="row g-3">
+    <div class="col-md-12">
+        <label for="user-username" class="form-label">Username</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fs-4 bi bi-person-bounding-box"></i></span>
+            <input type="text" class="form-control fs-4" id="user-username"
+                name="user-username" placeholder="Nombre de usario">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <label for="user-name" class="form-label">Nombre</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fs-4 bi bi-person-lines-fill"></i></span>
+            <input type="text" class="form-control fs-4" id="user-name" name="user-name"
+                placeholder="Nombre">
+        </div>
+    </div>
+    <div class="col-md-8">
+        <label for="user-lastname" class="form-label">Apellidos</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fs-4 bi bi-person-lines-fill"></i></span>
+            <input type="text" class="form-control fs-4" id="user-lastname"
+                name="user-lastname" placeholder="Apellidos">
+        </div>
+    </div>
+    <div class="col-md-12">
+        <label for="user-address" class="form-label">Dirección</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fs-4 bi bi-pin-map-fill"></i></span>
+            <input type="text" class="form-control fs-4" id="user-address"
+                name="user-address" placeholder="Dirección">
+        </div>
+    </div>
+    <div class="col-md-12">
+        <label for="user-email" class="form-label">Correo</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fs-4 bi bi-envelope-at-fill"></i></span>
+            <input type="email" class="form-control fs-4" id="user-email" name="user-email"
+                placeholder="Correo">
+        </div>
+    </div>
+    <div class="col-md-12">
+        <label for="user-phone" class="form-label">Teléfono</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fs-4 bi bi-phone-fill"></i></span>
+            <input type="phone" class="form-control fs-4" id="user-phone" name="user-phone"
+                placeholder="Teléfono">
+        </div>
+    </div>
+    <div id="passworddiv" class="col-md-12">
+        <label for="user-password" class="form-label">Contraseña</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fs-4 bi bi-shield-lock-fill"></i></span>
+            <input type="password" class="form-control fs-4" id="user-password"
+                name="user-password" placeholder="Contraseña">
+            <span class="input-group-text fs-4">
+                <i class="fs-4 bi bi-eye bi-eye-slash" id="togglePassword" style="cursor: pointer"></i>
+            </span>
+        </div>
+    </div>
+
+    <div id="cpassworddiv" class="col-md-12">
+        <label for="user-cpassword" class="form-label">Confirmar Contraseña</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1"><i class="fs-4 bi bi-shield-lock"></i></span>
+            <input type="password" class="form-control fs-4" id="user-cpassword"
+                name="user-cpassword" placeholder="Confirma la contraseña">
+            <span class="input-group-text fs-4">
+                <i class="fs-4 bi bi-eye bi-eye-slash" id="toggleCPassword" style="cursor: pointer"></i>
+            </span>
+        </div>
+    </div>
+
+    <label for="" class="form-label">Roles</label>
+    <div id="roles-sw" class="col-md-12">
+
+    </div>
+    <div class="col-12">
+        <button type="button" id="btnModal"
+            class="btn btn-principal fs-4 p-3">Confirmar</button>
+    </div>
+</form>

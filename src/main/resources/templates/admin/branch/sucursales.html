@@ -1,20 +1,74 @@
 <!DOCTYPE html>
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
-<head th:insert="/generics/header"></head>
+<link rel="stylesheet" href="/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/css/bootstrap-icons/font/bootstrap-icons.css">
+<style>
+    input.form-control {
+        font-size: 12px;
+    }
+</style>
+
+<head th:insert="/generics/header">
+</head>
 
 <body>
     <div th:insert="/admin/navegacion"></div>
     <div class="body-admin">
         <div class="container-admin">
             <h1>Sucursales</h1>
-            <div class="btn-agregar">
-                <form action="/app/admin/sucursales/agregar">
-                    <button class="btn-secundario">Agregar una sucursal</button>
-                </form>
-            </div>
-        </div>
+            <button id="createbranch" class="btn btn-principal fs-4 m-3 p-3" data-bs-toggle="modal"
+                data-bs-target="#modalBranchesForm" onclick="GetInfo('add');">Agregar sucursal</button>
+            <table class="table" id="branchesTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Dueño</th>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Dueño</th>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </tfoot>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+            <div id="modalBranchesForm" class="modal fade">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content ">
+                        <div class="modal-header">
+                            <h1 class="modal-title">Sucursal</h1>
+                        </div>
+                        <div class="modal-body" th:insert="/admin/branch/formulario-sucursal.html">
+                            
+                        </div>
+
+                        </form>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div>
     </div>
 </body>
+
+<script src="/js/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/admin.branch.js"></script>
+<script src="/js/jquery.timepicker.min.js"></script>
 <script src="/js/logout.js"></script>
+
 </html>

@@ -29,4 +29,9 @@ public class RoleServiceImpl extends GenericServiceImpl<Role, RoleDTO> implement
         return mapToDTO(role);
     }
 
+    @Override
+    public Boolean existsByName(String name) {
+        return roleRepository.existsByName(name);
+    }
+
 }

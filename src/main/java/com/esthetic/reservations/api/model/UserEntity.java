@@ -65,6 +65,18 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 		this.userRoles = userRoles;
 	}
 
+	public UserEntity(Long id, String username, String name, String lastName, String phoneNumber, String address,
+			String email, String password) {
+		super(id);
+		this.username = username;
+		this.name = name;
+		this.lastName = lastName;
+		this.phoneNumber = phoneNumber;
+		this.address = address;
+		this.email = email;
+		this.password = password;
+	}
+
 	public String getUsername() {
 		return this.username;
 	}
