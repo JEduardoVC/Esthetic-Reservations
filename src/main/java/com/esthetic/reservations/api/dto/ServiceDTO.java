@@ -1,5 +1,7 @@
 package com.esthetic.reservations.api.dto;
 
+import java.sql.Time;
+
 import com.esthetic.reservations.api.model.Branch;
 
 public class ServiceDTO extends GenericModelDTO{
@@ -7,7 +9,7 @@ public class ServiceDTO extends GenericModelDTO{
 
     private String service_name;
 
-    private Integer duration;
+    private String duration;
 
     private Double price;
 
@@ -17,7 +19,7 @@ public class ServiceDTO extends GenericModelDTO{
     }
 
 
-    public ServiceDTO(Long id, String service_name, Integer duration, Double price, Branch id_branch) {
+    public ServiceDTO(Long id, String service_name, String duration, Double price, Branch id_branch) {
         super(id);
         this.service_name = service_name;
         this.duration = duration;
@@ -33,11 +35,11 @@ public class ServiceDTO extends GenericModelDTO{
         this.service_name = service_name;
     }
 
-    public Integer getDuration() {
+    public String getDuration() {
         return this.duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
