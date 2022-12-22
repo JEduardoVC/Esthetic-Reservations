@@ -4,18 +4,70 @@
 <head th:insert="/generics/header"></head>
 
 <body>
-    <div th:insert="/owner/navegacion"></div>
-    <div class="body-owner">
-        <div class="container-owner">
-            <h1>Modulo de inventario</h1>
-            <div>
-                <form action="/app/owner/inventario/agregar">
-                    <button class="btn-secundario">Añadir producto</button>
-                </form>
-            </div>
-            <div id="mostrar-productos"></div>
-        </div>
-    </div>
+	<div th:insert="/owner/navegacion"></div>
+	<div class="body-owner">
+		<div class="container-owner">
+			<h1>Modulo de inventario</h1>
+			<div>
+				<form action="/app/owner/inventario/agregar">
+					<button class="btn-secundario">Añadir producto</button>
+				</form>
+			</div>
+			<div id="mostrar-productos"></div>
+			<div style="display: grid;grid-template-columns: repeat(5, 1fr);font-weight: bold;">
+				<div style="text-align: center;">
+					<p>Nombre</p>
+				</div>
+				<div style="text-align: center;">
+					<p>Imagen</p>
+				</div>
+				<div style="text-align: center;">
+					<p>Precio</p>
+				</div>
+				<div style="text-align: center;">
+					<p>En Almacen</p>
+				</div>
+				<div style="text-align: center;">
+					<p>Acciones</p>
+				</div>
+			</div>
+			<div style="display: grid;grid-template-columns: repeat(5, 1fr);" th:each="producto : ${invetories}">
+				<div style="text-align: center;">
+					<p>[[${producto.inventory_name}]]</p>
+				</div>
+				<div style="text-align: center;">
+					<img th:src="@{'/Inventario/' + ${producto.imagen}} + .jpg">
+				</div>
+				<div style="text-align: center;">
+					<p>[[${producto.price}]]</p>
+				</div>
+				<div style="text-align: center;">
+					<p>[[${producto.store}]]</p>
+				</div>
+				<div>
+					<button id="btn-update" th:value="${producto.id}" onclick="actualizar(this)">Actualizar</button>
+					<button id="btn_eliminar" th:value="${producto.id}" onclick="eliminar(this)">Eliminar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 <script src="/js/inventory.js"></script>
 <script src="/js/logout.js"></script>
+<script>
+	function actualizar(e) {
+		sessionStorage.setItem("inventoryId", e.value);
+		window.location = `http://localhost:5500/app/owner/inventario/actualizar/${e.value}`;
+	}
+	async function eliminar(e) {
+		const resultado = await fetch(`http://localhost:5500/api/owner/inventario/eliminar/${e.value}`, {
+			method: 'DELETE',
+			headers: {
+				"Accept": 'application/json',
+				"Authorization": `Bearer ${sessionStorage.getItem("token")}`
+			},
+			redirect: "follow"
+		});
+		console.log(resultado);
+	}
+</script>

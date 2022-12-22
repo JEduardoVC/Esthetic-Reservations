@@ -6,15 +6,23 @@
 <body>
     <div th:insert="/owner/navegacion"></div>
     <div class="container-small">
-        <h1>Agregar producto</h1>
+        <h1>Actualizar producto</h1>
+        <div class="solo-icono">
+            <form action="/app/owner/inventario">
+                <button class="btn-navegacion-barra">
+                    <img class="login-img" src="/img/volver.webp"> Volver
+                </button>
+            </form>
+        </div>
+        <div id="alertas"></div>
         <div class="formulario">
-            <form  method="post">
+            <form>
                 <label>
-                    <input type="text" placeholder="Nombre del producto" id="nombre">
+                    <input type="text" placeholder="Nombre del producto" id="nombre" th:value="${inventory.inventory_name}">
                     <span>Nombre del producto</span>
                 </label>
                 <label>
-                    <input type="number" placeholder="" id="precio">
+                    <input type="number" placeholder="" id="precio" th:value="${inventory.price}">
                     <span>Precio del producto</span>
                 </label>
                 <label>
@@ -22,13 +30,18 @@
                     <span>Imagen del producto</span>
                 </label>
                 <label>
-                    <input type="number" id="cantidad" placeholder="">
+                	<p>Imagen Actual</p>
+                	<img th:src="@{'/Inventario/' + ${inventory.imagen}} + .jpg">
+                </label>
+                <label>
+                    <input type="number" id="cantidad" placeholder="" th:value="${inventory.store}">
                     <span>Cantidad del producto</span>
                 </label>
-                <button id="btn-agregar" class="btn-formulario btn-principal">Actualizar</button>
+                <button id="btn-actualizar" class="btn-formulario btn-principal" type="button">Actualizar</button>
             </form>
         </div>
     </div>
 </body>
+<script src="/js/inventory.js"></script>
 <script src="/js/logout.js"></script>
 </html>

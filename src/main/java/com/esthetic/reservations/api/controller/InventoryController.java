@@ -42,7 +42,7 @@ public class InventoryController {
 	}	
 	
 	@PutMapping(value = "/actualizar/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<InventoryDTO> actualizar(@ModelAttribute MinInventory inventario, @RequestParam("file") MultipartFile file, @PathVariable("id") Long id) {
+	public ResponseEntity<InventoryDTO> actualizar(@ModelAttribute MinInventory inventario, @RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") Long id) {
 		return new ResponseEntity<InventoryDTO>(inventoryServiceImpl.update(inventario, file, id), HttpStatus.OK);
 	}
 	
