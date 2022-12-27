@@ -26,6 +26,9 @@ async function obtenerServicios() {
 	})
 	const respuesta = await resultado.json();
 	const servicios = respuesta.content;
+	if(servicios == undefined) {
+		servicios = [];
+	}
 	mostrarServicios(servicios)
 }
 
@@ -85,7 +88,7 @@ function mostrarServicios(servicios) {
 				let alertas = [respuesta.message];
 				mostrarAlerta(alertas);
 			} else {
-				document.location = "http://localhost:5500/app/owner/servicios";				
+				document.location = "http://localhost:5500/app/owner/servicios";		
 			}
 		})
 		divAcciones.appendChild(btn_delete);
