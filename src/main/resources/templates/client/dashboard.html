@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+<body>
+    <div class="client">
+        <div th:insert="/client/navegacion"></div>
+        <div class="container">
+            <div class="cliente">
+                <div class="div-btn-volver">
+                    <form action="/">
+                        <button class="btn-volver">Volver</button>
+                    </form>
+                </div>
+            </div>
+            <div class="container-options">
+                <div class="option-client" id="only-services">
+                    <h1>Servicios</h1>
+                    <img src="/img/servicio_corte.webp">
+                </div>
+                <div class="option-client" id="only-products">
+                    <h1>Adquirir producto</h1>
+                    <img src="/img/Productos-venta.webp">
+                </div>
+                <div class="option-client" id="services-products">
+                    <h1>Servicios y adquirir producto</h1>
+                    <div class="option-dual">
+                        <img src="/img/servicio_corte.webp">
+                        <div></div>
+                        <div></div>
+                        <img src="/img/Productos-venta.webp">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/js/logout.js"></script>
+<script src="/js/client_dashboard.min.js"></script>
+</html> 

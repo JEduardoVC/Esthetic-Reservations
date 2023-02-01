@@ -54,14 +54,14 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     @Override
     public UserEntityDTO register(UserEntityDTO userEntityDTO, String role) {
         // Check if exists
-        if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
+        /*if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
             throw new ConflictException("Usuario", "ya esta siendo usado", "nombre de usuario",
                     userEntityDTO.getUsername());
         }
         if (!userRepository.findByEmail(userEntityDTO.getEmail()).isEmpty()) {
             throw new ConflictException("Usuario", "ya esta siendo usado", "correo electrónico",
                     userEntityDTO.getEmail());
-        }
+        }*/
         // Not exists
         // Convert DTO to Model
         UserEntity user = mapToModel(userEntityDTO);
@@ -81,14 +81,14 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     @Override
     public UserEntityDTO register(UserEntityDTO userEntityDTO, Long role) {
         // Check if exists
-        if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
+        /*if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
             throw new ConflictException("Usuario", "ya esta siendo usado", "nombre de usuario",
                     userEntityDTO.getUsername());
         }
         if (!userRepository.findByEmail(userEntityDTO.getEmail()).isEmpty()) {
             throw new ConflictException("Usuario", "ya esta siendo usado", "correo electrónico",
                     userEntityDTO.getEmail());
-        }
+        }*/
         // Not exists
         // Convert DTO to Model
         UserEntity user = mapToModel(userEntityDTO);

@@ -15,8 +15,20 @@ public class AppClientController {
 	@Autowired
 	UserRepository usuario;
 
-    @GetMapping()
-    public ModelAndView viewClient() {
-        return new ModelAndView("client/client");
+    @GetMapping("/dashboard")
+    public ModelAndView viewClientDashboard() {
+        return new ModelAndView("client/dashboard");
+    }
+    @GetMapping("/services")
+    public ModelAndView viewClientServices() {
+        return new ModelAndView("client/services");
+    }
+    @GetMapping("/products")
+    public ModelAndView viewClientProducts() {
+        return new ModelAndView("client/products");
+    }
+    @GetMapping("/services/products")
+    public ModelAndView viewClientServicesProducts() {
+        return new ModelAndView("client/services_products");
     }
 }

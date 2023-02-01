@@ -25,7 +25,10 @@ async function obtenerServicios() {
 		redirect: "follow"
 	})
 	const respuesta = await resultado.json();
-	const servicios = respuesta.content;
+	let servicios = respuesta.content;
+	if(servicios == undefined) {
+		servicios = [];
+	}
 	mostrarServicios(servicios)
 }
 
