@@ -17,29 +17,6 @@
         </div>
         <div id="alertas"></div>
         <div class="formulario">
-            <form>
-                <label>
-                    <input type="text" placeholder="Nombre del producto" id="nombre" th:value="${inventory.inventory_name}">
-                    <span>Nombre del producto</span>
-                </label>
-                <label>
-                    <input type="number" placeholder="" id="precio" th:value="${inventory.price}">
-                    <span>Precio del producto</span>
-                </label>
-                <label>
-                    <input type="file" placeholder="" id="imagen" accept="image/*">
-                    <span>Imagen del producto</span>
-                </label>
-                <label>
-                	<p>Imagen Actual</p>
-                	<img th:src="@{'/Inventario/' + ${inventory.imagen}} + .jpg">
-                </label>
-                <label>
-                    <input type="number" id="cantidad" placeholder="" th:value="${inventory.store}">
-                    <span>Cantidad del producto</span>
-                </label>
-                <button id="btn-actualizar" class="btn-formulario btn-principal" type="button">Actualizar</button>
-            </form>
         </div>
     </div>
 </body>
