@@ -49,7 +49,7 @@ function register() {
         showAlerts(alertas, 'error');
         return;
     }
-    fetch('http://localhost:5500/api/auth/admin/register', {
+    fetch(BASE_URL + 'api/auth/admin/register', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',

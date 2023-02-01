@@ -1,5 +1,8 @@
 package com.esthetic.reservations.api.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,9 +59,11 @@ public class ServiceController {
 	}
 	
 	@DeleteMapping("/eliminar/{id}")
-	public ResponseEntity<String> deleteServicio(@PathVariable("id") Long id) {
+	public ResponseEntity<?> deleteServicio(@PathVariable("id") Long id) {
+		Map<String, String> response = new HashMap<String, String>();
 		seriviceServiceImpl.delete(id);
-		return new ResponseEntity<String>("Eliminado Correctamente", HttpStatus.ACCEPTED);
+		response.put("message", "Eliminado Correctamnete");
+		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}
 	
 }

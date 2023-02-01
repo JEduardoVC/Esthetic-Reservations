@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+<body>
+    <div class="client">
+        <div th:insert="/client/navegacion"></div>
+        <div class="container">
+            <div class="cliente">
+                <scroll-page id="servicios-scroll">
+                    <div class="div-btn-volver">
+                        <form action="/app/client/dashboard">
+                            <button class="btn-volver">Volver</button>
+                        </form>
+                    </div>
+                </scroll-page>
+            </div>
+            <div class="cliente-servicios seccion" id="paso-1">
+                <h1>Productos</h1>
+                <div class="products" id="products"></div>
+            </div>
+            <div class="cliente-servicios seccion" id="paso-2">
+                <h1>Cantidad de productos</h1>
+                <div class="num_products" id="num_products"></div>
+            </div>
+            <div class="cliente-resumen seccion" id="paso-3">
+                <div class="container-small" id="resumen"></div>
+            </div>
+            <div class="paginador">
+                <button class="btn-principal" id="anterior">
+                    &laquo; Anterior
+                </button>
+                <button class="btn-principal" id="siguiente">
+                    Siguiente &raquo;
+                </button>
+            </div>
+        </div>
+    </body>
+    </div>
+<script src="/js/client_products.min.js"> </script>
+<script src="/js/logout.js"></script>
+</html>

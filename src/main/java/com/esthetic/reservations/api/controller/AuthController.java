@@ -35,6 +35,7 @@ import com.esthetic.reservations.api.exception.UnauthorizedException;
 import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.MailService;
+import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
@@ -46,6 +47,7 @@ public class AuthController {
 
     private UserDetailsServiceImpl userDetailsService;
     private UserServiceImpl userService;
+    private RoleServiceImpl roleService;
     private AuthenticationManager authenticationManager;
     private PasswordEncoder passwordEncoder;
     private JwtUtil jwtUtil;
@@ -56,35 +58,46 @@ public class AuthController {
 
     @Autowired
     public AuthController(UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder, UserServiceImpl userService, JwtUtil jwtUtil, Util util) {
+            PasswordEncoder passwordEncoder, UserServiceImpl userService, JwtUtil jwtUtil, Util util, RoleServiceImpl roleService) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.util = util;
+        this.roleService = roleService;
     }
 
     @PostMapping("/{role}/register")
     public ResponseEntity<UserEntityDTO> register(@Valid @RequestBody UserEntityDTO userEntityDTO,
             @PathVariable(name = "role", required = true) String role) {
-        if (!role.equalsIgnoreCase(AppConstants.ADMIN_ROLE_NAME)
-                && !role.equalsIgnoreCase(AppConstants.OWNER_ROLE_NAME)
-                && !role.equalsIgnoreCase(AppConstants.EMPLOYEE_ROLE_NAME)
-                && !role.equalsIgnoreCase(AppConstants.CLIENT_ROLE_NAME)) {
-            throw new BadRequestException("Rol", "no es válido", "nombre", role);
-
+        try{
+            Long roleId = Long.parseLong(role);
+            if (userService.existsByUsername(userEntityDTO.getUsername())) {
+                throw new ConflictException("Usuario", "ya está siendo usado", "nombre de usuario",
+                        userEntityDTO.getUsername());
+            }
+            if (userService.existsByEmail(userEntityDTO.getEmail())) {
+                throw new ConflictException("Usuario", "ya está siendo usado", "correo electrónico",
+                        userEntityDTO.getEmail());
+            }
+            userEntityDTO.setPassword(this.passwordEncoder.encode(userEntityDTO.getPassword()));
+            return new ResponseEntity<>(userService.register(userEntityDTO, roleId), HttpStatus.CREATED);
+        } catch(NumberFormatException eFormatException){
+            if(!roleService.existsByName(role)){
+                throw new BadRequestException("Rol", "no es válido", "nombre", role);
+            }
+            if (userService.existsByUsername(userEntityDTO.getUsername())) {
+                throw new ConflictException("Usuario", "ya está siendo usado", "nombre de usuario",
+                        userEntityDTO.getUsername());
+            }
+            if (userService.existsByEmail(userEntityDTO.getEmail())) {
+                throw new ConflictException("Usuario", "ya está siendo usado", "correo electrónico",
+                        userEntityDTO.getEmail());
+            }
+            userEntityDTO.setPassword(this.passwordEncoder.encode(userEntityDTO.getPassword()));
+            return new ResponseEntity<>(userService.register(userEntityDTO, role), HttpStatus.CREATED);
         }
-        if (userService.existsByUsername(userEntityDTO.getUsername())) {
-            throw new ConflictException("Usuario", "ya está siendo usado", "nombre de usuario",
-                    userEntityDTO.getUsername());
-        }
-        if (userService.existsByEmail(userEntityDTO.getEmail())) {
-            throw new ConflictException("Usuario", "ya está siendo usado", "correo electrónico",
-                    userEntityDTO.getEmail());
-        }
-        userEntityDTO.setPassword(this.passwordEncoder.encode(userEntityDTO.getPassword()));
-        return new ResponseEntity<>(userService.register(userEntityDTO, role), HttpStatus.CREATED);
     }
 
     @PostMapping("/user/login")

@@ -16,4 +16,6 @@ public interface RoleRepository extends GenericRepository<Role, Long> {
 
     public Optional<Role> findByName(String name);
 
+    public Boolean existsByName(String name);
+
 }

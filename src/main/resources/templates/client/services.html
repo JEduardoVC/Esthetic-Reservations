@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+
+<body>
+    <div class="client">
+        <div th:insert="/client/navegacion"></div>
+        <div class="container">
+            <div class="cliente">
+                <scroll-page id="servicios-scroll">
+                    <div class="div-btn-volver">
+                        <form action="/app/client/dashboard">
+                            <button class="btn-volver">Volver</button>
+                        </form>
+                    </div>
+                </scroll-page>
+            </div>
+            <div class="cliente-servicios seccion" id="paso-1">
+                <h1>Servicios</h1>
+                <div class="servicios" id="servicios"></div>
+            </div>
+            <div class="cliente-fecha seccion" id="paso-2">
+                <h1>Selecciona una fecha y hora</h1>
+                <div class="seleccionar-fecha formulario">
+                    <form>
+                        <label>
+                            <input id="fecha" type="date" placeholder="">
+                            <span>Fecha de cita:</span>
+                        </label>
+                        <label>
+                            <input id="hora" type="time" placeholder="">
+                            <span>Hora de la cita:</span>
+                        </label>
+                    </form>
+                </div>
+            </div>
+            <div class="cliente-resumen seccion" id="paso-3">
+                <div class="container-small" id="resumen"></div>
+            </div>
+            <div class="paginador">
+                <button class="btn-principal" id="anterior">
+                    &laquo; Anterior
+                </button>
+                <button class="btn-principal" id="siguiente">
+                    Siguiente &raquo;
+                </button>
+            </div>
+        </div>
+    </body>
+    </div>
+<script src="/js/client_services.min.js"> </script>
+<script src="/js/logout.js"></script>
+</html>
+
+<!--<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+
+<body>
+    <div class="client">
+        <div th:insert="/client/navegacion"></div>
+        <div class="container">
+            <div class="container-options">
+                <div class="option-client" id="only-services">
+                    <h1>Servicios</h1>
+                    <img src="/img/servicio_corte.webp">
+                </div>
+                <div class="option-client" id="only-products">
+                    <h1>Adquirir producto</h1>
+                    <img src="/img/Productos-venta.webp">
+                </div>
+                <div class="option-client" id="services-products">
+                    <h1>Servicios y adquirir producto</h1>
+                    <div class="option-dual">
+                        <img src="/img/servicio_corte.webp">
+                        <div></div>
+                        <div></div>
+                        <img src="/img/Productos-venta.webp">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/js/logout.js"></script>
+<script src="/js/client_dashboard.min.js"></script>
+</html>-->

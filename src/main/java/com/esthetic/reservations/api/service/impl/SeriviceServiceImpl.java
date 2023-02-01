@@ -1,6 +1,11 @@
 package com.esthetic.reservations.api.service.impl;
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +45,17 @@ public class SeriviceServiceImpl extends GenericServiceImpl<Service, ServiceDTO>
 	public ServiceDTO save(MinService servicio) {
 		BranchDTO sucursal = branchServiceImpl.findById(servicio.getId_branch());
 		Branch newSucursal = branchServiceImpl.mapToModel(sucursal);
-		Service service = new Service(servicio.getService_name(), servicio.getDuration(), servicio.getPrice(), newSucursal);
+		Time duration = new Time(servicio.getDuration());
+		Service service = new Service(servicio.getService_name(), duration, servicio.getPrice(), newSucursal);
 		return mapToDTO(getRepository().save(service));
 	}
 	
 	public ServiceDTO update(MinService servicio, Long id) {
-		Service service = getRepository().findById(id).orElseThrow(() -> new BadRequestException("Servicio", "No existe", null, null));
+		Service service = getRepository().findById(id).orElseThrow(() -> new BadRequestException("Servicio", "No existe"));
 		BranchDTO sucursal = branchServiceImpl.findById(servicio.getId_branch());
 		Branch newSucursal = branchServiceImpl.mapToModel(sucursal);
-		Service newService = new Service(id, servicio.getService_name(), servicio.getDuration(), servicio.getPrice(), newSucursal);
+		Time duration = new Time(servicio.getDuration());
+		Service newService = new Service(id, servicio.getService_name(), duration, servicio.getPrice(), newSucursal);
 		return mapToDTO(getRepository().save(newService));
 	}
 

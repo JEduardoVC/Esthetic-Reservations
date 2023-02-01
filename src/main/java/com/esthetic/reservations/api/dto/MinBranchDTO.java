@@ -5,6 +5,8 @@ import java.sql.Time;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class MinBranchDTO extends GenericModelDTO {
 
     @NotNull
@@ -20,10 +22,15 @@ public class MinBranchDTO extends GenericModelDTO {
     private Time scheduleOpen;
 
     @NotNull
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private Time scheduleClose;
 
+    @NotNull
+    @NotEmpty
     private String state;
 
+    @NotNull
+    @NotEmpty
     private String municipality;
 
     public MinBranchDTO() {
