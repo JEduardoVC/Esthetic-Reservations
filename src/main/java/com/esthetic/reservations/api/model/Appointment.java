@@ -25,13 +25,27 @@ public class Appointment extends BaseModel<Appointment> {
 
 	@ManyToOne
 	private Status id_status;
+	
+	@ManyToOne
+	private Branch id_branch;
 
 	public Appointment() {
 		super();
 	}
+	
+	public Appointment(Date date_created, Date appointment_Date, UserEntity id_client, UserEntity id_employee, Service id_service, Status id_status, Branch id_branch) {
+		super();
+		this.date_created = date_created;
+		this.appointment_Date = appointment_Date;
+		this.id_client = id_client;
+		this.id_employee = id_employee;
+		this.id_service = id_service;
+		this.id_status = id_status;
+		this.id_branch = id_branch;
+	}
 
 	public Appointment(Long id, Date date_created, Date appointment_Date, UserEntity id_client, UserEntity id_employee,
-			Service id_service, Status id_status) {
+			Service id_service, Status id_status, Branch id_branch) {
 		super(id);
 		this.date_created = date_created;
 		this.appointment_Date = appointment_Date;
@@ -39,6 +53,7 @@ public class Appointment extends BaseModel<Appointment> {
 		this.id_employee = id_employee;
 		this.id_service = id_service;
 		this.id_status = id_status;
+		this.id_branch = id_branch;
 	}
 
 	public Date getDate_created() {
@@ -87,6 +102,14 @@ public class Appointment extends BaseModel<Appointment> {
 
 	public void setId_status(Status id_status) {
 		this.id_status = id_status;
+	}
+	
+	public Branch getId_branch() {
+		return this.id_branch;
+	}
+	
+	public void setId_branch(Branch id_branch) {
+		this.id_branch = id_branch;
 	}
 
 	@Override

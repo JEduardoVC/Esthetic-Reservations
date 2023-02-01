@@ -2,6 +2,7 @@ package com.esthetic.reservations.api.dto;
 
 import java.util.Date;
 
+import com.esthetic.reservations.api.model.Branch;
 import com.esthetic.reservations.api.model.Service;
 import com.esthetic.reservations.api.model.Status;
 import com.esthetic.reservations.api.model.UserEntity;
@@ -19,12 +20,14 @@ public class AppointmentDTO extends GenericModelDTO{
     private Service id_service;
 
     private Status id_status;
+    
+    private Branch id_branch;
 
     public AppointmentDTO() {
     }
 
 
-    public AppointmentDTO(Long id, Date date_created, Date appointment_Date, UserEntity id_client, UserEntity id_employee, Service id_service, Status id_status) {
+    public AppointmentDTO(Long id, Date date_created, Date appointment_Date, UserEntity id_client, UserEntity id_employee, Service id_service, Status id_status, Branch id_branch) {
         super(id);
         this.date_created = date_created;
         this.appointment_Date = appointment_Date;
@@ -32,6 +35,7 @@ public class AppointmentDTO extends GenericModelDTO{
         this.id_employee = id_employee;
         this.id_service = id_service;
         this.id_status = id_status;
+        this.id_branch = id_branch;
     }
 
 
@@ -83,4 +87,11 @@ public class AppointmentDTO extends GenericModelDTO{
         this.id_status = id_status;
     }
 
+	public Branch getId_branch() {
+		return id_branch;
+	}
+
+	public void setId_branch(Branch id_branch) {
+		this.id_branch = id_branch;
+	}
 }
