@@ -6,29 +6,21 @@
 <body>
     <div th:insert="/owner/navegacion"></div>
     <div class="container-small">
-        <h1>Agregar producto</h1>
-        <div class="formulario">
-            <form  method="post">
-                <label>
-                    <input type="text" placeholder="Nombre del producto" id="nombre">
-                    <span>Nombre del producto</span>
-                </label>
-                <label>
-                    <input type="number" placeholder="" id="precio">
-                    <span>Precio del producto</span>
-                </label>
-                <label>
-                    <input type="file" placeholder="" id="imagen" accept="image/*">
-                    <span>Imagen del producto</span>
-                </label>
-                <label>
-                    <input type="number" id="cantidad" placeholder="">
-                    <span>Cantidad del producto</span>
-                </label>
-                <button id="btn-agregar" class="btn-formulario btn-principal">Actualizar</button>
+        <h1>Actualizar producto</h1>
+        <div class="solo-icono">
+            <form action="/app/owner/inventario" method="post" id="formViewInventory">
+				<input type="hidden" name="id" id="id">
+                <button class="btn-navegacion-barra" type="button" onclick="viewInventory()">
+                    <img class="login-img" src="/img/volver.webp"> Volver
+                </button>
             </form>
+        </div>
+        <div id="alertas"></div>
+        <div class="formulario">
         </div>
     </div>
 </body>
+<script src="/js/inventory.js"></script>
+<script src="/js/utilidades.js"></script>
 <script src="/js/logout.js"></script>
 </html>

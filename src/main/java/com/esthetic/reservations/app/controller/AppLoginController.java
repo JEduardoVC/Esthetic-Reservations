@@ -1,5 +1,6 @@
 package com.esthetic.reservations.app.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 @RequestMapping("/app")
 public class AppLoginController {
 	
+	@Autowired
 	UserServiceImpl userServiceImpl;
 
     @GetMapping
@@ -38,7 +40,7 @@ public class AppLoginController {
     
     @GetMapping("/reestablecer/password/update/{id}")
     public ModelAndView reestablecerPassword(@PathVariable("id") Long id_usuario) {
-    	return new ModelAndView("Login/updatePassword").addObject("usuario", userServiceImpl.findById(id_usuario));
+    	return new ModelAndView("Login/updatePassword");
     }
     
     @GetMapping("/cerrar")
