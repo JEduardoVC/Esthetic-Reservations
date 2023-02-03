@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.model.Appointment;
 import com.esthetic.reservations.api.model.Branch;
 
@@ -15,5 +14,6 @@ import com.esthetic.reservations.api.model.Branch;
 @Transactional
 @Component("AppointmentRepository")
 public interface AppointmentRepository extends GenericRepository<Appointment, Long> {
-	//ArrayList<AppointmentDTO> findAllByIdBranch(Branch branch);
+	
+	ArrayList<Appointment> findAllByIdBranch(Branch idbranch);
 }

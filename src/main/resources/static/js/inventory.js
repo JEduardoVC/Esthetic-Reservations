@@ -81,6 +81,7 @@ function mostrarInventario(inventario) {
 				<p>${producto.inventory_name}</p>
 			</div>
 			<div style="text-align: center;">
+				<p>Imagen Actual</p>
 				<img src="/Inventario/${producto.imagen}.jpg">
 			</div>
 			<div style="text-align: center;">

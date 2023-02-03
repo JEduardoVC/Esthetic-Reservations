@@ -2,6 +2,7 @@ package com.esthetic.reservations.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,6 +18,7 @@ import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.MinAppointmentDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
+import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/appointment")
@@ -23,6 +26,8 @@ public class AppointmentController {
 	
 	@Autowired
 	AppointmentServiceImpl appointmentServiceImpl;
+	@Autowired
+	UserServiceImpl serviceImpl;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<AppointmentDTO> obtenerCita(@PathVariable("id") Long id){
@@ -35,7 +40,7 @@ public class AppointmentController {
 	}
 	
 	@PostMapping("/guardar")
-	public ResponseEntity<String> guardarCita(@ModelAttribute MinAppointmentDTO cita) {
+	public ResponseEntity<String> guardarCita(@RequestBody MinAppointmentDTO cita) {
 		return new ResponseEntity<String>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
 	}
 	
