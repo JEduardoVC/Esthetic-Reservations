@@ -2,6 +2,7 @@ package com.esthetic.reservations.api.dto;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 import com.esthetic.reservations.api.model.Branch;
 import com.esthetic.reservations.api.model.Service;
@@ -20,7 +21,7 @@ public class AppointmentDTO extends GenericModelDTO{
 
     private UserEntity id_employee;
 
-    private Service id_service;
+    private List<Service> id_service;
 
     private Status id_status;
     
@@ -30,7 +31,7 @@ public class AppointmentDTO extends GenericModelDTO{
     }
 
 
-    public AppointmentDTO(Long id, Date date_created, Date appointment_date, Time appointment_time, UserEntity id_client, UserEntity id_employee, Service id_service, Status id_status, Branch id_branch) {
+    public AppointmentDTO(Long id, Date date_created, Date appointment_date, Time appointment_time, UserEntity id_client, UserEntity id_employee, List<Service> id_service, Status id_status, Branch id_branch) {
         super(id);
         this.date_created = date_created;
         this.appointment_date = appointment_date;
@@ -42,7 +43,7 @@ public class AppointmentDTO extends GenericModelDTO{
         this.id_branch = id_branch;
     }
     
-    public AppointmentDTO(Date date_created, Date appointment_date, Time appointment_time, UserEntity id_client, UserEntity id_employee, Service id_service, Status id_status, Branch id_branch) {
+    public AppointmentDTO(Date date_created, Date appointment_date, Time appointment_time, UserEntity id_client, UserEntity id_employee, List<Service> id_service, Status id_status, Branch id_branch) {
         super();
         this.date_created = date_created;
         this.appointment_date = appointment_date;
@@ -87,11 +88,11 @@ public class AppointmentDTO extends GenericModelDTO{
         this.id_employee = id_employee;
     }
 
-    public Service getId_service() {
+    public List<Service> getId_service() {
         return this.id_service;
     }
 
-    public void setId_service(Service id_service) {
+    public void setId_service(List<Service> id_service) {
         this.id_service = id_service;
     }
 
