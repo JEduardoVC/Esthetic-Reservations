@@ -31,7 +31,7 @@ public class AppointmentController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<AppointmentDTO> obtenerCita(@PathVariable("id") Long id){
-		return new ResponseEntity<AppointmentDTO>(appointmentServiceImpl.findById(id), HttpStatus.OK);
+		return new ResponseEntity<AppointmentDTO>(appointmentServiceImpl.getId(id), HttpStatus.OK);
 	}
 	
 	@GetMapping("/sucursal/{id}")
@@ -45,7 +45,7 @@ public class AppointmentController {
 	}
 	
 	@PutMapping("/actualizar/{id}")
-	public ResponseEntity<String> actualizarCita(@ModelAttribute MinAppointmentDTO cita, @PathVariable("id") Long id) {
+	public ResponseEntity<String> actualizarCita(@RequestBody MinAppointmentDTO cita, @PathVariable("id") Long id) {
 		return new ResponseEntity<String>(appointmentServiceImpl.update(cita, id), HttpStatus.ACCEPTED);
 	}
 	

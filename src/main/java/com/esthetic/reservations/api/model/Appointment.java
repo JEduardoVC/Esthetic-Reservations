@@ -5,16 +5,11 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "appointment")
@@ -31,9 +26,6 @@ public class Appointment extends BaseModel<Appointment> {
 
 	@ManyToOne
 	private UserEntity id_employee;
-	
-	@ManyToOne
-	private Service id_service;
 
 	@ManyToOne
 	private Status id_status;
@@ -41,49 +33,34 @@ public class Appointment extends BaseModel<Appointment> {
 	@ManyToOne
 	private Branch idBranch;
 	
-	@ManyToMany(targetEntity = IdAppointment.class)
-	@JoinTable(name = "appointment_services", joinColumns = @JoinColumn(name = "id_appointment_service", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_appointments", referencedColumnName = "id"))
-	private List<IdAppointment> appointmentServices = new ArrayList<>();
+	@ManyToMany(targetEntity = Service.class)
+	@JoinTable(name = "appointment_services")
+	private List<Service> service = new ArrayList<>();
 
 	public Appointment() {
 		super();
 	}
 	
-	public Appointment(Date date_created, Date appointment_Date, Time appointment_time, UserEntity id_client, UserEntity id_employee, Service id_service, Status id_status, Branch id_branch) {
+	public Appointment(Date date_created, Date appointment_Date, Time appointment_time, UserEntity id_client, UserEntity id_employee, 
+			Status id_status, Branch id_branch) {
 		super();
 		this.date_created = date_created;
 		this.appointment_Date = appointment_Date;
 		this.appointmnet_time = appointment_time;
 		this.id_client = id_client;
 		this.id_employee = id_employee;
-		this.id_service = id_service;
 		this.id_status = id_status;
 		this.idBranch = id_branch;
 	}
 
 	public Appointment(Long id, Date date_created, Date appointment_Date, Time appointment_time, UserEntity id_client, UserEntity id_employee,
-			Service id_service, Status id_status, Branch id_branch, List<IdAppointment> appointmentServices) {
+			Status id_status, Branch id_branch) {
 		super(id);
 		this.date_created = date_created;
 		this.appointment_Date = appointment_Date;
 		this.appointmnet_time = appointment_time;
 		this.id_client = id_client;
 		this.id_employee = id_employee;
-		this.id_service = id_service;
-		this.id_status = id_status;
-		this.idBranch = id_branch;
-		this.appointmentServices = appointmentServices;
-	}
-	
-	public Appointment(Long id, Date date_created, Date appointment_Date, Time appointment_time, UserEntity id_client, UserEntity id_employee,
-			Service id_service, Status id_status, Branch id_branch) {
-		super(id);
-		this.date_created = date_created;
-		this.appointment_Date = appointment_Date;
-		this.appointmnet_time = appointment_time;
-		this.id_client = id_client;
-		this.id_employee = id_employee;
-		this.id_service = id_service;
 		this.id_status = id_status;
 		this.idBranch = id_branch;
 	}
@@ -120,14 +97,6 @@ public class Appointment extends BaseModel<Appointment> {
 		this.id_employee = id_employee;
 	}
 
-	public Service getId_service() {
-		return id_service;
-	}
-
-	public void setId_service(Service id_service) {
-		this.id_service = id_service;
-	}
-
 	public Status getId_status() {
 		return this.id_status;
 	}
@@ -152,12 +121,12 @@ public class Appointment extends BaseModel<Appointment> {
 		this.appointmnet_time = appointmnet_time;
 	}
 
-	public List<IdAppointment> getAppointmentServices() {
-		return appointmentServices;
+	public List<Service> getServicios() {
+		return service;
 	}
 
-	public void setAppointmentServices(List<IdAppointment> appointmentServices) {
-		this.appointmentServices = appointmentServices;
+	public void setServicios(List<Service> servicios) {
+		this.service = servicios;
 	}
 
 	@Override
