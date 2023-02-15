@@ -1,5 +1,8 @@
 package com.esthetic.reservations.api.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.MinAppointmentDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
+import com.esthetic.reservations.api.model.Appointment;
+import com.esthetic.reservations.api.repository.AppointmentRepository;
 import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 
@@ -51,7 +56,6 @@ public class AppointmentController {
 	
 	@DeleteMapping("/eliminar/{id}")
 	public ResponseEntity<String> eliminarCita(@PathVariable("id") Long id) {
-		appointmentServiceImpl.delete(id);
-		return new ResponseEntity<String>("Cita Eliminada Correctamente", HttpStatus.ACCEPTED);
+		return new ResponseEntity<String>(appointmentServiceImpl.eliminar(id), HttpStatus.ACCEPTED);
 	}
 }
