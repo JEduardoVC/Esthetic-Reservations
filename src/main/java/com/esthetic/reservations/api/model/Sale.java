@@ -44,8 +44,7 @@ public class Sale extends BaseModel<Sale> {
     
     @OneToMany(targetEntity = SaleItem.class, cascade = CascadeType.PERSIST)
     @LazyCollection(LazyCollectionOption.FALSE)
-    //@JoinTable(name = "sale_item", joinColumns = @JoinColumn(name = "id_sale", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_sale_item", referencedColumnName = "id"))
-    private List<SaleItem> productList = new ArrayList<>();
+    private List<SaleItem> products = new ArrayList<>();
 
     public Sale() {
         super();
@@ -109,17 +108,17 @@ public class Sale extends BaseModel<Sale> {
     }
 
     /**
-     * @return the productList
+     * @return the products
      */
-    public List<SaleItem> getProductList() {
-        return productList;
+    public List<SaleItem> getProducts() {
+        return products;
     }
 
     /**
-     * @param productList the productList to set
+     * @param products the products to set
      */
-    public void setProductList(List<SaleItem> productList) {
-        this.productList = productList;
+    public void setProducts(List<SaleItem> products) {
+        this.products = products;
     }
 
     @Override
@@ -128,7 +127,8 @@ public class Sale extends BaseModel<Sale> {
         this.client = sale.client;
         this.total = sale.total;
         this.quantity = sale.quantity;
-        this.saleDate = sale.saleDate;   
+        this.saleDate = sale.saleDate;
+        this.products = sale.products;
     }
 
 }

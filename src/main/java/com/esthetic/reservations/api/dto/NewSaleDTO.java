@@ -8,15 +8,15 @@ public class NewSaleDTO {
 
     private Long clientId;
 
-    private List<NewSaleItemDTO> productList;
+    private List<NewSaleItemDTO> products;
 
     public NewSaleDTO() {
     }
 
-    public NewSaleDTO(Long branchId, Long clientId, List<NewSaleItemDTO> productList) {
+    public NewSaleDTO(Long branchId, Long clientId, List<NewSaleItemDTO> products) {
         this.branchId = branchId;
         this.clientId = clientId;
-        this.productList = productList;
+        this.products = products;
     }
     
     public Long getBranchId() {
@@ -36,12 +36,12 @@ public class NewSaleDTO {
     }
 
 
-    public List<NewSaleItemDTO> getProductList() {
-        return this.productList;
+    public List<NewSaleItemDTO> getProducts() {
+        return this.products;
     }
 
-    public void setProductList(List<NewSaleItemDTO> productList) {
-        this.productList = productList;
+    public void setProducts(List<NewSaleItemDTO> products) {
+        this.products = products;
     }
     
 }

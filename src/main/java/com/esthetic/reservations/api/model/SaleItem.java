@@ -19,6 +19,7 @@ public class SaleItem extends BaseModel<SaleItem> {
     
     @OneToOne(targetEntity = Inventory.class)
     @JoinColumn(name = "id_product", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Inventory product;
 
     @Column(name = "subtotal")

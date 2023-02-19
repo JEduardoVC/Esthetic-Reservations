@@ -1,12 +1,10 @@
 package com.esthetic.reservations.api.dto;
 
-import com.esthetic.reservations.api.model.Inventory;
-
 public class SaleItemDTO extends GenericModelDTO {
 
     private Long saleId;
     
-    private Inventory product;
+    private MinInventory product;
 
     private Double subtotal;
 
@@ -26,7 +24,7 @@ public class SaleItemDTO extends GenericModelDTO {
      * @param subtotal
      * @param quantity
      */
-    public SaleItemDTO(Long saleId, Inventory product, Double subtotal, Long quantity) {
+    public SaleItemDTO(Long saleId, MinInventory product, Double subtotal, Long quantity) {
         super();
         this.saleId = saleId;
         this.product = product;
@@ -41,7 +39,7 @@ public class SaleItemDTO extends GenericModelDTO {
      * @param subtotal
      * @param quantity
      */
-    public SaleItemDTO(Long id, Long saleId, Inventory product, Double subtotal, Long quantity) {
+    public SaleItemDTO(Long id, Long saleId, MinInventory product, Double subtotal, Long quantity) {
         super(id);
         this.saleId = saleId;
         this.product = product;
@@ -69,7 +67,7 @@ public class SaleItemDTO extends GenericModelDTO {
     /**
      * @return the product
      */
-    public Inventory getProduct() {
+    public MinInventory getProduct() {
         return product;
     }
 
@@ -77,7 +75,7 @@ public class SaleItemDTO extends GenericModelDTO {
     /**
      * @param product the product to set
      */
-    public void setProduct(Inventory product) {
+    public void setProduct(MinInventory product) {
         this.product = product;
     }
 
@@ -112,6 +110,13 @@ public class SaleItemDTO extends GenericModelDTO {
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
+
+    @Override
+    public String toString() {
+        return "SaleItemDTO [saleId=" + saleId + ", product=" + product + ", subtotal=" + subtotal + ", quantity="
+                + quantity + "]";
+    }
  
+    
     
 }

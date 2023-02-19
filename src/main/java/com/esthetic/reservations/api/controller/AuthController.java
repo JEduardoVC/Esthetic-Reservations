@@ -1,6 +1,5 @@
 package com.esthetic.reservations.api.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.esthetic.reservations.api.dto.LoginDTO;
 import com.esthetic.reservations.api.dto.LoginResponseDTO;
-import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
@@ -38,7 +36,6 @@ import com.esthetic.reservations.api.service.MailService;
 import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
-import com.esthetic.reservations.api.util.AppConstants;
 import com.esthetic.reservations.api.util.Util;
 
 @RestController

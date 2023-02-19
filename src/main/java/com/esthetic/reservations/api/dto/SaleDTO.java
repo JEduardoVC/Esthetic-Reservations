@@ -3,53 +3,55 @@ package com.esthetic.reservations.api.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.esthetic.reservations.api.model.Branch;
-import com.esthetic.reservations.api.model.SaleItem;
-import com.esthetic.reservations.api.model.UserEntity;
-
 public class SaleDTO extends GenericModelDTO {
     
-    private Branch branch;
+    private SaleBranchDTO branch;
 
-    private UserEntity client;
+    private MinUserEntityDTO client;
 
-    private List<SaleItem> productList;
+    private List<SaleItemDTO> products;
 
     private LocalDateTime saleDate;
 
     public SaleDTO() {
     }
 
-    public SaleDTO(Branch branch, UserEntity client, List<SaleItem> productList, LocalDateTime saleDate) {
+    public SaleDTO(SaleBranchDTO branch, MinUserEntityDTO client, List<SaleItemDTO> products, LocalDateTime saleDate) {
         this.branch = branch;
         this.client = client;
-        this.productList = productList;
+        this.products = products;
         this.saleDate = saleDate;
     }
 
 
-    public Branch getBranch() {
+    public SaleBranchDTO getBranch() {
         return this.branch;
     }
 
-    public void setBranch(Branch branch) {
+    public void setBranch(SaleBranchDTO branch) {
         this.branch = branch;
     }
 
-    public UserEntity getClient() {
-        return this.client;
+    /**
+     * @return the client
+     */
+    public MinUserEntityDTO getClient() {
+        return client;
     }
 
-    public void setClient(UserEntity client) {
+    /**
+     * @param client the client to set
+     */
+    public void setClient(MinUserEntityDTO client) {
         this.client = client;
     }
 
-    public List<SaleItem> getProductList() {
-        return this.productList;
+    public List<SaleItemDTO> getProducts() {
+        return this.products;
     }
 
-    public void setProductList(List<SaleItem> productList) {
-        this.productList = productList;
+    public void setProducts(List<SaleItemDTO> products) {
+        this.products = products;
     }
 
     public LocalDateTime getSaleDate() {
