@@ -5,7 +5,7 @@ import java.sql.Time;
 public class MinService extends GenericModelDTO {
 	private String service_name;
 
-    private long duration;
+    private Time duration;
 
     private Double price;
 
@@ -14,14 +14,14 @@ public class MinService extends GenericModelDTO {
     public MinService() {
     }
     
-    public MinService(String service_name, long duration, Double price, Long id_branch) {
+    public MinService(String service_name, Time duration, Double price, Long id_branch) {
         this.service_name = service_name;
         this.duration = duration;
         this.price = price;
         this.id_branch = id_branch;
     }
 
-    public MinService(Long id, String service_name, long duration, Double price, Long id_branch) {
+    public MinService(Long id, String service_name, Time duration, Double price, Long id_branch) {
         super(id);
         this.service_name = service_name;
         this.duration = duration;
@@ -37,11 +37,11 @@ public class MinService extends GenericModelDTO {
         this.service_name = service_name;
     }
 
-    public long getDuration() {
+    public Time getDuration() {
         return this.duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(Time duration) {
         this.duration = duration;
     }
 

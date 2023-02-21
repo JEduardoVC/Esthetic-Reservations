@@ -1,18 +1,9 @@
 package com.esthetic.reservations.api.service.impl;
 
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-
 import com.esthetic.reservations.api.dto.BranchDTO;
-import com.esthetic.reservations.api.dto.MinBranchDTO;
 import com.esthetic.reservations.api.dto.MinService;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.ServiceDTO;
@@ -45,17 +36,15 @@ public class SeriviceServiceImpl extends GenericServiceImpl<Service, ServiceDTO>
 	public ServiceDTO save(MinService servicio) {
 		BranchDTO sucursal = branchServiceImpl.findById(servicio.getId_branch());
 		Branch newSucursal = branchServiceImpl.mapToModel(sucursal);
-		Time duration = new Time(servicio.getDuration());
-		Service service = new Service(servicio.getService_name(), duration, servicio.getPrice(), newSucursal);
+		Service service = new Service(servicio.getService_name(), servicio.getDuration(), servicio.getPrice(), newSucursal);
 		return mapToDTO(getRepository().save(service));
 	}
 	
 	public ServiceDTO update(MinService servicio, Long id) {
-		Service service = getRepository().findById(id).orElseThrow(() -> new BadRequestException("Servicio", "No existe"));
+		getRepository().findById(id).orElseThrow(() -> new BadRequestException("Servicio", "No existe"));
 		BranchDTO sucursal = branchServiceImpl.findById(servicio.getId_branch());
 		Branch newSucursal = branchServiceImpl.mapToModel(sucursal);
-		Time duration = new Time(servicio.getDuration());
-		Service newService = new Service(id, servicio.getService_name(), duration, servicio.getPrice(), newSucursal);
+		Service newService = new Service(id, servicio.getService_name(), servicio.getDuration(), servicio.getPrice(), newSucursal);
 		return mapToDTO(getRepository().save(newService));
 	}
 

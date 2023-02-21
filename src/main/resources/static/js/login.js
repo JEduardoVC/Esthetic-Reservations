@@ -38,9 +38,14 @@ async function presionarBoton() {
 					break;
 				case 2:
 					obtenerBranch(data.userId)
-					.then(data => {						
-						sessionStorage.setItem("branchId", data);
-						location = "http://localhost:5500/app/owner";
+					.then(data => {
+						if(data == 0) {
+							alertas.push("Encargado no tiene una sucursal asignada");
+							mostrarAlerta(alertas);
+						} else {
+							sessionStorage.setItem("branchId", data);
+							location = "http://localhost:5500/app/owner";
+						}
 					})
 					break;
 				case 3:
@@ -65,6 +70,7 @@ async function obtenerBranch(id_owner) {
 		redirect: "follow"
 	});
 	const branch = await resultado.json();
+	if(branch.content.length == 0) return 0;
 	const id = branch.content[0].id;
 	return id;
 }

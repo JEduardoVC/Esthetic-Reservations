@@ -1,9 +1,13 @@
 package com.esthetic.reservations.api.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,13 +46,15 @@ public class InventoryController {
 	}	
 	
 	@PutMapping(value = "/actualizar/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<InventoryDTO> actualizar(@ModelAttribute MinInventory inventario, @RequestParam("file") MultipartFile file, @PathVariable("id") Long id) {
+	public ResponseEntity<InventoryDTO> actualizar(@ModelAttribute MinInventory inventario, @RequestParam(value = "file", required = false) MultipartFile file, @PathVariable("id") Long id) {
 		return new ResponseEntity<InventoryDTO>(inventoryServiceImpl.update(inventario, file, id), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/eliminar/{id}")
-	public ResponseEntity<InventoryDTO> eliminar(@PathVariable("id") Long id) {
+	public ResponseEntity<?> eliminar(@PathVariable("id") Long id) {
+		Map<String, String> response = new HashMap<String, String>();
 		inventoryServiceImpl.delete(id);
-		return new ResponseEntity<InventoryDTO>(HttpStatus.CONTINUE);
+		response.put("message", "Eliminado Correctamente");
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 }	

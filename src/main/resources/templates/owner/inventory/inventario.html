@@ -4,18 +4,19 @@
 <head th:insert="/generics/header"></head>
 
 <body>
-    <div th:insert="/owner/navegacion"></div>
-    <div class="body-owner">
-        <div class="container-owner">
-            <h1>Modulo de inventario</h1>
-            <div>
-                <form action="/app/owner/inventario/agregar">
-                    <button class="btn-secundario">Añadir producto</button>
-                </form>
-            </div>
-            <div id="mostrar-productos"></div>
-        </div>
-    </div>
+	<div th:insert="/owner/navegacion"></div>
+	<div class="body-owner">
+		<div class="container-owner">
+			<h1>Modulo de inventario</h1>
+			<div>
+				<form action="/app/owner/inventario/agregar">
+					<button class="btn-secundario">Añadir producto</button>
+				</form>
+			</div>
+			<div id="mostrar-productos"></div>
+		</div>
+	</div>
 </body>
 <script src="/js/inventory.js"></script>
 <script src="/js/logout.js"></script>
+

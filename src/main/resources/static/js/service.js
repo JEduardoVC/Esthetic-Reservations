@@ -6,9 +6,9 @@
 		let servicio = "";
 		btn.addEventListener("click", actualizarServicio)
 		servicio = await obtenerServicio();
-		const nombre = document.querySelector("#nombre").value = servicio.service_name;
-		const duracion = document.querySelector("#duracion").value = servicio.duration;
-		const precio = document.querySelector("#precio").value = servicio.price;
+		document.querySelector("#nombre").value = servicio.service_name;
+		document.querySelector("#duracion").value = servicio.duration;
+		document.querySelector("#precio").value = servicio.price;
 	} else if(sessionStorage.getItem("serviceId") == null && btn != null) {
 		btn.addEventListener("click", agregarServicio);
 	} else {
@@ -25,9 +25,9 @@ async function obtenerServicios() {
 		redirect: "follow"
 	})
 	const respuesta = await resultado.json();
-	let servicios = respuesta.content;
+	const servicios = respuesta.content;
 	if(servicios == undefined) {
-		servicios = [];
+		servicios = [];
 	}
 	mostrarServicios(servicios)
 }
@@ -88,7 +88,7 @@ function mostrarServicios(servicios) {
 				let alertas = [respuesta.message];
 				mostrarAlerta(alertas);
 			} else {
-				document.location = "http://localhost:5500/app/owner/servicios";				
+				document.location = "http://localhost:5500/app/owner/servicios";		
 			}
 		})
 		divAcciones.appendChild(btn_delete);
@@ -100,14 +100,13 @@ function mostrarServicios(servicios) {
 async function agregarServicio() {
 	let alertas = [];
 	const nombre = document.querySelector("#nombre").value;
-	const duracion = document.querySelector("#duracion").valueAsNumber;
+	const duracion = document.querySelector("#duracion").value;
 	const precio = document.querySelector("#precio").value;
 	if(nombre == "") alertas.push("Nombre del Servicio Vacio");
 	if(duracion == "") alertas.push("Duracion del Servicio Vacio");
 	if(precio == "") alertas.push("Precio del Servicio Vacio");
 	if(alertas.length == 0) {
-		const url = `http://localhost:5500/api/owner/servicios/agregar`;
-		const resultado = await fetch(url, {
+		const resultado = await fetch(`http://localhost:5500/api/owner/servicios/agregar`, {
 			method: 'POST',
 			headers: {
 				"Content-Type": "application/json",
@@ -133,7 +132,7 @@ async function agregarServicio() {
 async function actualizarServicio() {
 	let alertas = [];
 	const nombre = document.querySelector("#nombre").value;
-	const duracion = document.querySelector("#duracion").valueAsNumber;
+	const duracion = document.querySelector("#duracion").value;
 	const precio = document.querySelector("#precio").value;
 	if(nombre == "") alertas.push("Nombre del Servicio Vacio");
 	if(duracion == "") alertas.push("Duracion del Servicio Vacio");
@@ -155,7 +154,6 @@ async function actualizarServicio() {
 			redirect: "follow"
 		})
 		const respuesta = await resultado.json();
-		console.info(respuesta);
 		if(respuesta.id) {
 			document.location = "http://localhost:5500/app/owner/servicios";
 		}
