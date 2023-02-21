@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.esthetic.reservations.api.dto.LoginDTO;
 import com.esthetic.reservations.api.dto.LoginResponseDTO;
@@ -32,9 +34,12 @@ import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
 import com.esthetic.reservations.api.exception.ResourceNotFoundException;
 import com.esthetic.reservations.api.exception.UnauthorizedException;
+import com.esthetic.reservations.api.model.Appointment;
+import com.esthetic.reservations.api.model.Branch;
 import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.MailService;
+import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
 import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
@@ -123,11 +128,10 @@ public class AuthController {
         return new ResponseEntity<>(loginResponseDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/sendMail")
-    public ResponseEntity<Object> sendMail(@RequestParam("mail") String mail) {
+    @PostMapping("/sendSimpleMail")
+    public ResponseEntity<Object> sendsimpleMail(@RequestParam("mail") String mail) {
     	if(mail == "") new ResourceNotFoundException("Email", "Vacio");
         UserEntityDTO usuario = userService.findByEmail(mail);
-        if(usuario == null) new BadRequestException("Email", "No existe");
         Map<String, String> map = new HashMap<String, String>();
         String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
                 + usuario.getName() + " " + usuario.getLastName() + "\n"
@@ -136,12 +140,13 @@ public class AuthController {
                 + "\n\n"
                 + "De no haber requerido este correo, favor de ignorarlo";
         try {
-            mailService.sendMail("gevalencia99@gmail.com", mail, "Esthetic Reservation", message);
+            mailService.sendMail(mail, message);
         	map.put("message", "Correo Enviado Correctamente");
+        	map.put("errorCode", "200");
             return new ResponseEntity<Object>(map, HttpStatus.OK);
         } catch (MailException e) {
         	map.put("message", e.getMessage());
-        	return new ResponseEntity<Object>(map, HttpStatus.OK);
+        	return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
         }
     }
 }

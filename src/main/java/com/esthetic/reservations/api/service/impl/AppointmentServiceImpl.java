@@ -89,6 +89,7 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		Appointment cita = appointmentRepository.findById(id).get();
 		cita.setServicios(new ArrayList<>());
 		appointmentRepository.save(cita);
+		appointmentRepository.delete(cita);
 		return "Cita Eliminada Correctamente";
 	}
 	

@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +24,6 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 	private BranchServiceImpl branchServiceImpl;
 	private InventoryRepository inventoryRepository;
 	
-	@Autowired
 	public InventoryServiceImpl(InventoryRepository repository, ModelMapper model, BranchServiceImpl branchServiceImpl) {
 		super(repository, model, Inventory.class, InventoryDTO.class);
 		this.branchServiceImpl = branchServiceImpl;
