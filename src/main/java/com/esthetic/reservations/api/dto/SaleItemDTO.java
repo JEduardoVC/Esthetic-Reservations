@@ -2,13 +2,11 @@ package com.esthetic.reservations.api.dto;
 
 public class SaleItemDTO extends GenericModelDTO {
 
-    
     private MinInventory product;
 
     private Double subtotal;
 
     private Long quantity;
-    
 
     /**
      * 
@@ -43,15 +41,12 @@ public class SaleItemDTO extends GenericModelDTO {
         this.quantity = quantity;
     }
 
-
-
     /**
      * @return the product
      */
     public MinInventory getProduct() {
         return product;
     }
-
 
     /**
      * @param product the product to set
@@ -60,14 +55,12 @@ public class SaleItemDTO extends GenericModelDTO {
         this.product = product;
     }
 
-
     /**
      * @return the subtotal
      */
     public Double getSubtotal() {
         return subtotal;
     }
-
 
     /**
      * @param subtotal the subtotal to set
@@ -76,14 +69,12 @@ public class SaleItemDTO extends GenericModelDTO {
         this.subtotal = subtotal;
     }
 
-
     /**
      * @return the quantity
      */
     public Long getQuantity() {
         return quantity;
     }
-
 
     /**
      * @param quantity the quantity to set
@@ -94,10 +85,7 @@ public class SaleItemDTO extends GenericModelDTO {
 
     @Override
     public String toString() {
-        return "SaleItemDTO [saleId=" + saleId + ", product=" + product + ", subtotal=" + subtotal + ", quantity="
-                + quantity + "]";
+        return "SaleItemDTO [product=" + product + ", subtotal=" + subtotal + ", quantity=" + quantity + "]";
     }
- 
-    
-    
+
 }
