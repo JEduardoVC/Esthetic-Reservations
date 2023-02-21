@@ -1,5 +1,6 @@
 package com.esthetic.reservations.api.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,7 +93,7 @@ public class AppointmentController {
         	map.put("message", "Correo Enviado Correctamente");
         	map.put("errorCode", "200");
             return new ResponseEntity<Object>(map, HttpStatus.OK);
-        } catch (MessagingException e) {
+        } catch (MessagingException | IOException e) {
         	map.put("message", e.getMessage());
         	return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
         }
