@@ -1,7 +1,21 @@
 package com.esthetic.reservations.api.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -28,14 +42,22 @@ public class MailService {
         javaMailSender.send(mail);
     }
     
-    public void sendMultiMail(String to, String body, MultipartFile qr) throws MessagingException {
+    public void sendMultiMail(String to, String body, MultipartFile qr) throws MessagingException, IOException {
     	MimeMessage message = javaMailSender.createMimeMessage();
-    	MimeMessageHelper helper = new MimeMessageHelper(message, true);
-    	helper.setFrom("gevalencia99@gmail.com");
-    	helper.setTo(to);
-    	helper.setSubject("Esthetic Reservation");
-    	helper.setText(body);
-    	helper.addAttachment("Código QR", qr);
+    	BodyPart mensaje = new MimeBodyPart();
+    	BodyPart imagen = new MimeBodyPart();
+    	mensaje.setText(body);
+    	ByteArrayDataSource rawData= new ByteArrayDataSource(qr.getBytes(), "image/png");
+    	imagen.setDataHandler(new DataHandler(rawData));
+    	imagen.setFileName("QR.png");
+    	MimeMultipart partes = new MimeMultipart();
+    	partes.addBodyPart(mensaje);
+    	partes.addBodyPart(imagen);
+    	message.setFrom("gevalencia99@gmail.com");
+    	message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+    	message.setSubject("Esthetic Reservation");
+    	message.setContent(partes);
+    	
     	
     	javaMailSender.send(message);
     }
