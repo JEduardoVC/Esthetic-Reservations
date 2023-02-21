@@ -85,6 +85,14 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		return "Cita Actualizada Exitosamente";
 	}
 	
+	public String eliminar(Long id) {
+		Appointment cita = appointmentRepository.findById(id).get();
+		cita.setServicios(new ArrayList<>());
+		appointmentRepository.save(cita);
+		appointmentRepository.delete(cita);
+		return "Cita Eliminada Correctamente";
+	}
+	
 	private List<Service> changeModel(ArrayList<Long> lista) {
 		List<Service> listaServicio = new ArrayList<>();
 		for(Long id_service : lista) {
