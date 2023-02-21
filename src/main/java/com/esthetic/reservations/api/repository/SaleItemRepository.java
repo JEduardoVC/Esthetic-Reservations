@@ -12,8 +12,4 @@ import com.esthetic.reservations.api.model.SaleItem;
 @Component("SaleItemRepository")
 public interface SaleItemRepository extends GenericRepository<SaleItem, Long> {
 
-    public Page<SaleItem> findAllBySaleId(Long saleId, Pageable pageable);
-    
-    public void deleteAllBySaleId(Long saleId);
-
 }

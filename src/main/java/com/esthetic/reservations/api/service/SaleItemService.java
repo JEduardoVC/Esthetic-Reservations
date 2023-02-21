@@ -8,10 +8,6 @@ import com.esthetic.reservations.api.model.SaleItem;
 
 public interface SaleItemService extends GenericService<SaleItem, SaleItemDTO> {
 
-    ResponseDTO<SaleItemDTO> findAllBySaleId(int pageNumber, int pageSize, String sortBy, String sortDir, Long saleId);
-
     public void deleteById(Long id);
-    
-    public void deleteAllBySaleId(Long saleId);
     
 }

@@ -2,7 +2,6 @@ package com.esthetic.reservations.api.dto;
 
 public class SaleItemDTO extends GenericModelDTO {
 
-    private Long saleId;
     
     private MinInventory product;
 
@@ -19,14 +18,12 @@ public class SaleItemDTO extends GenericModelDTO {
     }
 
     /**
-     * @param saleId
      * @param product
      * @param subtotal
      * @param quantity
      */
-    public SaleItemDTO(Long saleId, MinInventory product, Double subtotal, Long quantity) {
+    public SaleItemDTO(MinInventory product, Double subtotal, Long quantity) {
         super();
-        this.saleId = saleId;
         this.product = product;
         this.subtotal = subtotal;
         this.quantity = quantity;
@@ -39,29 +36,13 @@ public class SaleItemDTO extends GenericModelDTO {
      * @param subtotal
      * @param quantity
      */
-    public SaleItemDTO(Long id, Long saleId, MinInventory product, Double subtotal, Long quantity) {
+    public SaleItemDTO(Long id, MinInventory product, Double subtotal, Long quantity) {
         super(id);
-        this.saleId = saleId;
         this.product = product;
         this.subtotal = subtotal;
         this.quantity = quantity;
     }
 
-
-    /**
-     * @return the saleId
-     */
-    public Long getSaleId() {
-        return saleId;
-    }
-
-
-    /**
-     * @param saleId the saleId to set
-     */
-    public void setSaleId(Long saleId) {
-        this.saleId = saleId;
-    }
 
 
     /**

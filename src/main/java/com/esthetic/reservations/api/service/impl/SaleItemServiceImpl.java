@@ -52,44 +52,10 @@ public class SaleItemServiceImpl extends GenericServiceImpl<SaleItem, SaleItemDT
         this.inventoryService = inventoryService;
         this.saleRepository = saleRepository;
     }
-	
-    @Override
-    public ResponseDTO<SaleItemDTO> findAllBySaleId(int pageNumber, int pageSize, String sortBy, String sortDir,
-            Long saleId) {
-        // Throws error when no valid sale id
-        if (!saleRepository.existsById(saleId)) {
-            throw new ResourceNotFoundException("Venta", "no encontrada", "id", String.valueOf(saleId));
-        }
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-        Page<SaleItem> saleItems = saleItemRepository.findAllBySaleId(saleId, pageable);
-        ArrayList<SaleItem> entitiesList = new ArrayList<>(saleItems.getContent());
-        // To JSON list
-        ArrayList<SaleItemDTO> content = new ArrayList<>();
-        for(SaleItem saleItem : entitiesList) {
-            InventoryDTO product = inventoryService.findById(saleItem.getProduct().getId());
-            MinInventory minInventory = new MinInventory(product.getId(), product.getInventory_name(), product.getPrice(), product.getStore(), product.getImagen(), product.getId_branch().getId());
-            content.add(new SaleItemDTO(saleItem.getId(), minInventory, saleItem.getSubtotal(), saleItem.getQuantity()));
-        }
-        ResponseDTO<SaleItemDTO> userResponseDTO = new ResponseDTO<>();
-        userResponseDTO.setContent(content);
-        userResponseDTO.setPageNumber(pageNumber);
-        userResponseDTO.setPageSize(pageSize);
-        userResponseDTO.setCount(saleItems.getTotalElements());
-        userResponseDTO.setTotalPages(saleItems.getTotalPages());
-        userResponseDTO.setLast(saleItems.isLast());
-        return userResponseDTO;
-    }
-
+    
     @Override
     public void deleteById(Long id) {
         this.saleItemRepository.deleteById(id);
-    }
-
-    @Override
-    public void deleteAllBySaleId(Long saleId) {
-        this.saleItemRepository.deleteAllBySaleId(saleId);        
     }
 
 }
