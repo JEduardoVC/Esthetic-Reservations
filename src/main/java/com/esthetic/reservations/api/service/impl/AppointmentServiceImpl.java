@@ -1,12 +1,21 @@
 package com.esthetic.reservations.api.service.impl;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.MinAppointmentDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
@@ -17,6 +26,7 @@ import com.esthetic.reservations.api.model.Service;
 import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.repository.AppointmentRepository;
 import com.esthetic.reservations.api.service.AppointmentService;
+import com.esthetic.reservations.api.service.MailService;
 
 @org.springframework.stereotype.Service
 public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, AppointmentDTO>
@@ -33,6 +43,9 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 	
 	@Autowired
 	BranchServiceImpl branchServiceImpl;
+	
+	@Autowired
+	MailService mailService;
 
 	public AppointmentServiceImpl(AppointmentRepository repository, ModelMapper modelMapper) {
 		super(repository, modelMapper, Appointment.class, AppointmentDTO.class);
@@ -99,5 +112,27 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 			listaServicio.add(serviceImpl.mapToModel(serviceImpl.findById(id_service)));
 		}
 		return listaServicio;
+	}
+	
+	public Object sendMail(Long id_usuario, MultipartFile qr, Long id_branch, Long id_cita) {
+		Appointment cita = appointmentRepository.findById(id_cita).get();
+        UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(id_usuario));
+        Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(id_branch));
+        Map<String, String> map = new HashMap<String, String>();
+        String message = "Correo enviado por Esthetic Reservation con el motivo de mostrar su cita reservada\n\n"
+                + usuario.getName() + " " + usuario.getLastName() + "\n"
+                + "Gracias por agendar su cita en la sucursal " + sucursal.getBranchName() + "\n\n"
+                + "Fecha de la cita: " + cita.getAppointment_Date() + "\n"
+                + "Hora de la cita: " + cita.getAppointmnet_time() + "\n\n\n"
+                + "Favor de mostrar el código QR en la sucursal";
+        try {
+            mailService.sendMultiMail(usuario.getEmail(), message, qr);
+        	map.put("message", "Correo Enviado Correctamente");
+        	map.put("errorCode", "200");
+            return new ResponseEntity<Object>(map, HttpStatus.OK);
+        } catch (MessagingException | IOException e) {
+        	map.put("message", e.getMessage());
+        	return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
+        }
 	}
 }
