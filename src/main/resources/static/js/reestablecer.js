@@ -19,7 +19,6 @@ async function enviarCorreo() {
 			alertas.push(data.message)
 			mostrarAlerta(alertas, "successful");
 		}
-		
 	}
 }
 
