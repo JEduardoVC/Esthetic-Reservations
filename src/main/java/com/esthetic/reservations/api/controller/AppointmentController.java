@@ -62,8 +62,8 @@ public class AppointmentController {
 	}
 	
 	@PostMapping("/guardar")
-	public ResponseEntity<String> guardarCita(@RequestBody MinAppointmentDTO cita) {
-		return new ResponseEntity<String>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
+	public ResponseEntity<AppointmentDTO> guardarCita(@RequestBody MinAppointmentDTO cita) {
+		return new ResponseEntity<>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/actualizar/{id}")

@@ -72,15 +72,14 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		return response;
 	}
 	
-	public String save(MinAppointmentDTO cita) {
+	public AppointmentDTO save(MinAppointmentDTO cita) {
 		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_client()));
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(cita.getId_branch()));
 		Date date_created = Date.valueOf(LocalDate.now());
 		Date appointment_date = Date.valueOf(cita.getappointment_date());
 		Appointment appointment = new Appointment(date_created, appointment_date, cita.getAppointment_time(), usuario, null, null, sucursal);
 		appointment.setServicios(changeModel(cita.getId_service()));
-		appointmentRepository.save(appointment);
-		return "Cita Registrada Exitosamente";
+		return mapToDTO(appointmentRepository.save(appointment));
 	}
 	
 	public String update(MinAppointmentDTO cita, Long id) {
