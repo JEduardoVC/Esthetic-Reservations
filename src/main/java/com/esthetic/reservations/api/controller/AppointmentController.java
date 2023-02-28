@@ -62,8 +62,8 @@ public class AppointmentController {
 	}
 	
 	@PostMapping("/guardar")
-	public ResponseEntity<String> guardarCita(@RequestBody MinAppointmentDTO cita) {
-		return new ResponseEntity<String>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
+	public ResponseEntity<AppointmentDTO> guardarCita(@RequestBody MinAppointmentDTO cita) {
+		return new ResponseEntity<>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/actualizar/{id}")
@@ -77,25 +77,7 @@ public class AppointmentController {
 	}
 	
     @PostMapping(value = "/sendMultiMail", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") String mail, @RequestParam("qr") MultipartFile qr, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
-    	Appointment cita = appointmentServiceImpl.mapToModel(appointmentServiceImpl.findById(id_cita));
-        UserEntity usuario = serviceImpl.mapToModel(serviceImpl.findByEmail(mail));
-        Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(id));
-        Map<String, String> map = new HashMap<String, String>();
-        String message = "Correo enviado por Esthetic Reservation con el motivo de mostrar su cita reservada\n\n"
-                + usuario.getName() + " " + usuario.getLastName() + "\n"
-                + "Gracias por agendar su cita en la sucursal " + sucursal.getBranchName() + "\n\n"
-                + "Fecha de la cita: " + cita.getAppointment_Date() + "\n"
-                + "Hora de la cita: " + cita.getAppointmnet_time() + "\n\n\n"
-                + "Favor de mostrar el código QR en la sucursal";
-        try {
-            mailService.sendMultiMail(mail, message, qr);
-        	map.put("message", "Correo Enviado Correctamente");
-        	map.put("errorCode", "200");
-            return new ResponseEntity<Object>(map, HttpStatus.OK);
-        } catch (MessagingException | IOException e) {
-        	map.put("message", e.getMessage());
-        	return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("qr") MultipartFile qr, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
+    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, qr, id, id_cita), HttpStatus.ACCEPTED);
     }
 }
