@@ -124,6 +124,7 @@ async function agregarInventory() {
 	if(precio == "") alertas.push("Precio vacio");
 	if(imagen.files[0] == null) alertas.push("Falta seleccionar imagen");
 	if(store == "") alertas.push("Cantidad de producto vacio");
+	console.info(imagen.files[0]);
 	if(alertas.length == 0) {
 		var formdata = new FormData();
 		formdata.append("inventory_name", nombre);
