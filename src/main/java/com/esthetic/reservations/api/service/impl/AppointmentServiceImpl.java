@@ -125,7 +125,8 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
                 + "Hora de la cita: " + cita.getAppointmnet_time() + "\n\n\n"
                 + "Favor de mostrar el código QR en la sucursal";
         try {
-            mailService.sendMultiMail(usuario.getEmail(), message, qr);
+			mailService.sendMultiMail(usuario.getEmail(), message, qr);
+			System.err.println("Correo enviado");
         	map.put("message", "Correo Enviado Correctamente");
         	map.put("errorCode", "200");
             return new ResponseEntity<Object>(map, HttpStatus.OK);

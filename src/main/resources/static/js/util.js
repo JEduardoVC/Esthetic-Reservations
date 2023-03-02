@@ -18,21 +18,24 @@ async function enviarSimpleCorreo(email) {
 }
 
 async function enviarMultimediaCorreo(email, qr, branch, appointment) {
+	console.log(qr.files["item"])
 	var formdata = new FormData();
+	const myHeaders = new Headers();
+	myHeaders.append("Accept", 'application/json');
+	myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}`);
 	formdata.append("mail", email);
-	formdata.append("qr", qr);
+	formdata.append("qr", qr.files["item"]);
 	formdata.append("branch", branch);
 	formdata.append("appointment", appointment)
 	var requestOptions = {
 	  method: 'POST',
+	  headers: myHeaders,
 	  body: formdata,
 	  redirect: 'follow'
 	};
-	let respuesta;
-	await fetch("http://localhost:5500/api/appointment/sendMultiMail", requestOptions)
-	  .then(response => response.json())
-	  .then(data => {
-		respuesta = data;
-	});
+	console.log(formdata);
+	const resultado = await fetch("http://localhost:5500/api/appointment/sendMultiMail", requestOptions)
+	const respuesta = await resultado.json();
+	console.log(respuesta);
 	return respuesta;
 }
