@@ -1,6 +1,7 @@
 (function () {
 	const btn = document.querySelector("#btn-password");
 	btn.addEventListener("click", enviarCorreo);
+		
 })();
 
 async function enviarCorreo() {

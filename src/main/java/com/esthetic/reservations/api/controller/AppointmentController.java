@@ -76,8 +76,8 @@ public class AppointmentController {
 		return new ResponseEntity<String>(appointmentServiceImpl.eliminar(id), HttpStatus.ACCEPTED);
 	}
 	
-    @PostMapping(value = "/sendMultiMail", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("qr") MultipartFile qr, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
-    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, qr, id, id_cita), HttpStatus.ACCEPTED);
+    @PostMapping("/sendMultiMail")
+    public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
+    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita), HttpStatus.ACCEPTED);
     }
 }
