@@ -17,13 +17,12 @@ async function enviarSimpleCorreo(email) {
 	return respuesta;
 }
 
-async function enviarMultimediaCorreo(email, qr, branch, appointment) {
+async function enviarMultimediaCorreo(email, branch, appointment) {
 	var formdata = new FormData();
 	const myHeaders = new Headers();
 	myHeaders.append("Accept", 'application/json');
 	myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}`);
 	formdata.append("mail", email);
-	formdata.append("qr", qr.item);
 	formdata.append("branch", branch);
 	formdata.append("appointment", appointment)
 	var requestOptions = {
@@ -35,4 +34,31 @@ async function enviarMultimediaCorreo(email, qr, branch, appointment) {
 	const resultado = await fetch("http://localhost:5500/api/appointment/sendMultiMail", requestOptions)
 	const respuesta = await resultado.json();
 	return respuesta;
+}
+
+async function leerCodigo() {
+	try {
+		const respuesta = await navigator.mediaDevices.getUserMedia({video: true});
+		if(respuesta.active) {
+			var scanner = new Instascan.Scanner({
+				video: document.querySelector("#webcam"),
+				scanPeriod: 1,
+				mirror: false
+			});
+			Instascan.Camera.getCameras().then(function(cameras) {
+				if(cameras.length > 0) {
+					scanner.start(cameras[0])
+				} else {
+					alert("No se encontraron camaras")
+				}
+			}).catch(function(e) {
+				alert(e);
+			});
+			scanner.addListener("scan", function(respuesta) {
+				return respuesta
+			})
+		}
+	} catch (DOMException) {
+		alert("Denego el acceso a la camara");
+	}
 }
