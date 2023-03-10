@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.esthetic.reservations.api.model.Appointment;
 import com.esthetic.reservations.api.model.Branch;
+import com.esthetic.reservations.api.model.UserEntity;
 
 @Repository
 @Transactional
@@ -16,4 +17,6 @@ import com.esthetic.reservations.api.model.Branch;
 public interface AppointmentRepository extends GenericRepository<Appointment, Long> {
 	
 	ArrayList<Appointment> findAllByIdBranch(Branch idbranch);
+	
+	ArrayList<Appointment> findAllByIdClient(UserEntity idClient);
 }

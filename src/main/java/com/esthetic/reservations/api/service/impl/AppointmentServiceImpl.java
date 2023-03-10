@@ -72,6 +72,20 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		return response;
 	}
 	
+	public ResponseDTO<AppointmentDTO> findAllByIdClient(Long id) {
+		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(id));
+		List<Appointment> listaCitas = appointmentRepository.findAllByIdClient(usuario);
+		ArrayList<AppointmentDTO> arregloCitas = new ArrayList<>();
+		for(Appointment appointment : listaCitas) {
+			AppointmentDTO citaDTO = mapToDTO(appointment);
+			citaDTO.setId_service(appointment.getServicios());
+			arregloCitas.add(citaDTO);
+		}
+		ResponseDTO<AppointmentDTO> response = new ResponseDTO<>();
+		response.setContent(arregloCitas);
+		return response;
+	}
+	
 	public AppointmentDTO save(MinAppointmentDTO cita) {
 		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_client()));
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(cita.getId_branch()));

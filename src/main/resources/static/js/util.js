@@ -35,30 +35,3 @@ async function enviarMultimediaCorreo(email, branch, appointment) {
 	const respuesta = await resultado.json();
 	return respuesta;
 }
-
-async function leerCodigo() {
-	try {
-		const respuesta = await navigator.mediaDevices.getUserMedia({video: true});
-		if(respuesta.active) {
-			var scanner = new Instascan.Scanner({
-				video: document.querySelector("#webcam"),
-				scanPeriod: 1,
-				mirror: false
-			});
-			Instascan.Camera.getCameras().then(function(cameras) {
-				if(cameras.length > 0) {
-					scanner.start(cameras[0])
-				} else {
-					alert("No se encontraron camaras")
-				}
-			}).catch(function(e) {
-				alert(e);
-			});
-			scanner.addListener("scan", function(respuesta) {
-				return respuesta
-			})
-		}
-	} catch (DOMException) {
-		alert("Denego el acceso a la camara");
-	}
-}
