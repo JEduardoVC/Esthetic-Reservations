@@ -23,7 +23,7 @@ public class Appointment extends BaseModel<Appointment> {
 	private Time appointmnet_time;
 	
 	@ManyToOne
-	private UserEntity id_client;
+	private UserEntity idClient;
 
 	@ManyToOne
 	private UserEntity id_employee;
@@ -48,7 +48,7 @@ public class Appointment extends BaseModel<Appointment> {
 		this.date_created = date_created;
 		this.appointment_Date = appointment_Date;
 		this.appointmnet_time = appointment_time;
-		this.id_client = id_client;
+		this.idClient = id_client;
 		this.id_employee = id_employee;
 		this.id_status = id_status;
 		this.idBranch = id_branch;
@@ -60,7 +60,7 @@ public class Appointment extends BaseModel<Appointment> {
 		this.date_created = date_created;
 		this.appointment_Date = appointment_Date;
 		this.appointmnet_time = appointment_time;
-		this.id_client = id_client;
+		this.idClient = id_client;
 		this.id_employee = id_employee;
 		this.id_status = id_status;
 		this.idBranch = id_branch;
@@ -83,11 +83,11 @@ public class Appointment extends BaseModel<Appointment> {
 	}
 
 	public UserEntity getId_client() {
-		return this.id_client;
+		return this.idClient;
 	}
 
 	public void setId_client(UserEntity id_client) {
-		this.id_client = id_client;
+		this.idClient = id_client;
 	}
 
 	public UserEntity getId_employee() {
@@ -135,7 +135,7 @@ public class Appointment extends BaseModel<Appointment> {
 		this.date_created = appointment.date_created;
 		this.appointment_Date = appointment.appointment_Date;
 		this.appointmnet_time = appointment.appointmnet_time;
-		this.id_client = appointment.id_client;
+		this.idClient = appointment.idClient;
 		this.id_employee = appointment.id_employee;
 		this.id_status = appointment.id_status;
 		this.idBranch = appointment.idBranch;

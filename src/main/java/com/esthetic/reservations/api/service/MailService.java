@@ -40,7 +40,7 @@ public class MailService {
     }
     
     public void sendMultiMail(String to, String body, Long id) throws MessagingException, IOException {
-    	File file = QRCode.from("http://localhost:5500/app/appointment/" + id).withSize(500, 500).to(ImageType.PNG).file();
+    	File file = QRCode.from(String.valueOf(id)).withSize(500, 500).to(ImageType.PNG).file();
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setFrom("gevalencia99@gmail.com");

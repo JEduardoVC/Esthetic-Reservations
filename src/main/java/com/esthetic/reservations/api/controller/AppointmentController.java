@@ -61,6 +61,11 @@ public class AppointmentController {
 		return appointmentServiceImpl.findAllByIdBranch(id_branch);
 	}
 	
+	@GetMapping("/usuario/{id}")
+	public ResponseDTO<AppointmentDTO> obtenerCitaUsuario(@PathVariable("id") Long id_client) {
+		return appointmentServiceImpl.findAllByIdClient(id_client);
+	}
+	
 	@PostMapping("/guardar")
 	public ResponseEntity<AppointmentDTO> guardarCita(@RequestBody MinAppointmentDTO cita) {
 		return new ResponseEntity<>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
