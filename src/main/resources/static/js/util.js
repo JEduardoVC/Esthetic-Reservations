@@ -17,13 +17,12 @@ async function enviarSimpleCorreo(email) {
 	return respuesta;
 }
 
-async function enviarMultimediaCorreo(email, qr, branch, appointment) {
+async function enviarMultimediaCorreo(email, branch, appointment) {
 	var formdata = new FormData();
 	const myHeaders = new Headers();
 	myHeaders.append("Accept", 'application/json');
 	myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}`);
 	formdata.append("mail", email);
-	formdata.append("qr", qr.item);
 	formdata.append("branch", branch);
 	formdata.append("appointment", appointment)
 	var requestOptions = {

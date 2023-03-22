@@ -61,6 +61,11 @@ public class AppointmentController {
 		return appointmentServiceImpl.findAllByIdBranch(id_branch);
 	}
 	
+	@GetMapping("/usuario/{id}")
+	public ResponseDTO<AppointmentDTO> obtenerCitaUsuario(@PathVariable("id") Long id_client) {
+		return appointmentServiceImpl.findAllByIdClient(id_client);
+	}
+	
 	@PostMapping("/guardar")
 	public ResponseEntity<AppointmentDTO> guardarCita(@RequestBody MinAppointmentDTO cita) {
 		return new ResponseEntity<>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
@@ -76,8 +81,8 @@ public class AppointmentController {
 		return new ResponseEntity<String>(appointmentServiceImpl.eliminar(id), HttpStatus.ACCEPTED);
 	}
 	
-    @PostMapping(value = "/sendMultiMail", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("qr") MultipartFile qr, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
-    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, qr, id, id_cita), HttpStatus.ACCEPTED);
+    @PostMapping("/sendMultiMail")
+    public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
+    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita), HttpStatus.ACCEPTED);
     }
 }

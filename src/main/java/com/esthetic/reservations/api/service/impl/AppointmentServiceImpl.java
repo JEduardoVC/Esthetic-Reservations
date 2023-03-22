@@ -72,6 +72,20 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		return response;
 	}
 	
+	public ResponseDTO<AppointmentDTO> findAllByIdClient(Long id) {
+		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(id));
+		List<Appointment> listaCitas = appointmentRepository.findAllByIdClient(usuario);
+		ArrayList<AppointmentDTO> arregloCitas = new ArrayList<>();
+		for(Appointment appointment : listaCitas) {
+			AppointmentDTO citaDTO = mapToDTO(appointment);
+			citaDTO.setId_service(appointment.getServicios());
+			arregloCitas.add(citaDTO);
+		}
+		ResponseDTO<AppointmentDTO> response = new ResponseDTO<>();
+		response.setContent(arregloCitas);
+		return response;
+	}
+	
 	public AppointmentDTO save(MinAppointmentDTO cita) {
 		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_client()));
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(cita.getId_branch()));
@@ -113,7 +127,7 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		return listaServicio;
 	}
 	
-	public Object sendMail(Long id_usuario, MultipartFile qr, Long id_branch, Long id_cita) {
+	public Object sendMail(Long id_usuario, Long id_branch, Long id_cita) {
 		Appointment cita = appointmentRepository.findById(id_cita).get();
         UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(id_usuario));
         Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(id_branch));
@@ -125,12 +139,13 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
                 + "Hora de la cita: " + cita.getAppointmnet_time() + "\n\n\n"
                 + "Favor de mostrar el código QR en la sucursal";
         try {
-			mailService.sendMultiMail(usuario.getEmail(), message, qr);
-			System.err.println("Correo enviado");
+			mailService.sendMultiMail(usuario.getEmail(), message, id_cita);
+			System.out.println("Correo enviado");
         	map.put("message", "Correo Enviado Correctamente");
         	map.put("errorCode", "200");
             return new ResponseEntity<Object>(map, HttpStatus.OK);
         } catch (MessagingException | IOException e) {
+        	System.err.println(e.getMessage());
         	map.put("message", e.getMessage());
         	return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
         }
