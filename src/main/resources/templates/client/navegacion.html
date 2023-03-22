@@ -13,32 +13,24 @@
                 <p>Modo claro</p>
             </div>
             <div class="opciones-menu">
+                <button id="btn-cerrar-sesion" class="btn-navegacion-barra" type="button">
+                    <img class="login-img" src="/img/salir.webp">
+                    <p>Cerrar sesion</p>
+                </button>
+            </div>
+            <div class="opciones-menu">
                 <button id="btn-editar-usuario" class="btn-navegacion-barra" type="button">
                     <img class="login-img" src="/img/editar-usuario.webp">
                     <p>Editar usuario</p>
                 </button>
             </div>
-            <!--<div class="opciones-menu servicio-inventario">
-                <a href="#inventario-scroll">
-                    <button id="btn-inventario" class="btn-navegacion-barra" type="button">
-                        <img class="login-img" src="/img/inventario.webp">
-                        <p>Inventario</p>
-                    </button>
-                </a>
-            </div>
-            <div class="opciones-menu servicio-inventario">
-                <a href="#servicios-scroll">
-                    <button id="btn-servicios" class="btn-navegacion-barra" type="button">
+            <div id="citas" class="opciones-menu">
+                <form id="btn-citas" action="/app/cliente/citas" method="GET">
+                    <button id="btn-navegacion" class="btn-navegacion-barra">
                         <img class="login-img" src="/img/servicios.webp">
-                        <p>Servicios</p>
+                        <p class="">Citas</p>
                     </button>
-                </a>
-            </div>-->
-            <div class="opciones-menu">
-                <button id="btn-cerrar-sesion" class="btn-navegacion-barra" type="button">
-                    <img class="login-img" src="/img/salir.webp">
-                    <p>Cerrar sesion</p>
-                </button>
+                </form>
             </div>
         </div>
     </div>
