@@ -6,7 +6,7 @@
 async function presionarBoton() {
 	const username = document.querySelector("#username").value;
 	const password = document.querySelector("#password").value;
-	await fetch("http://localhost:5500/api/auth/user/login",  {
+	await fetch(`${BASE_URL}api/auth/user/login`,  {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -44,15 +44,15 @@ async function presionarBoton() {
 							mostrarAlerta(alertas);
 						} else {
 							sessionStorage.setItem("branchId", data);
-							location = "http://localhost:5500/app/owner";
+							location = `${BASE_URL}app/owner`;
 						}
 					})
 					break;
 				case 3:
-					document.location = "http://localhost:5500/app/employee";
+					location = `${BASE_URL}app/employee`;
 					break;
 				case 4:
-					document.location = "http://localhost:5500/app";
+					location = `${BASE_URL}app`;
 					break;
 			}
 		}
@@ -61,7 +61,7 @@ async function presionarBoton() {
 }
 
 async function obtenerBranch(id_owner) {
-	const resultado = await fetch(`http://localhost:5500/api/branch/all/filter?filterBy=owner&filterTo=${id_owner}`, {
+	const resultado = await fetch(`${BASE_URL}api/branch/all/filter?filterBy=owner&filterTo=${id_owner}`, {
 		method: "GET",
 		headers: {
 			'Accept': 'application/json',
