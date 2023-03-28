@@ -31,4 +31,8 @@ public class AppClientController {
     public ModelAndView viewClientServicesProducts() {
         return new ModelAndView("client/services_products");
     }
+    @GetMapping("/citas")
+    public ModelAndView viewClientAppointment() {
+    	return new ModelAndView("client/citas");
+    }
 }
