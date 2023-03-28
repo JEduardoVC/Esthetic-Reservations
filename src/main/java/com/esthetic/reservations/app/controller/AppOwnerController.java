@@ -45,7 +45,7 @@ public class AppOwnerController {
 	
 	@GetMapping("/servicios/actualizar")
 	public ModelAndView viewUpdateService() {
-		return new ModelAndView("owner/services/agregar");
+		return new ModelAndView("owner/services/actualizar");
 	}
 	
 	@GetMapping("/inventario/agregar")
@@ -55,7 +55,7 @@ public class AppOwnerController {
 	
 	@GetMapping("/inventario/actualizar")
 	public ModelAndView viewUpdateInventory() {
-		return new ModelAndView("owner/inventory/agregar");
+		return new ModelAndView("owner/inventory/actualizar");
 	}
 	
 	@GetMapping("/validar/citas")
