@@ -25,6 +25,7 @@ import com.esthetic.reservations.api.dto.MinAppointmentDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.model.Appointment;
 import com.esthetic.reservations.api.repository.AppointmentRepository;
+import com.esthetic.reservations.api.service.MailService;
 import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
 import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
