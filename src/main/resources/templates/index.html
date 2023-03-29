@@ -1,59 +1,28 @@
 <!DOCTYPE html>
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
-<head th:insert="/generics/header"></head>
+<head th:insert="/generics/header.html"></head>
 
 <body>
-    <div class="navegacion-inicio">
-        <div class="nombre-usuario text-center" id="nombreUsuario"></div>
-        <div class="animacion-menu">
-            <img src="/img/barras.webp">
-            <div id="acciones" class="acciones">
-                <div id="login" class="opciones-menu">
-                    <form id="btn-login" action="/app/login" method="GET">
-                        <button id="btn-navegacion" class="btn-navegacion-barra">
-                            <img class="login-img" src="/img/entrar.webp">
-                            <p class="filtro-color">Iniciar sesion</p>
-                        </button>
-                    </form>
-                </div>
-                <div id="logout" class="opciones-menu log-out">
-                    <button id="btn-cerrar-sesion" class="btn-navegacion-barra" type="button">
-                        <img class="login-img" src="/img/salir.webp">
-                        <p class="filtro-color">Cerrar sesion</p>
-                    </button>
-                </div>
-                <div class="opciones-menu btn-navegacion-barra luna">
-                    <img class="login-img dark-mode-boton" src="/img/luna.webp">
-                    <p class="filtro-color">Modo oscuro</p>
-                </div>
-                <div class="opciones-menu btn-navegacion-barra no-mostrar sol">
-                    <img class="login-img ligth-mode-boton" src="/img/soleado.webp">
-                    <p class="filtro-color">Modo claro</p>
-                </div>
-                <div class="opciones-menu btn-navegacion-barra">
-                    <img class="login-img ligth-mode-boton" src="/img/editar-usuario.webp">
-                    <p class="filtro-color">Editar usuario</p>
-                </div>
-                <div id="citas" class="opciones-menu">
-                    <form id="btn-citas" action="/app/cliente/citas" method="GET">
-                        <button id="btn-navegacion" class="btn-navegacion-barra">
-                            <img class="login-img" src="/img/servicios.webp">
-                            <p class="filtro-color">Citas</p>
-                        </button>
-                    </form>
-                </div>
+    <main>
+        <div class="container-left-primary">
+            <div class="container">
+                <h1>Bienvenido a Esthetic Reservation</h1>
+                <h3>La belleza aqui no es una imaginacion, ni fantasia, es real.</h3>
+                <form action="/app/login" method="GET">
+                    <div class="center">
+                        <button id="btn-login" class="btn-secundario">Iniciar sesion</button>
+                    </div>
+                </form>
+            </div>
+            <div class="img-container-left">
+                <img src="/img/servicio_corte.webp">
             </div>
         </div>
-    </div>
-    <div class="container-small">
-        <div class="seleccion-sucursal">
-            <h1 id="titulo">Sucursales</h1>
-            <div id="sucursal" class="sucursal"></div> <!-- Sucursal -->
-        </div>
-    </div> <!-- container-small -->
+    </main>
+    <footer>
+        <div></div>
+    </footer>
 </body>
-<script src="/js/branch.min.js" type="text/javascript"></script>
-<script src="/js/logout.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqLSy0jxCB9CReCp0cXMoNwXGuhgBl68I" defer></script>
+<!-- <script src="/js/login.js"></script> -->
 </html>
