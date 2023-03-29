@@ -10,9 +10,9 @@ import javax.persistence.Table;
 public class Inventory extends BaseModel<Inventory> {
 	private String inventory_name;
 	
-	private Integer price;
+	private Double price;
 	
-	private Integer store;
+	private Long store;
 	
 	private String imagen;
 	
@@ -24,7 +24,7 @@ public class Inventory extends BaseModel<Inventory> {
 		super();
 	}
 
-	public Inventory(Long id, String inventory_name, Integer price, Integer store, String imagen, Branch id_branch) {
+	public Inventory(Long id, String inventory_name, Double price, Long store, String imagen, Branch id_branch) {
 		super(id);
 		this.inventory_name = inventory_name;
 		this.price = price;
@@ -32,8 +32,17 @@ public class Inventory extends BaseModel<Inventory> {
 		this.idBranch = id_branch;
 		this.imagen = imagen;
 	}
+
+	public Inventory(Inventory other) {
+		this.setId(other.getId());
+		this.inventory_name = other.inventory_name;
+		this.price = other.price;
+		this.store = other.store;
+		this.idBranch = other.idBranch;
+		this.imagen = other.imagen;
+	}
 	
-	public Inventory(String inventory_name, Integer price, Integer store, String imagen, Branch id_branch) {
+	public Inventory(String inventory_name, Double price, Long store, String imagen, Branch id_branch) {
 		super();
 		this.inventory_name = inventory_name;
 		this.price = price;
@@ -50,19 +59,19 @@ public class Inventory extends BaseModel<Inventory> {
 		this.inventory_name = inventory_name;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
-	public Integer getStore() {
+	public Long getStore() {
 		return store;
 	}
 
-	public void setStore(Integer store) {
+	public void setStore(Long store) {
 		this.store = store;
 	}
 
@@ -90,6 +99,14 @@ public class Inventory extends BaseModel<Inventory> {
 		this.idBranch = object.idBranch;
 		this.imagen = object.imagen;
 	}
+
+    @Override
+    public String toString() {
+        return "Inventory [inventory_name=" + inventory_name + ", price=" + price + ", store=" + store + ", imagen="
+                + imagen + ", idBranch=" + idBranch + "]";
+    }
+	
+	
 	
 	
 }
