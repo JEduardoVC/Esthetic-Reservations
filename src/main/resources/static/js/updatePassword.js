@@ -14,10 +14,6 @@ async function updatePassword() {
 	if(password != replyPassword) alerts.push("Contraseñas no coinciden")
 	if(alerts.length == 0) {
 		const id = document.location.pathname.split("/")[5];
-		console.warn(JSON.stringify({
-				"email": email,
-				"password": password
-			}));
 		const respuesta = await fetch(`${BASE_URL}api/auth/update/password/${id}`, {
 			method: "PUT",
 			headers: {
@@ -30,7 +26,6 @@ async function updatePassword() {
 			redirect: "follow"
 		})
 		const resultado = await respuesta.json();
-		console.info(resultado);
 		if(resultado) location.href = `${BASE_URL}app/login`;
 	} else {
 		mostrarAlerta(alerts);
