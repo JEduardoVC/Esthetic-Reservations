@@ -3,9 +3,9 @@ package com.esthetic.reservations.api.dto;
 public class MinInventory extends GenericModelDTO {
 	private String inventory_name;
 	
-	private Integer price;
+	private Double price;
 	
-	private Integer store;
+	private Long store;
 	
 	private String imagen;
 	
@@ -15,7 +15,7 @@ public class MinInventory extends GenericModelDTO {
 		super();
 	}
 
-	public MinInventory(Long id, String inventory_name, Integer price, Integer store, String imagen, Long id_branch) {
+	public MinInventory(Long id, String inventory_name, Double price, Long store, String imagen, Long id_branch) {
 		super(id);
 		this.inventory_name = inventory_name;
 		this.price = price;
@@ -32,19 +32,19 @@ public class MinInventory extends GenericModelDTO {
 		this.inventory_name = inventory_name;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
-	public Integer getStore() {
+	public Long getStore() {
 		return store;
 	}
 
-	public void setStore(Integer store) {
+	public void setStore(Long store) {
 		this.store = store;
 	}
 	

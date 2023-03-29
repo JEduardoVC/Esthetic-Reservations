@@ -1,12 +1,7 @@
 package com.esthetic.reservations.api.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,10 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.MinAppointmentDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
-import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.model.Appointment;
-import com.esthetic.reservations.api.model.Branch;
-import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.repository.AppointmentRepository;
 import com.esthetic.reservations.api.service.MailService;
 import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
