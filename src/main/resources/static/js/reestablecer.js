@@ -1,28 +1,26 @@
 (function () {
 	const btn = document.querySelector("#btn-password");
 	btn.addEventListener("click", enviarCorreo);
+		
 })();
 
 async function enviarCorreo() {
 	const email = document.querySelector("#email").value;
-	var formdata = new FormData();
-	formdata.append("mail", email);
-	var requestOptions = {
-	  method: 'POST',
-	  body: formdata,
-	  redirect: 'follow'
-	};
-	
-	await fetch("http://localhost:5500/api/auth/sendMail", requestOptions)
-	  .then(response => response.json())
-	  .then(data => {
-		let alertas = []
-		alertas.push(data.message)
-		if(data.errorCode == 404) mostrarAlerta(alertas, "error");
-		else {
+	let alertas = []
+	if(email == "") alertas.push("Email vacio");
+	if(alertas.length != 0) {
+		mostrarAlerta(alertas, "error");
+	}
+	else {
+		const data = await enviarSimpleCorreo(email);
+		if(data.errorCode == 404) {
+			alertas.push("Correo no esta registrado")
+			mostrarAlerta(alertas, "error");
+		} else {
+			alertas.push(data.message)
 			mostrarAlerta(alertas, "successful");
 		}
-	});
+	}
 }
 
 function mostrarAlerta(alertas, tipo) {

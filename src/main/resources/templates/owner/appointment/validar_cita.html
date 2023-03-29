@@ -2,17 +2,21 @@
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/generics/header"></head>
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
 
 <body>
     <div th:insert="/owner/navegacion"></div>
     <div class="body-owner">
         <div class="container-owner">
-            <h1>Modulo citas</h1>
-            <div id="mostrar-citas" class="citas"></div>
+            <h1>Modulo validar cita</h1>
+            <button class="button" id="readQr">Leer Código QR</button>
+            <div>
+				<video id="webcam"></video>
+			</div>
         </div>
     </div>
 </body>
 <!-- <script src="/js/owner.min.js"></script> -->
-<script src="/js/owner.js"></script>
 <script src="/js/logout.js"></script>
+<script src="/js/qr.js"></script>
 </html>

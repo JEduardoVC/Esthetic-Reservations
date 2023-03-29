@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.MinAppointmentDTO;
@@ -23,6 +26,7 @@ import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.model.Appointment;
 import com.esthetic.reservations.api.repository.AppointmentRepository;
 import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
+import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 
 @RestController
@@ -33,6 +37,10 @@ public class AppointmentController {
 	AppointmentServiceImpl appointmentServiceImpl;
 	@Autowired
 	UserServiceImpl serviceImpl;
+	@Autowired
+	BranchServiceImpl branchServiceImpl;
+	@Autowired
+    MailService mailService;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<AppointmentDTO> obtenerCita(@PathVariable("id") Long id){
@@ -44,9 +52,14 @@ public class AppointmentController {
 		return appointmentServiceImpl.findAllByIdBranch(id_branch);
 	}
 	
+	@GetMapping("/usuario/{id}")
+	public ResponseDTO<AppointmentDTO> obtenerCitaUsuario(@PathVariable("id") Long id_client) {
+		return appointmentServiceImpl.findAllByIdClient(id_client);
+	}
+	
 	@PostMapping("/guardar")
-	public ResponseEntity<String> guardarCita(@RequestBody MinAppointmentDTO cita) {
-		return new ResponseEntity<String>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
+	public ResponseEntity<AppointmentDTO> guardarCita(@RequestBody MinAppointmentDTO cita) {
+		return new ResponseEntity<>(appointmentServiceImpl.save(cita), HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/actualizar/{id}")
@@ -58,4 +71,9 @@ public class AppointmentController {
 	public ResponseEntity<String> eliminarCita(@PathVariable("id") Long id) {
 		return new ResponseEntity<String>(appointmentServiceImpl.eliminar(id), HttpStatus.ACCEPTED);
 	}
+	
+    @PostMapping("/sendMultiMail")
+    public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
+    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita), HttpStatus.ACCEPTED);
+    }
 }
