@@ -33,6 +33,10 @@ public class AppClientController {
     }
     @GetMapping("/citas")
     public ModelAndView viewClientAppointment() {
-    	return new ModelAndView("client/citas");
+    	return new ModelAndView("client/appointment");
+    }
+    @GetMapping("/appointment/update")
+    public ModelAndView viewClientAppointmentUpdate() {
+    	return new ModelAndView("client/services");
     }
 }

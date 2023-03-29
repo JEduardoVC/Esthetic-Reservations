@@ -9,7 +9,7 @@ const cita = {
 const carrito = {
     userId:'',
     branchId:'',
-    cantidad_productos:'',
+    cantidad_productos: [],
     total_venta: '',
     productos: []
 }
@@ -25,9 +25,6 @@ const myHeaders = new Headers();
 myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Show info for nav
-    showInfoClient();
-    showInfoBranch();
     
     // Show services
     showServices();
@@ -51,61 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
     //Show summary of the cita
     //mostrarResumen();
 });
-async function showInfoClient(){
-    const resultadoUsuario = await fetch(`/api/user/${userId}`,{method: 'GET', headers: myHeaders, redirect: 'follow'});
-    const client = await resultadoUsuario.json();
-    const nameUser = document.querySelector("#nombre-usuario");
-    const { name, lastName } = client;
-    nameUser.textContent = `${name} ${lastName}`;
-}
-
-async function showInfoBranch(){
-    const resultadoBranch = await fetch(`/api/branch/${branchId}`,{method: 'GET', headers: myHeaders, redirect: 'follow'});
-    const branch = await resultadoBranch.json();
-    const { branchName } = branch;
-    const nameBranch = document.querySelector("#nombre-branch");
-    nameBranch.textContent = `${branchName}`;
-}
-
-function removeService(id) {
-    const { servicios } = cita;
-    cita.servicios = servicios.filter(servicio => servicio.id !== id);
-}
-
-function addService(servicioObj) {
-    const { servicios } = cita;
-    cita.servicios = [...servicios, servicioObj];
-}
-
-function removeProduct(id) {
-    const { productos } = carrito;
-    carrito.productos = productos.filter(producto => producto.id !== id);
-}
-
-function addProduct(productoObj) {
-    const { productos } = carrito;
-    carrito.productos = [...productos, productoObj];
-}
-
-function nextPage() {
-    const nextPage = document.querySelector(`#siguiente`);
-    if(nextPage != null){
-        nextPage.addEventListener("click", () =>{
-            page++;
-            pagerButtons();
-        })
-    }
-}
-
-function previousPage() {
-    const previousPage = document.querySelector(`#anterior`);
-    if(previousPage != null){
-        previousPage.addEventListener("click", () =>{
-            page--;
-            pagerButtons();
-        })
-    }
-}
 
 function pagerButtons(){
     const nextPage = document.querySelector("#siguiente");
@@ -128,61 +70,6 @@ function pagerButtons(){
         showSummary(); // Estamos en la página 3, carga el resumen de la cita
     }
     mostrarSeccion(); // Cambia la sección que se muestra por la de la página
-}
-
-function mostrarSeccion() {
-    // Eliminar mostrar-seccion de la sección anterior
-    const seccionAnterior = document.querySelector('.mostrar-seccion');
-    if (seccionAnterior) {
-        seccionAnterior.classList.remove('mostrar-seccion');
-    }
-    const seccionActual = document.querySelector(`#paso-${page}`);
-    seccionActual.classList.add('mostrar-seccion');
-}
-
-function backDateDisabled() {
-    const inputFecha = document.querySelector('#fecha');
-
-    const fechaAhora = new Date();
-    const year = fechaAhora.getFullYear();
-    const mes = fechaAhora.getMonth() + 1;
-    const dia = fechaAhora.getDate() + 1;
-    const fechaDeshabilitar = `${year}-${mes}-${dia}`;
-
-    inputFecha.min = fechaDeshabilitar;
-}
-
-async function horaCita() {
-    const resultadoBranch = await fetch(`/api/branch/${branchId}`,{method: 'GET', headers: myHeaders, redirect: 'follow'});
-    const branch = await resultadoBranch.json();
-    const inputHora = document.querySelector('#hora');
-    inputHora.addEventListener('input', e => {
-        const horaCita = e.target.value;
-        const hora = horaCita.split(':');
-        const { scheduleOpen, scheduleClose } = branch;
-        if(hora[0] >= scheduleOpen.split(":")[0] && hora[1] >= scheduleOpen.split(":")[1]) {
-            cita.hora = horaCita;
-        } else {
-            console.error("Es muy temprano");
-            setTimeout(() => {
-                inputHora.value = '';
-            }, 3000);
-        }
-    });
-}
-
-function fechaCita() {
-    const fechaInput = document.querySelector('#fecha');
-    fechaInput.addEventListener('input', e => {
-        const dia = new Date(e.target.value).getUTCDay();
-        if ([0, 6].includes(dia)) {
-            e.preventDefault();
-            fechaInput.value = '';
-            mostrarAlerta('Fines de Semana no son permitidos', 'error');
-        } else {
-            cita.fecha = fechaInput.value;
-        }
-    })
 }
 
 function showSummary() {
@@ -304,7 +191,7 @@ function showSummary() {
         
         const quantity = document.createElement("p");
         quantity.textContent = "Cantidad seleccionada: " + input.value;
-        cantidad_productos += parseInt(input.value);
+        carrito.cantidad_productos = [...carrito.cantidad_productos, input.value];
         
         const subtotal = document.createElement("p");
         subtotal.textContent ="Subtotal: " + price*input.value;
@@ -353,6 +240,7 @@ async function selectQuantity(){
         const input = document.createElement("input");
         input.type = "number";
         input.id = "quantity_product_" + cont;
+        input.value = carrito.cantidad_productos[cont-1];
         layout.appendChild(text);
         layout.appendChild(input);
         select.appendChild(layout);
@@ -460,7 +348,6 @@ function pay(){
     cantidadPagar.classList.add('total');
     setTimeout(() => {
         cantidadPagar.innerHTML = `<span>Total a Pagar:  </span> $${cantidad}`;
-        carrito.cantidad_productos = cantidad_productos;
     }, 50);
     return cantidadPagar;
 }

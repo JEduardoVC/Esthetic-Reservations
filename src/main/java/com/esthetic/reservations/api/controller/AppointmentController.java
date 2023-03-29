@@ -64,8 +64,8 @@ public class AppointmentController {
 	}
 	
 	@PutMapping("/actualizar/{id}")
-	public ResponseEntity<String> actualizarCita(@RequestBody MinAppointmentDTO cita, @PathVariable("id") Long id) {
-		return new ResponseEntity<String>(appointmentServiceImpl.update(cita, id), HttpStatus.ACCEPTED);
+	public ResponseEntity<AppointmentDTO> actualizarCita(@RequestBody MinAppointmentDTO cita, @PathVariable("id") Long id) {
+		return new ResponseEntity<>(appointmentServiceImpl.update(cita, id), HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/eliminar/{id}")
@@ -75,6 +75,11 @@ public class AppointmentController {
 	
     @PostMapping("/sendMultiMail")
     public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
-    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita), HttpStatus.ACCEPTED);
+    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita, true), HttpStatus.ACCEPTED);
+    }
+    
+    @PostMapping("/sendMultiMailUpdate")
+    public ResponseEntity<Object> sendMultiMailUpdate(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
+    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita, false), HttpStatus.ACCEPTED);
     }
 }

@@ -42,12 +42,10 @@ async function getAppointment() {
 }
 
 function update(event){
-    console.log(event.target.name);
     id = event.target.name;
-    sessionStorage.setItem("appoitment", id);
-    location.href = `/app/client/appointment/update`;
+    sessionStorage.setItem("citaId", id);
+    location.href = `${BASE_URL}app/client/appointment/update`;
 }
 function cancel(event){
     id = event.target.name;
-    console.log(event.target.name);
 }

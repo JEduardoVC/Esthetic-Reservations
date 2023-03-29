@@ -15,9 +15,6 @@ const myHeaders = new Headers();
 myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Show info for nav
-    showInfoClient();
-    showInfoBranch();
     
     // Show Products
     showInventory();
@@ -32,51 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Paginator
     pagerButtons();
 });
-async function showInfoClient(){
-    const resultadoUsuario = await fetch(`/api/user/${userId}`,{method: 'GET', headers: myHeaders, redirect: 'follow'});
-    const client = await resultadoUsuario.json();
-    const nameUser = document.querySelector("#nombre-usuario");
-    const { name, lastName } = client;
-    nameUser.textContent = `${name} ${lastName}`;
-}
-
-async function showInfoBranch(){
-    const resultadoBranch = await fetch(`/api/branch/${branchId}`,{method: 'GET', headers: myHeaders, redirect: 'follow'});
-    const branch = await resultadoBranch.json();
-    const { branchName } = branch;
-    const nameBranch = document.querySelector("#nombre-branch");
-    nameBranch.textContent = `${branchName}`;
-}
-
-function removeProduct(id) {
-    const { productos } = carrito;
-    carrito.productos = productos.filter(producto => producto.id !== id);
-}
-
-function addProduct(productoObj) {
-    const { productos } = carrito;
-    carrito.productos = [...productos, productoObj];
-}
-
-function nextPage() {
-    const nextPage = document.querySelector(`#siguiente`);
-    if(nextPage != null){
-        nextPage.addEventListener("click", () =>{
-            page++;
-            pagerButtons();
-        })
-    }
-}
-
-function previousPage() {
-    const previousPage = document.querySelector(`#anterior`);
-    if(previousPage != null){
-        previousPage.addEventListener("click", () =>{
-            page--;
-            pagerButtons();
-        })
-    }
-}
 
 function pagerButtons(){
     const nextPage = document.querySelector("#siguiente");
@@ -94,16 +46,6 @@ function pagerButtons(){
         mostrarResumen();
     }
     mostrarSeccion(); // Cambia la sección que se muestra por la de la página
-}
-
-function mostrarSeccion() {
-    // Eliminar mostrar-seccion de la sección anterior
-    const seccionAnterior = document.querySelector('.mostrar-seccion');
-    if (seccionAnterior) {
-        seccionAnterior.classList.remove('mostrar-seccion');
-    }
-    const seccionActual = document.querySelector(`#paso-${page}`);
-    seccionActual.classList.add('mostrar-seccion');
 }
 
 function selectQuantity(){
@@ -227,7 +169,7 @@ async function mostrarResumen() {
     btnReserve.classList.add("btn-principal");
     btnReserve.classList.add("btn-reservar");
     btnReserve.textContent = "Realizar compra";
-    btnReserve.onclick = makeAPurcharse;
+//    btnReserve.onclick = makeAPurcharse;
 
     resumenDiv.appendChild(btnReserve);
 }

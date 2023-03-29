@@ -19,5 +19,7 @@ public class AppConstants {
     public static final Long JWT_HOUR = JWT_MINUTE * 60;
     public static final Long JWT_DAY = JWT_HOUR * 24;
     public static final Long JWT_EXPIRATION_TIME = JWT_DAY * 30;
+    
+    public static final String BASE_URL = "http://localhost:5500/";
 
 }

@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,12 +18,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.esthetic.reservations.api.dto.LoginDTO;
 import com.esthetic.reservations.api.dto.LoginResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
@@ -32,16 +30,15 @@ import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
 import com.esthetic.reservations.api.exception.ResourceNotFoundException;
 import com.esthetic.reservations.api.exception.UnauthorizedException;
-import com.esthetic.reservations.api.model.Appointment;
-import com.esthetic.reservations.api.model.Branch;
 import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.MailService;
-import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
 import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.Util;
+
+import io.micrometer.core.ipc.http.HttpSender.Response;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -124,18 +121,21 @@ public class AuthController {
                 userEntity.getId());
         return new ResponseEntity<>(loginResponseDTO, HttpStatus.OK);
     }
+    
+    @PutMapping("/update/password/{id}")
+    public ResponseEntity<UserEntityDTO> updatePassword(@PathVariable("id") Long id, @RequestBody UserEntity usuario) {
+    	UserEntity user = userService.mapToModel(userService.findById(id));
+    	if(user == null || user.getEmail() != usuario.getEmail()) new ResourceNotFoundException("Usuario", "No existe el usuario o hay datos incorrectos");
+    	user.setPassword(this.passwordEncoder.encode(usuario.getPassword()));
+    	return new ResponseEntity<UserEntityDTO>(userService.save(userService.mapToDTO(user)), HttpStatus.ACCEPTED);
+    }
 
     @PostMapping("/sendSimpleMail")
     public ResponseEntity<Object> sendsimpleMail(@RequestParam("mail") String mail) {
     	if(mail == "") new ResourceNotFoundException("Email", "Vacio");
         UserEntityDTO usuario = userService.findByEmail(mail);
         Map<String, String> map = new HashMap<String, String>();
-        String message = "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
-                + usuario.getName() + " " + usuario.getLastName() + "\n"
-                + "Hacer click en el siguiente enlace para cambiar tu contraseña \n\n"
-                + "http://localhost:5500/app/reestablecer/password/update/" + usuario.getId()
-                + "\n\n"
-                + "De no haber requerido este correo, favor de ignorarlo";
+        String message = util.typeEmail(3, userService.mapToModel(usuario), null, null);
         try {
             mailService.sendMail(mail, message);
         	map.put("message", "Correo Enviado Correctamente");

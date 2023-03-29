@@ -184,5 +184,4 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         getRepository().save(entity);
         return mapToDTO(entity);
     }
-
 }

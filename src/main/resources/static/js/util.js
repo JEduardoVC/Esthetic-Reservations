@@ -18,7 +18,7 @@ async function enviarSimpleCorreo(email) {
 	return respuesta;
 }
 
-async function enviarMultimediaCorreo(email, branch, appointment) {
+async function enviarMultimediaCorreo(email, branch, appointment, created) {
 	var formdata = new FormData();
 	const myHeaders = new Headers();
 	myHeaders.append("Accept", 'application/json');
@@ -32,7 +32,8 @@ async function enviarMultimediaCorreo(email, branch, appointment) {
 	  body: formdata,
 	  redirect: 'follow'
 	};
-	const resultado = await fetch(`${BASE_URL}api/appointment/sendMultiMail`, requestOptions)
+	const url = created ? `${BASE_URL}api/appointment/sendMultiMail` : `${BASE_URL}api/appointment/sendMultiMailUpdate`;
+	const resultado = await fetch(url, requestOptions)
 	const respuesta = await resultado.json();
 	return respuesta;
 }
