@@ -1,4 +1,5 @@
 const BASE_URL = 'http://localhost:5500/';
+//const BASE_URL = 'http://192.168.1.76:5500/';
 
 async function enviarSimpleCorreo(email) {
 	var formdata = new FormData();
@@ -9,7 +10,7 @@ async function enviarSimpleCorreo(email) {
 	  redirect: 'follow'
 	};
 	let respuesta;
-	await fetch("http://localhost:5500/api/auth/sendSimpleMail", requestOptions)
+	await fetch(`${BASE_URL}api/auth/sendSimpleMail`, requestOptions)
 	  .then(response => response.json())
 	  .then(data => {
 		respuesta = data;
@@ -17,7 +18,7 @@ async function enviarSimpleCorreo(email) {
 	return respuesta;
 }
 
-async function enviarMultimediaCorreo(email, branch, appointment) {
+async function enviarMultimediaCorreo(email, branch, appointment, created) {
 	var formdata = new FormData();
 	const myHeaders = new Headers();
 	myHeaders.append("Accept", 'application/json');
@@ -31,7 +32,8 @@ async function enviarMultimediaCorreo(email, branch, appointment) {
 	  body: formdata,
 	  redirect: 'follow'
 	};
-	const resultado = await fetch("http://localhost:5500/api/appointment/sendMultiMail", requestOptions)
+	const url = created ? `${BASE_URL}api/appointment/sendMultiMail` : `${BASE_URL}api/appointment/sendMultiMailUpdate`;
+	const resultado = await fetch(url, requestOptions)
 	const respuesta = await resultado.json();
 	return respuesta;
 }

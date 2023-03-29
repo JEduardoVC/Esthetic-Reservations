@@ -12,9 +12,26 @@ async function updatePassword() {
 	if(password == "") alerts.push("Contraseña vacia");
 	if(replyPassword == "") alerts.push("Repetir Contraseña vacia");
 	if(password != replyPassword) alerts.push("Contraseñas no coinciden")
-	if(alerts == null) {
+	if(alerts.length == 0) {
 		const id = document.location.pathname.split("/")[5];
-		fetch(`http://localhost:5500/api/user/${id}`, )
+		console.warn(JSON.stringify({
+				"email": email,
+				"password": password
+			}));
+		const respuesta = await fetch(`${BASE_URL}api/auth/update/password/${id}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				"email": email,
+				"password": password
+			}),
+			redirect: "follow"
+		})
+		const resultado = await respuesta.json();
+		console.info(resultado);
+		if(resultado) location.href = `${BASE_URL}app/login`;
 	} else {
 		mostrarAlerta(alerts);
 	}

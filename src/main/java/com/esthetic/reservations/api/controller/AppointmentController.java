@@ -1,12 +1,7 @@
 package com.esthetic.reservations.api.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,10 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.MinAppointmentDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
-import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.model.Appointment;
-import com.esthetic.reservations.api.model.Branch;
-import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.repository.AppointmentRepository;
 import com.esthetic.reservations.api.service.MailService;
 import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
@@ -72,8 +64,8 @@ public class AppointmentController {
 	}
 	
 	@PutMapping("/actualizar/{id}")
-	public ResponseEntity<String> actualizarCita(@RequestBody MinAppointmentDTO cita, @PathVariable("id") Long id) {
-		return new ResponseEntity<String>(appointmentServiceImpl.update(cita, id), HttpStatus.ACCEPTED);
+	public ResponseEntity<AppointmentDTO> actualizarCita(@RequestBody MinAppointmentDTO cita, @PathVariable("id") Long id) {
+		return new ResponseEntity<>(appointmentServiceImpl.update(cita, id), HttpStatus.ACCEPTED);
 	}
 	
 	@DeleteMapping("/eliminar/{id}")
@@ -83,6 +75,11 @@ public class AppointmentController {
 	
     @PostMapping("/sendMultiMail")
     public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
-    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita), HttpStatus.ACCEPTED);
+    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita, true), HttpStatus.ACCEPTED);
+    }
+    
+    @PostMapping("/sendMultiMailUpdate")
+    public ResponseEntity<Object> sendMultiMailUpdate(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
+    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita, false), HttpStatus.ACCEPTED);
     }
 }

@@ -1,0 +1,1 @@
+INSERT INTO `role` (`id`, `name`) VALUES (NULL, 'ADMIN'), (NULL, 'OWNER'), (NULL, 'EMPLOYEE'), (NULL, 'CLIENT');

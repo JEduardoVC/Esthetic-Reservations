@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+<body>
+    <div class="client">
+        <div th:insert="/client/navegacion"></div>
+        <div class="container">
+            <div class="cliente">
+                <div class="div-btn-volver">
+                    <form action="/">
+                        <button class="btn-volver">Volver</button>
+                    </form>
+                </div>
+            </div>
+            <div>
+                <h2>Mis citas</h2>
+                <div class="mis-citas">
+                    <div style="text-align: center;">
+                        <input name="status" type="radio" checked>Todas
+                        <input name="status" type="radio">Concluida
+                        <input name="status" type="radio">En curso
+                        <input name="status" type="radio">Pendiente
+                    </div>
+                    <div id="appointment"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/js/logout.js"></script>
+<script src="/js/client_dashboard.min.js"></script>
+ <script src="/js/client_appointment.js"></script> 
+</html>

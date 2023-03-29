@@ -2,6 +2,6 @@
 	const btn = document.querySelector("#btn-cerrar-sesion");
 	btn.addEventListener("click", function() {
 		sessionStorage.clear();
-		document.location = "http://localhost:5500/app/cerrar";
+		document.location = `${BASE_URL}app/cerrar`;
 	})
 })();

@@ -27,6 +27,7 @@ import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.repository.AppointmentRepository;
 import com.esthetic.reservations.api.service.AppointmentService;
 import com.esthetic.reservations.api.service.MailService;
+import com.esthetic.reservations.api.util.Util;
 
 @org.springframework.stereotype.Service
 public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, AppointmentDTO>
@@ -46,6 +47,9 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 	
 	@Autowired
 	MailService mailService;
+	
+	@Autowired
+	Util util;
 
 	public AppointmentServiceImpl(AppointmentRepository repository, ModelMapper modelMapper) {
 		super(repository, modelMapper, Appointment.class, AppointmentDTO.class);
@@ -96,7 +100,7 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		return mapToDTO(appointmentRepository.save(appointment));
 	}
 	
-	public String update(MinAppointmentDTO cita, Long id) {
+	public AppointmentDTO update(MinAppointmentDTO cita, Long id) {
 		Appointment citaActual = appointmentRepository.findById(id).get();
 		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_client()));
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(cita.getId_branch()));
@@ -107,15 +111,13 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		citaActual.setId_branch(sucursal);
 		citaActual.setId_client(usuario);
 		citaActual.setServicios(changeModel(cita.getId_service()));
-		appointmentRepository.save(citaActual);
-		return "Cita Actualizada Exitosamente";
+		return mapToDTO(appointmentRepository.save(citaActual));
 	}
 	
 	public String eliminar(Long id) {
 		Appointment cita = appointmentRepository.findById(id).get();
 		cita.setServicios(new ArrayList<>());
 		appointmentRepository.save(cita);
-		appointmentRepository.delete(cita);
 		return "Cita Eliminada Correctamente";
 	}
 	
@@ -127,17 +129,12 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		return listaServicio;
 	}
 	
-	public Object sendMail(Long id_usuario, Long id_branch, Long id_cita) {
+	public Object sendMail(Long id_usuario, Long id_branch, Long id_cita, boolean created) {
 		Appointment cita = appointmentRepository.findById(id_cita).get();
         UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(id_usuario));
         Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(id_branch));
         Map<String, String> map = new HashMap<String, String>();
-        String message = "Correo enviado por Esthetic Reservation con el motivo de mostrar su cita reservada\n\n"
-                + usuario.getName() + " " + usuario.getLastName() + "\n"
-                + "Gracias por agendar su cita en la sucursal " + sucursal.getBranchName() + "\n\n"
-                + "Fecha de la cita: " + cita.getAppointment_Date() + "\n"
-                + "Hora de la cita: " + cita.getAppointmnet_time() + "\n\n\n"
-                + "Favor de mostrar el código QR en la sucursal";
+        String message = util.typeEmail(created ? 1 : 2, usuario, sucursal, cita);
         try {
 			mailService.sendMultiMail(usuario.getEmail(), message, id_cita);
 			System.out.println("Correo enviado");
