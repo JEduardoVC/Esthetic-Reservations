@@ -37,3 +37,24 @@ async function enviarMultimediaCorreo(email, branch, appointment, created) {
 	const respuesta = await resultado.json();
 	return respuesta;
 }
+
+function alerta(tipo, message) {
+	const icon = (tipo == "error") ? "error" : "success"
+	const title = (tipo == "error") ? "Oops..." : "Correcto"
+	Swal.fire({
+		icon: icon,
+	  	title: title,
+	  	text: message
+	})
+}
+
+function showLoading(message) {
+	Swal.fire({
+        title: message,
+        timer: 3000,
+        showConfirmButton: false,
+        didOpen: function() {
+            Swal.showLoading()
+        }
+    })
+}
