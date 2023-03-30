@@ -6,6 +6,14 @@
 async function presionarBoton() {
 	const username = document.querySelector("#username").value;
 	const password = document.querySelector("#password").value;
+	if(username == "") {
+		alerta("error", "Username Vacio");
+		return;
+	}
+	if(password == "") {
+		alerta("error", "Password Vacio");
+		return;
+	}
 	await fetch(`${BASE_URL}api/auth/user/login`,  {
 		method: 'POST',
 		headers: {
@@ -20,28 +28,22 @@ async function presionarBoton() {
 	})
 	.then(response => response.json())
 	.then(data => {
-		let alertas = []
-		if(data.errorCode == 400) {
-			if(data.message.username != null) alertas.push(`Username ${data.message.username}`);
-			if(data.message.password != null) alertas.push(`Password ${data.message.password}`);
-		} else if(data.errorCode == 401) {
-			if(data.message != null) alertas.push(`${data.message}`);
-		} else if(data.userRoles[0].id != obtenerRol()) {
-			alertas.push("Rol de usuario incorrecto");
+		if(data.errorCode == 401) {
+			alerta("error", data.message)
 		} else {
 			sessionStorage.setItem("token", data.token);
 			sessionStorage.setItem("userId", data.userId);
 			sessionStorage.setItem("rol", data.userRoles[0].id);
 			switch(data.userRoles[0].id) {
 				case 1:
-					document.location = "http://localhost:5500/app/admin";
+					document.location = `${BASE_URL}app/admin`;
 					break;
 				case 2:
 					obtenerBranch(data.userId)
 					.then(data => {
 						if(data == 0) {
 							alertas.push("Encargado no tiene una sucursal asignada");
-							mostrarAlerta(alertas);
+							alerta("error", "Encargado no tiene una sucursal asignada")
 						} else {
 							sessionStorage.setItem("branchId", data);
 							location = `${BASE_URL}app/owner`;
@@ -52,11 +54,10 @@ async function presionarBoton() {
 					location = `${BASE_URL}app/employee`;
 					break;
 				case 4:
-					location = `${BASE_URL}app`;
+					location = `${BASE_URL}app/client/dashboard`;
 					break;
 			}
 		}
-		mostrarAlerta(alertas);
 	})
 }
 
@@ -80,12 +81,4 @@ function obtenerRol() {
 	if(document.querySelector("#owner").checked) return 2;
 	if(document.querySelector("#employee").checked) return 3;
 	if(document.querySelector("#cliente").checked) return 4;
-}
-
-function mostrarAlerta(alertas) {
-	const div = document.querySelector("#alertas");
-	while(div.childNodes.length != 0) div.removeChild(div.firstChild);
-	alertas.forEach(message => {
-		div.innerHTML += `<p class="error">${message}</p>`
-	});
 }
