@@ -42,8 +42,8 @@ async function presionarBoton() {
 					obtenerBranch(data.userId)
 					.then(data => {
 						if(data == 0) {
-							alertas.push("Encargado no tiene una sucursal asignada");
 							alerta("error", "Encargado no tiene una sucursal asignada")
+							return;
 						} else {
 							sessionStorage.setItem("branchId", data);
 							location = `${BASE_URL}app/owner`;
@@ -74,11 +74,4 @@ async function obtenerBranch(id_owner) {
 	if(branch.content.length == 0) return 0;
 	const id = branch.content[0].id;
 	return id;
-}
-
-function obtenerRol() {
-	if(document.querySelector("#admin").checked) return 1;
-	if(document.querySelector("#owner").checked) return 2;
-	if(document.querySelector("#employee").checked) return 3;
-	if(document.querySelector("#cliente").checked) return 4;
 }
