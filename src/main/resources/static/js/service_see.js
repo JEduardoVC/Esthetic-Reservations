@@ -52,19 +52,34 @@ function mostrarServicios(servicios) {
 			<div style="text-align: center;">
 				<p>${servicio.price}</p>
 			</div>
+			<div>
+				<button type="button" id="btn-update-${servicio.id}" name=${servicio.id}>Actualizar</button>
+                <button type="button" id="btn-cancel-${servicio.id}" name=${servicio.id}>Eliminar</button>
+			</div>
 		`;
-		const divAcciones = document.createElement("DIV");
-		const btn_update = document.createElement("BUTTON");
-		btn_update.textContent = "Actualizar"
-		btn_update.addEventListener("click", function() {
-			sessionStorage.setItem("serviceId", servicio.id)
-			window.location = `${BASE_URL}app/owner/servicios/actualizar`;
-		})
-		divAcciones.appendChild(btn_update);
-		const btn_delete = document.createElement("BUTTON");
-		btn_delete.textContent = "Eliminar"		
-		btn_delete.addEventListener("click", async function() {
-			const resultado = await fetch(`${BASE_URL}api/owner/servicios/eliminar/${servicio.id}`, {
+		div.appendChild(service);
+		document.querySelector(`#btn-update-${servicio.id}`).addEventListener("click", update);
+        document.querySelector(`#btn-cancel-${servicio.id}`).addEventListener("click", deleteProduct);
+	})
+}
+
+function update(event) {
+	sessionStorage.setItem("serviceId", event.target.name)
+	window.location = `${BASE_URL}app/owner/servicios/actualizar`;
+}
+
+function deleteProduct(event) {
+	Swal.fire({
+		title: '¿Estas seguro?',
+		text: "No se podra reevertir los cambios!!",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Eliminar'
+	}).then(async (result) => {
+		if (result.isConfirmed) {
+			const resultado = await fetch(`${BASE_URL}api/owner/servicios/eliminar/${event.target.name}`, {
 				method: 'DELETE',
 				headers: {
 						"Authorization": `Bearer ${sessionStorage.getItem("token")}`
@@ -72,15 +87,12 @@ function mostrarServicios(servicios) {
 				redirect: "follow"
 			})
 			const respuesta = await resultado.json();
-			if(respuesta.errorCode == 404) {
-				let alertas = [respuesta.message];
-				mostrarAlerta(alertas);
+			if(respuesta.error) {
+				alerta("error", "No se puede eliminar el servicio porque ya esta asignado a una cita")
+				return;
 			} else {
 				document.location = `${BASE_URL}app/owner/servicios`;		
 			}
-		})
-		divAcciones.appendChild(btn_delete);
-		service.appendChild(divAcciones);
-		div.appendChild(service);
+		}
 	})
 }

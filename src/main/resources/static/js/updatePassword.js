@@ -36,6 +36,5 @@ async function updatePassword() {
 		redirect: "follow"
 	})
 	const resultado = await respuesta.json();
-	console.info(resultado);
 	if(resultado) location.href = `${BASE_URL}app/login`;
 }

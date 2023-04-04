@@ -17,7 +17,7 @@ public class AppClientController {
 
     @GetMapping("/dashboard")
     public ModelAndView viewClientDashboard() {
-        return new ModelAndView("client/dashboard");
+        return new ModelAndView("client/branches");
     }
     @GetMapping("/services")
     public ModelAndView viewClientServices() {
