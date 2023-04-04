@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,7 +62,12 @@ public class ServiceController {
 	@DeleteMapping("/eliminar/{id}")
 	public ResponseEntity<?> deleteServicio(@PathVariable("id") Long id) {
 		Map<String, String> response = new HashMap<String, String>();
-		seriviceServiceImpl.delete(id);
+		try {
+			seriviceServiceImpl.delete(id);
+		} catch(DataIntegrityViolationException e) {
+			response.put("error", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+		}
 		response.put("message", "Eliminado Correctamente");
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}
