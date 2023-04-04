@@ -54,7 +54,7 @@ async function presionarBoton() {
 					location = `${BASE_URL}app/employee`;
 					break;
 				case 4:
-					location = `${BASE_URL}app/client/dashboard`;
+					location = `${BASE_URL}app/client/location`;
 					break;
 			}
 		}
