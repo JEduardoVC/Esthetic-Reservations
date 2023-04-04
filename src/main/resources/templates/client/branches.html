@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+<body>
+    <main>
+        <div class="client-branchs">
+            <div class="title">
+                <h1 class="title-p">Ubicación</h1>
+                <img src="/img/img_location.webp">
+            </div>
+            <div class="map" id="map"></div>
+            <div class="location">
+                <h4>¿A que sucursal puedo asistir?</h4>
+                <form action="" method="POST">
+                    <select id="branchs"></select>
+                    <button id="selectionBranch" class="btn-principal">Continuar</button>
+                </form>
+                <form action="/">
+                    <button class="btn-terciario">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+<script src="/js/client_branchs.js"></script>
+<!-- <script src="/js/logout.js"></script> -->
+</html>

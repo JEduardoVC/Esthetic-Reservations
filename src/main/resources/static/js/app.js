@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     //darkMode();
-    menu();
-    isDarkMode();
+    //menu();
+    //isDarkMode();
 });
 
 function darkMode(){
