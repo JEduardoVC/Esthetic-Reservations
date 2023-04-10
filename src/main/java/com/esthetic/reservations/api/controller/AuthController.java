@@ -125,7 +125,8 @@ public class AuthController {
     @PutMapping("/update/password/{id}")
     public ResponseEntity<UserEntityDTO> updatePassword(@PathVariable("id") Long id, @RequestBody UserEntity usuario) {
     	UserEntity user = userService.mapToModel(userService.findById(id));
-    	if(user == null || user.getEmail() != usuario.getEmail()) new ResourceNotFoundException("Usuario", "No existe el usuario o hay datos incorrectos");
+    	if(user == null) new ResourceNotFoundException("Usuario", "No existe el usuario");
+    	if(user.getEmail() != usuario.getEmail()) new BadRequestException("Correo y usuario", "No coinciden");
     	user.setPassword(this.passwordEncoder.encode(usuario.getPassword()));
     	return new ResponseEntity<UserEntityDTO>(userService.save(userService.mapToDTO(user)), HttpStatus.ACCEPTED);
     }
