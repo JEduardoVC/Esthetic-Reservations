@@ -44,6 +44,12 @@ async function showBranchs(){
 }
 
 function seleccionar() {
-	console.info(document.querySelector("#branchs"))
-	console.warn("Entrando");
+	const select = document.querySelector("#branchs");
+	const value = select.selectedOptions[0].childNodes[0].value
+	if(value == undefined) {
+		alerta("error", "No ha seleccionado una sucursal");
+		return;
+	}
+	sessionStorage.setItem("branchId", value);
+	location = `${BASE_URL}app/client/dashboard`
 }
