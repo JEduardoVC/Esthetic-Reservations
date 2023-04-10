@@ -8,6 +8,10 @@
     input.form-control {
         font-size: 12px;
     }
+
+    h1.page-title {
+        color: #9623c8 !important;
+    }
 </style>
 
 <head th:insert="/generics/header">
@@ -17,7 +21,7 @@
     <div th:insert="/admin/navegacion"></div>
     <div class="body-admin">
         <div class="container-admin">
-            <h1>Sucursales</h1>
+            <h1 class="page-title">Sucursales</h1>
             <button id="createbranch" class="btn btn-principal fs-4 m-3 p-3" data-bs-toggle="modal"
                 data-bs-target="#modalBranchesForm" onclick="GetInfo('add');">Agregar sucursal</button>
             <table class="table" id="branchesTable" width="100%" cellspacing="0">
@@ -50,7 +54,7 @@
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content ">
                         <div class="modal-header">
-                            <h1 class="modal-title">Sucursal</h1>
+                            <h1 class="page-title modal-title">Sucursal</h1>
                         </div>
                         <div class="modal-body" th:insert="/admin/branch/formulario-sucursal.html">
                             
@@ -66,7 +70,7 @@
 </body>
 
 <script src="/js/bootstrap/bootstrap.bundle.js"></script>
-<script src="/js/jquery.dataTables.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
 <script src="/js/admin.branch.js"></script>
 <script src="/js/jquery.timepicker.js"></script>
 <script src="/js/logout.js"></script>

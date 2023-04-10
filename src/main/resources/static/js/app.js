@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     //darkMode();
+    console.log(sessionStorage.getItem("token"));
     menu();
     isDarkMode();
 });

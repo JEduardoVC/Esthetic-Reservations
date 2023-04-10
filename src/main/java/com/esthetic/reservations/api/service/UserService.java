@@ -1,7 +1,11 @@
 package com.esthetic.reservations.api.service;
 
+import java.util.ArrayList;
+
+import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.dto.UserEntityEditDTO;
+import com.esthetic.reservations.api.model.Role;
 import com.esthetic.reservations.api.model.UserEntity;
 
 public interface UserService extends GenericService<UserEntity, UserEntityDTO> {
@@ -27,5 +31,8 @@ public interface UserService extends GenericService<UserEntity, UserEntityDTO> {
     public UserEntityDTO grantRoleToUser(Long userId, String role);
 
     public UserEntityDTO revokeRoleToUser(Long userId, String role);
+
+    public ResponseDTO<UserEntityDTO> findAllByRole(int pageNumber, int pageSize, String sortBy, String sortDir,
+            String roleName);
 
 }

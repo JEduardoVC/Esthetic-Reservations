@@ -1,6 +1,6 @@
-(function() {
-	if(sessionStorage.getItem("token") == null) window.location = `${BASE_URL}app/login`
-	if(location.pathname == "/app/owner/inventario" && sessionStorage.getItem("productoId")) sessionStorage.removeItem("productoId")
+(function () {
+	if (sessionStorage.getItem("token") == null) window.location = `${BASE_URL}app/login`
+	if (location.pathname == "/app/owner/inventario" && sessionStorage.getItem("productoId")) sessionStorage.removeItem("productoId")
 	obtenerInventarios();
 })();
 
@@ -8,13 +8,13 @@ async function obtenerInventarios() {
 	const resultado = await fetch(`${BASE_URL}api/owner/inventario/branch/${sessionStorage.getItem("branchId")}`, {
 		method: 'GET',
 		headers: {
-				"Authorization": `Bearer ${sessionStorage.getItem("token")}`
-			},
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`
+		},
 		redirect: "follow"
 	})
 	const respuesta = await resultado.json();
 	const inventario = respuesta.content;
-	if(inventario == undefined) {
+	if (inventario == undefined) {
 		inventario = [];
 	}
 	mostrarInventario(inventario)
@@ -62,27 +62,27 @@ function mostrarInventario(inventario) {
 		const divAcciones = document.createElement("DIV");
 		const btn_update = document.createElement("BUTTON");
 		btn_update.textContent = "Actualizar"
-		btn_update.addEventListener("click", function() {
+		btn_update.addEventListener("click", function () {
 			sessionStorage.setItem("productoId", producto.id);
 			window.location = `${BASE_URL}app/owner/inventario/actualizar`;
 		})
 		divAcciones.appendChild(btn_update);
 		const btn_delete = document.createElement("BUTTON");
-		btn_delete.textContent = "Eliminar"		
-		btn_delete.addEventListener("click", async function() {
-		await fetch(`${bBASE_URL}api/owner/inventario/eliminar/${producto.id}`, {
+		btn_delete.textContent = "Eliminar"
+		btn_delete.addEventListener("click", async function () {
+			const resultado = await fetch(`${BASE_URL}api/owner/inventario/eliminar/${producto.id}`, {
 				method: 'DELETE',
 				headers: {
-						"Authorization": `Bearer ${sessionStorage.getItem("token")}`
-					},
+					"Authorization": `Bearer ${sessionStorage.getItem("token")}`
+				},
 				redirect: "follow"
 			})
 			const respuesta = await resultado.json();
-			if(respuesta.errorCode == 404) {
+			if (respuesta.errorCode == 404) {
 				let alertas = [respuesta.message];
 				mostrarAlerta(alertas);
 			} else {
-				document.location = `${BASE_URL}app/owner/inventario`;		
+				document.location = `${BASE_URL}app/owner/inventario`;
 			}
 		})
 		divAcciones.appendChild(btn_delete);

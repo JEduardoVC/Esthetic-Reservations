@@ -33,7 +33,7 @@ function loadBranches() {
                     return `<tr>
                         <td class="text-dark">${branch.id}</td>
                         <td class="text-dark">${branch.branchName}</td>
-                        <td class="text-dark">${branch.location + ', ' + branch.state + ', ' + branch.municipality}</td>
+                        <td class="text-dark">${branch.location + ', ' + branch.municipality + ', ' + branch.state}</td>
                         <td class="text-dark">${branch.owner.name + ' (' + branch.owner.id + ')'}</td>
                         <td class="text-dark">${branch.scheduleOpen}</td>
                         <td class="text-dark">${branch.scheduleClose}</td>
@@ -159,9 +159,10 @@ async function getUsers(ownerId = -1) {
 }
 
 async function getUsersRequest() {
-    var url = BASE_URL + 'api/user/all';
+    var url = BASE_URL + 'api/user/all?';
     const response = await fetch(url + new URLSearchParams({
-
+        'by':'role',
+        'filterTo':'OWNER'
     }), {
         method: 'GET',
         headers: {
