@@ -1,14 +1,22 @@
 package com.esthetic.reservations.api.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.dto.UserEntityEditDTO;
 import com.esthetic.reservations.api.exception.ConflictException;
@@ -54,14 +62,18 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     @Override
     public UserEntityDTO register(UserEntityDTO userEntityDTO, String role) {
         // Check if exists
-        /*if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
-            throw new ConflictException("Usuario", "ya esta siendo usado", "nombre de usuario",
-                    userEntityDTO.getUsername());
-        }
-        if (!userRepository.findByEmail(userEntityDTO.getEmail()).isEmpty()) {
-            throw new ConflictException("Usuario", "ya esta siendo usado", "correo electrónico",
-                    userEntityDTO.getEmail());
-        }*/
+        /*
+         * if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
+         * throw new ConflictException("Usuario", "ya esta siendo usado",
+         * "nombre de usuario",
+         * userEntityDTO.getUsername());
+         * }
+         * if (!userRepository.findByEmail(userEntityDTO.getEmail()).isEmpty()) {
+         * throw new ConflictException("Usuario", "ya esta siendo usado",
+         * "correo electrónico",
+         * userEntityDTO.getEmail());
+         * }
+         */
         // Not exists
         // Convert DTO to Model
         UserEntity user = mapToModel(userEntityDTO);
@@ -81,14 +93,18 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     @Override
     public UserEntityDTO register(UserEntityDTO userEntityDTO, Long role) {
         // Check if exists
-        /*if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
-            throw new ConflictException("Usuario", "ya esta siendo usado", "nombre de usuario",
-                    userEntityDTO.getUsername());
-        }
-        if (!userRepository.findByEmail(userEntityDTO.getEmail()).isEmpty()) {
-            throw new ConflictException("Usuario", "ya esta siendo usado", "correo electrónico",
-                    userEntityDTO.getEmail());
-        }*/
+        /*
+         * if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
+         * throw new ConflictException("Usuario", "ya esta siendo usado",
+         * "nombre de usuario",
+         * userEntityDTO.getUsername());
+         * }
+         * if (!userRepository.findByEmail(userEntityDTO.getEmail()).isEmpty()) {
+         * throw new ConflictException("Usuario", "ya esta siendo usado",
+         * "correo electrónico",
+         * userEntityDTO.getEmail());
+         * }
+         */
         // Not exists
         // Convert DTO to Model
         UserEntity user = mapToModel(userEntityDTO);
@@ -179,9 +195,31 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         dto.setPassword(entity.getPassword());
         UserEntity editedEntity = new UserEntity(0l, dto.getUsername(), dto.getName(), dto.getLastName(),
                 dto.getPhoneNumber(), dto.getAddress(),
-                dto.getEmail(),dto.getPassword());
+                dto.getEmail(), dto.getPassword());
         entity.copy(editedEntity);
         getRepository().save(entity);
         return mapToDTO(entity);
+    }
+
+    @Override
+    public ResponseDTO<UserEntityDTO> findAllByRole(int pageNumber, int pageSize, String sortBy, String sortDir,
+            String roleName) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Role userRole = roleRepository.findByName(roleName).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", roleName));
+        Page<UserEntity> entities = userRepository.findByUserRolesIn(Arrays.asList(userRole), pageable);
+        ArrayList<UserEntity> entitiesList = new ArrayList<>(entities.getContent());
+        // To JSON list
+        ArrayList<UserEntityDTO> content = entitiesList.stream().map(entity -> mapToDTO(entity))
+                .collect(Collectors.toCollection(ArrayList::new));
+        ResponseDTO<UserEntityDTO> userResponseDTO = new ResponseDTO<>();
+        userResponseDTO.setContent(content);
+        userResponseDTO.setPageNumber(pageNumber);
+        userResponseDTO.setPageSize(pageSize);
+        userResponseDTO.setCount(entities.getTotalElements());
+        userResponseDTO.setTotalPages(entities.getTotalPages());
+        userResponseDTO.setLast(entities.isLast());
+        return userResponseDTO;
     }
 }

@@ -54,13 +54,29 @@ public class UserController {
         }
     }
 
+    // @GetMapping("/all")
+    // public ResponseDTO<UserEntityDTO> findAll(
+    //         @RequestParam(value = "pageNum", defaultValue = AppConstants.PAGE_NUMBER, required = false) int pageNumber,
+    //         @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) int pageSize,
+    //         @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+    //         @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
+    //     return userService.findAll(pageNumber, pageSize, sortBy, sortDir);
+    // }
+
     @GetMapping("/all")
     public ResponseDTO<UserEntityDTO> findAll(
             @RequestParam(value = "pageNum", defaultValue = AppConstants.PAGE_NUMBER, required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
-        return userService.findAll(pageNumber, pageSize, sortBy, sortDir);
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir,
+            @RequestParam(value = "by", required = false, defaultValue = "na") String filterBy,
+            @RequestParam(value = "filterTo", required = false) String filterTo) {
+        switch (filterBy) {
+            case "role":
+                return userService.findAllByRole(pageNumber, pageSize, sortBy, sortDir, filterTo);
+            default:
+                return userService.findAll(pageNumber, pageSize, sortBy, sortDir);
+        }
     }
 
     @GetMapping("/{id}")

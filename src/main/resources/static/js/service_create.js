@@ -7,7 +7,8 @@
 async function agregarServicio() {
 	let alertas = [];
 	const nombre = document.querySelector("#nombre").value;
-	const duracion = document.querySelector("#duracion").value;
+	const duracion = document.querySelector("#duracion").value + ':00';
+	alert(duracion);
 	const precio = document.querySelector("#precio").value;
 	if(nombre == "") alertas.push("Nombre del Servicio Vacio");
 	if(duracion == "00:00:00") alertas.push("Duracion del Servicio Vacio");

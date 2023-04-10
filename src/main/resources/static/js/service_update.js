@@ -23,7 +23,10 @@ async function obtenerServicio() {
 async function actualizarServicio() {
 	let alertas = [];
 	const nombre = document.querySelector("#nombre").value;
-	const duracion = document.querySelector("#duracion").value;
+	let duracion = document.querySelector("#duracion").value;
+	if(duracion.split(':').length == 2){
+		duracion += ':00';
+	}
 	const precio = document.querySelector("#precio").value;
 	if(nombre == "") alertas.push("Nombre del Servicio Vacio");
 	if(duracion == "") alertas.push("Duracion del Servicio Vacio");
