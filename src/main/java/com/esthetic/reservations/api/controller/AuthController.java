@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.esthetic.reservations.api.dto.LoginDTO;
 import com.esthetic.reservations.api.dto.LoginResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
@@ -37,8 +38,6 @@ import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.Util;
-
-import io.micrometer.core.ipc.http.HttpSender.Response;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -117,8 +116,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
         String token = this.jwtUtil.generateToken(userDetails);
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, userEntity.getUserRoles().subList(0, 1),
-                userEntity.getId());
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, userEntity.getUserRoles(),userEntity.getId());
         return new ResponseEntity<>(loginResponseDTO, HttpStatus.OK);
     }
     

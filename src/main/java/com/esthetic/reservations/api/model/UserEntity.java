@@ -1,8 +1,8 @@
 package com.esthetic.reservations.api.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -46,14 +46,14 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 
 	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "id"))
-	private List<Role> userRoles = new ArrayList<>();
+	private Set<Role> userRoles = new HashSet<>();
 
 	public UserEntity() {
 		super();
 	}
 
 	public UserEntity(Long id, String username, String name, String lastName, String phoneNumber, String address,
-			String email, String password, List<Role> userRoles) {
+			String email, String password, Set<Role> userRoles) {
 		super(id);
 		this.username = username;
 		this.name = name;
@@ -133,11 +133,11 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 		this.password = password;
 	}
 
-	public List<Role> getUserRoles() {
+	public Set<Role> getUserRoles() {
 		return this.userRoles;
 	}
 
-	public void setUserRoles(List<Role> userRoles) {
+	public void setUserRoles(Set<Role> userRoles) {
 		this.userRoles = userRoles;
 	}
 

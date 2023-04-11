@@ -1,10 +1,9 @@
 package com.esthetic.reservations.api.service.impl;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -60,7 +59,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     }
 
     @Override
-    public UserEntityDTO register(UserEntityDTO userEntityDTO, String role) {
+    public UserEntityDTO register(UserEntityDTO userEntityDTO, String roleName) {
         // Check if exists
         /*
          * if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
@@ -79,8 +78,11 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         UserEntity user = mapToModel(userEntityDTO);
 
         // Default role
-        Role roles = roleRepository.findByName(role).get();
-        user.setUserRoles(Collections.singletonList(roles));
+        Role role = roleRepository.findByName(roleName).get();
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        user.setUserRoles(roles);
+        
 
         UserEntity newUser = userRepository.save(user); // Database
 
@@ -91,7 +93,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     }
 
     @Override
-    public UserEntityDTO register(UserEntityDTO userEntityDTO, Long role) {
+    public UserEntityDTO register(UserEntityDTO userEntityDTO, Long roleId) {
         // Check if exists
         /*
          * if (!userRepository.findByUsername(userEntityDTO.getUsername()).isEmpty()) {
@@ -110,8 +112,10 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         UserEntity user = mapToModel(userEntityDTO);
 
         // Default role
-        Role roles = roleRepository.findById(role).get();
-        user.setUserRoles(Collections.singletonList(roles));
+        Role role = roleRepository.findById(roleId).get();
+        Set<Role> roles = new HashSet<>();
+        roles.add(role);
+        user.setUserRoles(roles);
 
         UserEntity newUser = userRepository.save(user); // Database
 
@@ -146,7 +150,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         if (userEntity.getUserRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "ya tiene", "rol", roleEntity.getName());
         }
-        List<Role> newRoles = userEntity.getUserRoles();
+        Set<Role> newRoles = userEntity.getUserRoles();
         newRoles.add(roleEntity);
         userEntity.setUserRoles(newRoles);
         return mapToDTO(userRepository.save(userEntity));
@@ -167,7 +171,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         if (!userEntity.getUserRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "no es", "rol", roleEntity.getName());
         }
-        List<Role> newRoles = userEntity.getUserRoles();
+        Set<Role> newRoles = userEntity.getUserRoles();
         newRoles.remove(roleEntity);
         userEntity.setUserRoles(newRoles);
         return mapToDTO(userRepository.save(userEntity));
