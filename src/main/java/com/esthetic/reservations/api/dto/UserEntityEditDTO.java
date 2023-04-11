@@ -32,8 +32,6 @@ public class UserEntityEditDTO extends GenericModelDTO {
     @NotBlank(message = "El correo electrónico es requerido.")
     private String email;
 
-    @Pattern(regexp = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[@#$%^&+=!])\\S{8,}\\z", message = "Contraseña inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)")
-    @NotBlank(message = "La contraseña es requerida.")
     private String password;
 
     private List<Role> userRoles;
