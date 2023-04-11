@@ -116,7 +116,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
         String token = this.jwtUtil.generateToken(userDetails);
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, userEntity.getUserRoles(), userEntity.getId());
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, userEntity.getRoles(), userEntity.getId());
         return new ResponseEntity<>(loginResponseDTO, HttpStatus.OK);
     }
 

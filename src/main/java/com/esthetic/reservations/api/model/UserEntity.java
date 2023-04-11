@@ -46,14 +46,14 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 
 	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "id"))
-	private Set<Role> userRoles = new HashSet<>();
+	private Set<Role> roles = new HashSet<>();
 
 	public UserEntity() {
 		super();
 	}
 
 	public UserEntity(Long id, String username, String name, String lastName, String phoneNumber, String address,
-			String email, String password, Set<Role> userRoles) {
+			String email, String password, Set<Role> roles) {
 		super(id);
 		this.username = username;
 		this.name = name;
@@ -62,7 +62,7 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 		this.address = address;
 		this.email = email;
 		this.password = password;
-		this.userRoles = userRoles;
+		this.roles = roles;
 	}
 
 	public UserEntity(Long id, String username, String name, String lastName, String phoneNumber, String address,
@@ -133,12 +133,12 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 		this.password = password;
 	}
 
-	public Set<Role> getUserRoles() {
-		return this.userRoles;
+	public Set<Role> getRoles() {
+		return this.roles;
 	}
 
-	public void setUserRoles(Set<Role> userRoles) {
-		this.userRoles = userRoles;
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 				", address='" + getAddress() + "'" +
 				", email='" + getEmail() + "'" +
 				", password='" + getPassword() + "'" +
-				", userRoles='" + getUserRoles() + "'" +
+				", userRoles='" + getRoles() + "'" +
 				"}";
 	}
 
@@ -168,8 +168,12 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return getUserRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName()))
+		return getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName()))
 				.collect(Collectors.toList());
+	}
+
+	public void addRole(Role role){
+		this.roles.add(role);
 	}
 
 	@Override

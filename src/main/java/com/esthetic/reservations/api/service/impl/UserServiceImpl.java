@@ -79,7 +79,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         Role role = roleRepository.findByName(roleName).get();
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        user.setUserRoles(roles);
+        user.setRoles(roles);
         
 
         UserEntity newUser = userRepository.save(user); // Database
@@ -113,7 +113,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         Role role = roleRepository.findById(roleId).get();
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        user.setUserRoles(roles);
+        user.setRoles(roles);
 
         UserEntity newUser = userRepository.save(user); // Database
 
@@ -145,12 +145,12 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             // TODO: handle exception
             roleEntity = roleRepository.findByName(role).get();
         }
-        if (userEntity.getUserRoles().contains(roleEntity)) {
+        if (userEntity.getRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "ya tiene", "rol", roleEntity.getName());
         }
-        Set<Role> newRoles = userEntity.getUserRoles();
+        Set<Role> newRoles = userEntity.getRoles();
         newRoles.add(roleEntity);
-        userEntity.setUserRoles(newRoles);
+        userEntity.setRoles(newRoles);
         return mapToDTO(userRepository.save(userEntity));
     }
 
@@ -166,12 +166,12 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             // TODO: handle exception
             roleEntity = roleRepository.findByName(role).get();
         }
-        if (!userEntity.getUserRoles().contains(roleEntity)) {
+        if (!userEntity.getRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "no es", "rol", roleEntity.getName());
         }
-        Set<Role> newRoles = userEntity.getUserRoles();
+        Set<Role> newRoles = userEntity.getRoles();
         newRoles.remove(roleEntity);
-        userEntity.setUserRoles(newRoles);
+        userEntity.setRoles(newRoles);
         return mapToDTO(userRepository.save(userEntity));
     }
 
@@ -184,7 +184,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     public boolean validOwnerId(Long id) {
         UserEntity owner = userRepository.findById(id).get();
         Role ownerRole = roleRepository.findByName(AppConstants.OWNER_ROLE_NAME).get();
-        boolean aver = owner.getUserRoles().contains(ownerRole);
+        boolean aver = owner.getRoles().contains(ownerRole);
         System.out.println(aver);
         return aver;
     }
@@ -210,7 +210,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Role userRole = roleRepository.findByName(roleName).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", roleName));
-        Page<UserEntity> entities = userRepository.findByUserRolesIn(Arrays.asList(userRole), pageable);
+        Page<UserEntity> entities = userRepository.findByRolesIn(Arrays.asList(userRole), pageable);
         ArrayList<UserEntity> entitiesList = new ArrayList<>(entities.getContent());
         // To JSON list
         ArrayList<UserEntityDTO> content = entitiesList.stream().map(entity -> mapToDTO(entity))
