@@ -1,6 +1,5 @@
 package com.esthetic.reservations.api.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,7 +21,6 @@ public class SecurityConfig {
 
     private JwtAuthEntryPoint unauthorizedHandler;
 
-    @Autowired
     public SecurityConfig(JwtAuthEntryPoint unauthorizedHandler) {
         this.unauthorizedHandler = unauthorizedHandler;
     }
@@ -74,5 +72,5 @@ public class SecurityConfig {
     public Util util() {
         return new Util();
     }
-
+    
 }

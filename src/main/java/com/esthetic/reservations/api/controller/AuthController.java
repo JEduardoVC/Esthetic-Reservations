@@ -54,9 +54,9 @@ public class AuthController {
     @Autowired
     MailService mailService;
 
-    @Autowired
     public AuthController(UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder, UserServiceImpl userService, JwtUtil jwtUtil, Util util, RoleServiceImpl roleService) {
+            PasswordEncoder passwordEncoder, UserServiceImpl userService, JwtUtil jwtUtil, Util util,
+            RoleServiceImpl roleService) {
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
@@ -69,7 +69,7 @@ public class AuthController {
     @PostMapping("/{role}/register")
     public ResponseEntity<UserEntityDTO> register(@Valid @RequestBody UserEntityDTO userEntityDTO,
             @PathVariable(name = "role", required = true) String role) {
-        try{
+        try {
             Long roleId = Long.parseLong(role);
             if (userService.existsByUsername(userEntityDTO.getUsername())) {
                 throw new ConflictException("Usuario", "ya está siendo usado", "nombre de usuario",
@@ -81,8 +81,8 @@ public class AuthController {
             }
             userEntityDTO.setPassword(this.passwordEncoder.encode(userEntityDTO.getPassword()));
             return new ResponseEntity<>(userService.register(userEntityDTO, roleId), HttpStatus.CREATED);
-        } catch(NumberFormatException eFormatException){
-            if(!roleService.existsByName(role)){
+        } catch (NumberFormatException eFormatException) {
+            if (!roleService.existsByName(role)) {
                 throw new BadRequestException("Rol", "no es válido", "nombre", role);
             }
             if (userService.existsByUsername(userEntityDTO.getUsername())) {
@@ -116,33 +116,36 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
         String token = this.jwtUtil.generateToken(userDetails);
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, userEntity.getUserRoles(),userEntity.getId());
+        LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, userEntity.getUserRoles(), userEntity.getId());
         return new ResponseEntity<>(loginResponseDTO, HttpStatus.OK);
     }
-    
+
     @PutMapping("/update/password/{id}")
     public ResponseEntity<UserEntityDTO> updatePassword(@PathVariable("id") Long id, @RequestBody UserEntity usuario) {
-    	UserEntity user = userService.mapToModel(userService.findById(id));
-    	if(user == null) new ResourceNotFoundException("Usuario", "No existe el usuario");
-    	if(user.getEmail() != usuario.getEmail()) new BadRequestException("Correo y usuario", "No coinciden");
-    	user.setPassword(this.passwordEncoder.encode(usuario.getPassword()));
-    	return new ResponseEntity<UserEntityDTO>(userService.save(userService.mapToDTO(user)), HttpStatus.ACCEPTED);
+        UserEntity user = userService.mapToModel(userService.findById(id));
+        if (user == null)
+            new ResourceNotFoundException("Usuario", "No existe el usuario");
+        if (user.getEmail() != usuario.getEmail())
+            new BadRequestException("Correo y usuario", "No coinciden");
+        user.setPassword(this.passwordEncoder.encode(usuario.getPassword()));
+        return new ResponseEntity<UserEntityDTO>(userService.save(userService.mapToDTO(user)), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/sendSimpleMail")
     public ResponseEntity<Object> sendsimpleMail(@RequestParam("mail") String mail) {
-    	if(mail == "") new ResourceNotFoundException("Email", "Vacio");
+        if (mail == "")
+            new ResourceNotFoundException("Email", "Vacio");
         UserEntityDTO usuario = userService.findByEmail(mail);
         Map<String, String> map = new HashMap<String, String>();
         String message = util.typeEmail(3, userService.mapToModel(usuario), null, null);
         try {
             mailService.sendMail(mail, message);
-        	map.put("message", "Correo Enviado Correctamente");
-        	map.put("errorCode", "200");
+            map.put("message", "Correo Enviado Correctamente");
+            map.put("errorCode", "200");
             return new ResponseEntity<Object>(map, HttpStatus.OK);
         } catch (MailException e) {
-        	map.put("message", e.getMessage());
-        	return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
+            map.put("message", e.getMessage());
+            return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
         }
     }
 }

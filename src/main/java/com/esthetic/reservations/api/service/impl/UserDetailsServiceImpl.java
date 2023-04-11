@@ -1,6 +1,5 @@
 package com.esthetic.reservations.api.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +14,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserRepository userRepository;
 
-    @Autowired
     public UserDetailsServiceImpl(@Qualifier("UserRepository") UserRepository userRepository) {
         this.userRepository = userRepository;
     }

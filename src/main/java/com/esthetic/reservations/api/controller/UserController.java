@@ -5,11 +5,9 @@ import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +33,6 @@ public class UserController {
     private UserServiceImpl userService;
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
     public UserController(UserServiceImpl userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -53,15 +50,6 @@ public class UserController {
                 throw new EstheticAppException(HttpStatus.BAD_REQUEST, "Campo no válido");
         }
     }
-
-    // @GetMapping("/all")
-    // public ResponseDTO<UserEntityDTO> findAll(
-    //         @RequestParam(value = "pageNum", defaultValue = AppConstants.PAGE_NUMBER, required = false) int pageNumber,
-    //         @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) int pageSize,
-    //         @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-    //         @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
-    //     return userService.findAll(pageNumber, pageSize, sortBy, sortDir);
-    // }
 
     @GetMapping("/all")
     public ResponseDTO<UserEntityDTO> findAll(
