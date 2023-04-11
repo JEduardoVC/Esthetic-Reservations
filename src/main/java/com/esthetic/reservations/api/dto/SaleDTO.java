@@ -3,18 +3,28 @@ package com.esthetic.reservations.api.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class SaleDTO extends GenericModelDTO {
 
+    @NotNull(message = "Se requiere la información de la sucursal.")
     private SaleBranchDTO branch;
-
+    
+    @NotNull(message = "Se requiere la información del cliente.")
     private MinUserEntityDTO client;
 
+    @NotNull(message = "Se requiere el total de la venta.")
     private Double total;
 
+    @NotNull(message = "Se requiere la cantidad de productos de la venta.")
     private Long quantity;
 
+    @NotNull(message = "Se requiere la lista de productos.")
+    @NotEmpty(message = "Se requiere la lista con al menos un producto.")
     private List<SaleItemDTO> productsList;
 
+    @NotNull(message = "Se requiere la fecha de venta.")
     private LocalDateTime saleDate;
 
     /**
