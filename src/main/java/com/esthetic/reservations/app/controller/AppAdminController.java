@@ -11,7 +11,6 @@ import com.esthetic.reservations.api.util.AppConstants;
 
 @RestController
 @RequestMapping("/app/admin")
-@RolesAllowed({AppConstants.ADMIN_ROLE_NAME})
 public class AppAdminController {
 	
 	@GetMapping

@@ -2,6 +2,7 @@ package com.esthetic.reservations.api.model;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -174,6 +175,16 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 
 	public void addRole(Role role){
 		this.roles.add(role);
+	}
+
+	public Boolean hasAuthority(String authority){
+		Iterator<? extends GrantedAuthority> iterator = this.getAuthorities().iterator();
+		while(iterator.hasNext()){
+			if(iterator.next().getAuthority().equals(authority)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

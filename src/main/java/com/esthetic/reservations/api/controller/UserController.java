@@ -63,7 +63,8 @@ public class UserController {
             @RequestParam(value = "filterTo", required = false) String filterTo) {
         switch (filterBy) {
             case "role":
-                return userService.findAllByRole(pageNumber, pageSize, sortBy, sortDir, filterTo);
+                String roleName = AppConstants.ROLE_PREFIX + filterTo;
+                return userService.findAllByRole(pageNumber, pageSize, sortBy, sortDir, roleName);
             default:
                 return userService.findAll(pageNumber, pageSize, sortBy, sortDir);
         }
