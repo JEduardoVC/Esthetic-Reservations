@@ -3,6 +3,7 @@ package com.esthetic.reservations.api.controller;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import com.esthetic.reservations.api.util.AppConstants;
 
 @RestController
 @RequestMapping("/api/user")
+@RolesAllowed({AppConstants.ADMIN_ROLE_NAME})
 public class UserController {
 
     private UserServiceImpl userService;
@@ -75,12 +77,14 @@ public class UserController {
     @PutMapping("/{id}/grant/{role}")
     public ResponseEntity<UserEntityDTO> grantRoleToUser(@PathVariable(name = "id", required = true) Long userId,
             @PathVariable(name = "role", required = true) String role) {
+        role = AppConstants.ROLE_PREFIX + role;
         return new ResponseEntity<>(userService.grantRoleToUser(userId, role), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/revoke/{role}")
     public ResponseEntity<UserEntityDTO> revokeRoleToUser(@PathVariable(name = "id", required = true) Long userId,
             @PathVariable(name = "role", required = true) String role) {
+        role = AppConstants.ROLE_PREFIX + role;
         return new ResponseEntity<>(userService.revokeRoleToUser(userId, role), HttpStatus.OK);
     }
 
@@ -91,7 +95,8 @@ public class UserController {
             UserEntityDTO userReponse = userService.updateNoPassword(userDTO, id);
             return new ResponseEntity<>(userReponse, HttpStatus.OK);
         } else {
-            @Valid UserEntityDTO editUserDTO = new @Valid UserEntityDTO(0l, userDTO.getUsername(), userDTO.getName(),
+            @Valid
+            UserEntityDTO editUserDTO = new @Valid UserEntityDTO(0l, userDTO.getUsername(), userDTO.getName(),
                     userDTO.getLastName(), userDTO.getPhoneNumber(), userDTO.getAddress(),
                     userDTO.getEmail(), userDTO.getPassword(), null);
             return updatePassword(editUserDTO, id);
@@ -99,15 +104,16 @@ public class UserController {
     }
 
     private ResponseEntity<UserEntityDTO> updatePassword(@Valid UserEntityDTO userDTO, Long id) {
-        if(!isValidPassword(userDTO.getPassword())){
-            throw new BadRequestException("Contraseña", "inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)");
+        if (!isValidPassword(userDTO.getPassword())) {
+            throw new BadRequestException("Contraseña",
+                    "inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)");
         }
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         UserEntityDTO userReponse = userService.update(userDTO, id);
         return new ResponseEntity<>(userReponse, HttpStatus.OK);
     }
 
-    private Boolean isValidPassword(String password){
+    private Boolean isValidPassword(String password) {
         final String PATTERN = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[@#$%^&+=!])\\S{8,}\\z";
         Pattern pattern = Pattern.compile(PATTERN);
         Matcher matcher = pattern.matcher(password);

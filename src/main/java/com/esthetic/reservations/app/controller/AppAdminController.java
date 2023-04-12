@@ -2,7 +2,6 @@ package com.esthetic.reservations.app.controller;
 
 import javax.annotation.security.RolesAllowed;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +11,7 @@ import com.esthetic.reservations.api.util.AppConstants;
 
 @RestController
 @RequestMapping("/app/admin")
+@RolesAllowed({AppConstants.ADMIN_ROLE_NAME})
 public class AppAdminController {
 	
 	@GetMapping
@@ -20,7 +20,6 @@ public class AppAdminController {
 	}
 	
 	@GetMapping("/sucursales")
-	@RolesAllowed(AppConstants.ADMIN_ROLE_NAME)
 	public ModelAndView viewSucursales() {
 		return new ModelAndView("admin/branch/sucursales");
 	}

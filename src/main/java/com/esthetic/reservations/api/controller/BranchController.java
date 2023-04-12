@@ -1,5 +1,6 @@
 package com.esthetic.reservations.api.controller;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,7 @@ public class BranchController {
     }
 
     @GetMapping("/all")
+    @RolesAllowed({AppConstants.ADMIN_ROLE_NAME})
     public ResponseDTO<BranchDTO> findAll(
             @RequestParam(value = "pageNum", defaultValue = AppConstants.PAGE_NUMBER, required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) int pageSize,

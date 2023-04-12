@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,7 +17,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.esthetic.reservations.api.util.Util;
 
 @Configuration
-@EnableWebSecurity
+@EnableGlobalMethodSecurity(
+    prePostEnabled = false, securedEnabled = false, jsr250Enabled = true
+)
 public class SecurityConfig {
 
     private JwtAuthEntryPoint unauthorizedHandler;
@@ -51,7 +54,11 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/client/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/branch/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/").permitAll()
-                .antMatchers("/app/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/app").permitAll()
+                .antMatchers(HttpMethod.GET, "/app/").permitAll()
+                .antMatchers(HttpMethod.GET, "/app/login").permitAll()
+                .antMatchers(HttpMethod.GET, "/app/registro").permitAll()
+                .antMatchers(HttpMethod.GET, "/app/reestablecer/password").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/img/**").permitAll()
                 .antMatchers("/js/**").permitAll()

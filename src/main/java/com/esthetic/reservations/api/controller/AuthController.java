@@ -14,7 +14,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,15 +34,14 @@ import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.security.JwtUtil;
 import com.esthetic.reservations.api.service.MailService;
 import com.esthetic.reservations.api.service.impl.RoleServiceImpl;
-import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
+import com.esthetic.reservations.api.util.AppConstants;
 import com.esthetic.reservations.api.util.Util;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private UserDetailsServiceImpl userDetailsService;
     private UserServiceImpl userService;
     private RoleServiceImpl roleService;
     private AuthenticationManager authenticationManager;
@@ -54,10 +52,9 @@ public class AuthController {
     @Autowired
     MailService mailService;
 
-    public AuthController(UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager,
+    public AuthController(AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder, UserServiceImpl userService, JwtUtil jwtUtil, Util util,
             RoleServiceImpl roleService) {
-        this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
@@ -69,6 +66,7 @@ public class AuthController {
     @PostMapping("/{role}/register")
     public ResponseEntity<UserEntityDTO> register(@Valid @RequestBody UserEntityDTO userEntityDTO,
             @PathVariable(name = "role", required = true) String role) {
+        role = AppConstants.ROLE_PREFIX + role;
         try {
             Long roleId = Long.parseLong(role);
             if (userService.existsByUsername(userEntityDTO.getUsername())) {
@@ -114,8 +112,8 @@ public class AuthController {
             throw new UnauthorizedException("Contraseña", "incorrecta");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsername());
-        String token = this.jwtUtil.generateToken(userDetails);
+
+        String token = this.jwtUtil.generateToken(userEntity);
         LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, userEntity.getRoles(), userEntity.getId());
         return new ResponseEntity<>(loginResponseDTO, HttpStatus.OK);
     }
