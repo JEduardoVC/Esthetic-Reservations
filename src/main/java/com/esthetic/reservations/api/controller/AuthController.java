@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.esthetic.reservations.api.dto.AllowedDTO;
 import com.esthetic.reservations.api.dto.LoginDTO;
@@ -42,6 +44,8 @@ import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
 import com.esthetic.reservations.api.util.Util;
+
+import io.jsonwebtoken.MalformedJwtException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -73,15 +77,31 @@ public class AuthController {
     }
 
     @PostMapping("/allowed")
-    public ResponseEntity<MessageDTO> allowed(@RequestHeader(name = "Authorization") String token,
-            @Valid @RequestBody AllowedDTO allowedDTO) {
+    public Object allowed(@RequestHeader(name = "Authorization", required = true) String token,
+            @Valid @RequestBody AllowedDTO allowedDTO, RedirectAttributes redirectAttributes) {
+        String uriQry = allowedDTO.getUrl();
+        String uri = uriQry.split("\\?")[0];
+        Boolean isPublicPath = this.antPathMatcher.match("/app", uri)
+                || this.antPathMatcher.match("/app/", uri)
+                || this.antPathMatcher.match("/app/login", uri)
+                || this.antPathMatcher.match("/app/register", uri)
+                || this.antPathMatcher.match("/app/restablecer/password", uri)
+                || this.antPathMatcher.match("/app/forbidden", uri)
+                || this.antPathMatcher.match("/app/unauthorized", uri);
+        if (isPublicPath) {
+            return new ResponseEntity<>(new MessageDTO("allowed"), HttpStatus.OK);
+        }
         token = token.substring(7);
-        String uri = allowedDTO.getUrl();
-        UserEntity userDetails = (UserEntity) this.userDetailsService
-                .loadUserByUsername(this.jwtUtil.extractUsername(token));
+        UserEntity userDetails = null;
+        try {
+            userDetails = (UserEntity) this.userDetailsService
+                    .loadUserByUsername(this.jwtUtil.extractUsername(token));
+        } catch (MalformedJwtException e) {
+            return new RedirectView("/app/unauthorized");
+        }
         Boolean allowed = false;
         if (!this.jwtUtil.validateToken(token, userDetails)) {
-            return new ResponseEntity<>(new MessageDTO("session expired"), HttpStatus.UNAUTHORIZED);
+            return new RedirectView("/app/unauthorized");
         }
         allowed = userDetails.hasAuthority(AppConstants.ADMIN_ROLE_NAME) &&
                 (this.antPathMatcher.match("/app/**", uri));
@@ -92,8 +112,26 @@ public class AuthController {
         allowed |= userDetails.hasAuthority(AppConstants.CLIENT_ROLE_NAME) &&
                 (this.antPathMatcher.match("/app/client/**", uri));
 
-        return new ResponseEntity<>(new MessageDTO(allowed ? "allowed" : "not allowed"),
-                allowed ? HttpStatus.OK : HttpStatus.FORBIDDEN);
+        if (allowed) {
+            return new ResponseEntity<>(new MessageDTO("allowed"), HttpStatus.OK);
+        } else {
+            String home = "/app/";
+            if (userDetails.hasAuthority(AppConstants.CLIENT_ROLE_NAME)) {
+                home += "client";
+            }
+            if (userDetails.hasAuthority(AppConstants.EMPLOYEE_ROLE_NAME)) {
+                home += "employee";
+            }
+            if (userDetails.hasAuthority(AppConstants.OWNER_ROLE_NAME)) {
+                home += "owner";
+            }
+            if (userDetails.hasAuthority(AppConstants.ADMIN_ROLE_NAME)) {
+                home += "admin";
+            }
+            redirectAttributes.addAttribute("home", home);
+            return new RedirectView("/app/forbidden");
+        }
+
     }
 
     @PostMapping("/{role}/register")

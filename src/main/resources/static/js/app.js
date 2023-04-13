@@ -1,23 +1,26 @@
-document.addEventListener('DOMContentLoaded', async function() {
+window.addEventListener('load', async function () {
+    await isAllowed();
+}, false);
+
+document.addEventListener('DOMContentLoaded', async function () {
     //darkMode();
     //menu();
     //isDarkMode();
-    await isAllowed();
 });
 
-function darkMode(){
+function darkMode() {
     const botonDarkMode = document.querySelector(".dark-mode-boton");
     const botonLigthMode = document.querySelector(".ligth-mode-boton");
-    botonDarkMode.addEventListener("click", function() {
-        if(!document.querySelector(".dark-mode")){
+    botonDarkMode.addEventListener("click", function () {
+        if (!document.querySelector(".dark-mode")) {
             document.body.classList.add("dark-mode");
             document.querySelector(".luna").classList.add("no-mostrar");
             document.querySelector(".sol").classList.remove("no-mostrar");
             sessionStorage.setItem("darkMode", "true");
         }
     });
-    botonLigthMode.addEventListener("click", function() {
-        if(document.querySelector(".dark-mode")){
+    botonLigthMode.addEventListener("click", function () {
+        if (document.querySelector(".dark-mode")) {
             document.body.classList.remove("dark-mode");
             document.querySelector(".luna").classList.remove("no-mostrar");
             document.querySelector(".sol").classList.add("no-mostrar");
@@ -26,10 +29,10 @@ function darkMode(){
     });
 }
 
-function menu(){
+function menu() {
     const menu = document.querySelector(".animacion-menu");
-    if(menu){
-        menu.addEventListener("click", function(){
+    if (menu) {
+        menu.addEventListener("click", function () {
             const acciones = document.querySelector("#acciones");
             acciones.classList.toggle("mostrar");
             acciones.classList.toggle("botones-menu");
@@ -38,16 +41,16 @@ function menu(){
     }
 }
 
-function isDarkMode(){
-    if(sessionStorage.getItem("darkMode")){
+function isDarkMode() {
+    if (sessionStorage.getItem("darkMode")) {
         document.body.classList.add("dark-mode");
         document.querySelector(".luna").classList.add("no-mostrar");
         document.querySelector(".sol").classList.remove("no-mostrar");
     }
 }
 
-async function showInfoClient(userId){
-    const resultadoUsuario = await fetch(`/api/user/${userId}`,{method: 'GET', headers: myHeaders, redirect: 'follow'});
+async function showInfoClient(userId) {
+    const resultadoUsuario = await fetch(`/api/user/${userId}`, { method: 'GET', headers: myHeaders, redirect: 'follow' });
     const client = await resultadoUsuario.json();
     const nameUser = document.querySelector("#nombre-usuario");
     console.log(nameUser);
@@ -55,27 +58,31 @@ async function showInfoClient(userId){
     nameUser.textContent = `${name} ${lastName}`;
 }
 
-async function showInfoBranch(branchId){
-    const resultadoBranch = await fetch(`/api/branch/${branchId}`,{method: 'GET', headers: myHeaders, redirect: 'follow'});
+async function showInfoBranch(branchId) {
+    const resultadoBranch = await fetch(`/api/branch/${branchId}`, { method: 'GET', headers: myHeaders, redirect: 'follow' });
     const branch = await resultadoBranch.json();
     const { branchName } = branch;
     const nameBranch = document.querySelector("#nombre-branch");
     nameBranch.textContent = `${branchName}`;
 }
 
-async function isAllowed(){
+async function isAllowed() {
     const response = await allowedRequest();
-    if(response.status !== 200){
-        location.href = BASE_URL + 'app/login';
-    }
+    // if(response.status === 403){
+    //     console.log('Forbidden ' +  '/' + window.location.href.replace(BASE_URL, ''));
+    //     location.href = '/app/forbidden';
+    // } else if(response.status === 401){
+    //     console.log('Unauthorized ' +  '/' + window.location.href.replace(BASE_URL, ''));
+    //     location.href = '/app/unauthorized';
+    // } else {
+        console.log('Allowed ' +  '/' + window.location.href.replace(BASE_URL, ''));
+    // }
+    console.log(`${sessionStorage.getItem("token")}`);
 }
 
 async function allowedRequest() {
     const url = BASE_URL + 'api/auth/allowed';
     const uri = '/' + window.location.href.replace(BASE_URL, '');
-    if(['/app', '/app/', '/app/login', '/app/register', '/app/restablecer/password'].includes(uri)){
-        return {'status': 200, 'msg': 'allowed'};
-    }
     const response = await fetch(url + new URLSearchParams({
 
     }), {
@@ -87,9 +94,14 @@ async function allowedRequest() {
         },
         body: JSON.stringify({
             url: uri
-        })
+        }),
+        redirect: 'follow'
     });
-    const status = response.status;
-    const json = await response.json();
-    return {'status': status, 'msg': json.message};
+    if(response.redirected){
+        location.href = response.url;
+    } else {
+        const status = response.status;
+        const json = await response.json();
+        return { 'status': status, 'msg': json.message };
+    }
 }
