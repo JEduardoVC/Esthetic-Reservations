@@ -1,11 +1,10 @@
 package com.esthetic.reservations.api.controller;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.esthetic.reservations.api.dto.MinBranchDTO;
 import com.esthetic.reservations.api.dto.BranchDTO;
 import com.esthetic.reservations.api.dto.MessageDTO;
+import com.esthetic.reservations.api.dto.MinBranchDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
@@ -30,12 +29,12 @@ public class BranchController {
 
     private BranchServiceImpl branchService;
 
-    @Autowired
     public BranchController(BranchServiceImpl branchService) {
         this.branchService = branchService;
     }
 
     @GetMapping("/all")
+    @RolesAllowed({AppConstants.ADMIN_ROLE_NAME})
     public ResponseDTO<BranchDTO> findAll(
             @RequestParam(value = "pageNum", defaultValue = AppConstants.PAGE_NUMBER, required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) int pageSize,
@@ -51,8 +50,8 @@ public class BranchController {
             @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir,
             @RequestParam(value = "filterBy", defaultValue = "owner", required = true) String filterBy,
-            @RequestParam(value = "filterTo",required = true) String filterTo) {
-        
+            @RequestParam(value = "filterTo", required = true) String filterTo) {
+
         switch (filterBy) {
             case "owner":
                 Long ownerId = Long.parseLong(filterTo);

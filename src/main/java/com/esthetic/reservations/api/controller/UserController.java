@@ -3,13 +3,12 @@ package com.esthetic.reservations.api.controller;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +29,12 @@ import com.esthetic.reservations.api.util.AppConstants;
 
 @RestController
 @RequestMapping("/api/user")
+@RolesAllowed({AppConstants.ADMIN_ROLE_NAME})
 public class UserController {
 
     private UserServiceImpl userService;
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
     public UserController(UserServiceImpl userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -59,8 +58,16 @@ public class UserController {
             @RequestParam(value = "pageNum", defaultValue = AppConstants.PAGE_NUMBER, required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir) {
-        return userService.findAll(pageNumber, pageSize, sortBy, sortDir);
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir,
+            @RequestParam(value = "by", required = false, defaultValue = "na") String filterBy,
+            @RequestParam(value = "filterTo", required = false) String filterTo) {
+        switch (filterBy) {
+            case "role":
+                String roleName = AppConstants.ROLE_PREFIX + filterTo;
+                return userService.findAllByRole(pageNumber, pageSize, sortBy, sortDir, roleName);
+            default:
+                return userService.findAll(pageNumber, pageSize, sortBy, sortDir);
+        }
     }
 
     @GetMapping("/{id}")
@@ -71,12 +78,14 @@ public class UserController {
     @PutMapping("/{id}/grant/{role}")
     public ResponseEntity<UserEntityDTO> grantRoleToUser(@PathVariable(name = "id", required = true) Long userId,
             @PathVariable(name = "role", required = true) String role) {
+        role = AppConstants.ROLE_PREFIX + role;
         return new ResponseEntity<>(userService.grantRoleToUser(userId, role), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/revoke/{role}")
     public ResponseEntity<UserEntityDTO> revokeRoleToUser(@PathVariable(name = "id", required = true) Long userId,
             @PathVariable(name = "role", required = true) String role) {
+        role = AppConstants.ROLE_PREFIX + role;
         return new ResponseEntity<>(userService.revokeRoleToUser(userId, role), HttpStatus.OK);
     }
 
@@ -87,7 +96,8 @@ public class UserController {
             UserEntityDTO userReponse = userService.updateNoPassword(userDTO, id);
             return new ResponseEntity<>(userReponse, HttpStatus.OK);
         } else {
-            @Valid UserEntityDTO editUserDTO = new @Valid UserEntityDTO(0l, userDTO.getUsername(), userDTO.getName(),
+            @Valid
+            UserEntityDTO editUserDTO = new @Valid UserEntityDTO(0l, userDTO.getUsername(), userDTO.getName(),
                     userDTO.getLastName(), userDTO.getPhoneNumber(), userDTO.getAddress(),
                     userDTO.getEmail(), userDTO.getPassword(), null);
             return updatePassword(editUserDTO, id);
@@ -95,15 +105,16 @@ public class UserController {
     }
 
     private ResponseEntity<UserEntityDTO> updatePassword(@Valid UserEntityDTO userDTO, Long id) {
-        if(!isValidPassword(userDTO.getPassword())){
-            throw new BadRequestException("Contraseña", "inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)");
+        if (!isValidPassword(userDTO.getPassword())) {
+            throw new BadRequestException("Contraseña",
+                    "inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)");
         }
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         UserEntityDTO userReponse = userService.update(userDTO, id);
         return new ResponseEntity<>(userReponse, HttpStatus.OK);
     }
 
-    private Boolean isValidPassword(String password){
+    private Boolean isValidPassword(String password) {
         final String PATTERN = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[@#$%^&+=!])\\S{8,}\\z";
         Pattern pattern = Pattern.compile(PATTERN);
         Matcher matcher = pattern.matcher(password);

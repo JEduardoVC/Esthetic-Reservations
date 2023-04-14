@@ -66,7 +66,8 @@ async function obtenerBranch(id_owner) {
 		method: "GET",
 		headers: {
 			'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`
 		},
 		redirect: "follow"
 	});

@@ -5,16 +5,16 @@ async function enviarSimpleCorreo(email) {
 	var formdata = new FormData();
 	formdata.append("mail", email);
 	var requestOptions = {
-	  method: 'POST',
-	  body: formdata,
-	  redirect: 'follow'
+		method: 'POST',
+		body: formdata,
+		redirect: 'follow'
 	};
 	let respuesta;
 	await fetch(`${BASE_URL}api/auth/sendSimpleMail`, requestOptions)
-	  .then(response => response.json())
-	  .then(data => {
-		respuesta = data;
-	});
+		.then(response => response.json())
+		.then(data => {
+			respuesta = data;
+		});
 	return respuesta;
 }
 
@@ -27,10 +27,10 @@ async function enviarMultimediaCorreo(email, branch, appointment, created) {
 	formdata.append("branch", branch);
 	formdata.append("appointment", appointment)
 	var requestOptions = {
-	  method: 'POST',
-	  headers: myHeaders,
-	  body: formdata,
-	  redirect: 'follow'
+		method: 'POST',
+		headers: myHeaders,
+		body: formdata,
+		redirect: 'follow'
 	};
 	const url = created ? `${BASE_URL}api/appointment/sendMultiMail` : `${BASE_URL}api/appointment/sendMultiMailUpdate`;
 	const resultado = await fetch(url, requestOptions)
@@ -43,18 +43,18 @@ function alerta(tipo, message) {
 	const title = (tipo == "error") ? "Oops..." : "Correcto"
 	Swal.fire({
 		icon: icon,
-	  	title: title,
-	  	text: message
+		title: title,
+		text: message
 	})
 }
 
 function showLoading(message) {
 	Swal.fire({
-        title: message,
-        timer: 3000,
-        showConfirmButton: false,
-        didOpen: function() {
-            Swal.showLoading()
-        }
-    })
+		title: message,
+		timer: 3000,
+		showConfirmButton: false,
+		didOpen: function () {
+			Swal.showLoading()
+		}
+	})
 }

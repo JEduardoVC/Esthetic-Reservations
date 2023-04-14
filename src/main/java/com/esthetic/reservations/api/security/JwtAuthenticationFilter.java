@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
@@ -19,6 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.esthetic.reservations.api.exception.EstheticAppException;
 import com.esthetic.reservations.api.exception.UnauthorizedException;
+import com.esthetic.reservations.api.model.UserEntity;
+import com.esthetic.reservations.api.repository.RoleRepository;
 import com.esthetic.reservations.api.service.impl.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -30,6 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -50,7 +54,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // TODO: lanzar excepcion
         }
 
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+        UserEntity userDetails = (UserEntity) this.userDetailsService.loadUserByUsername(username);
+
+        String jwtRoles = (String) this.jwtUtil.extractClaim(jwtToken, "roles");
+
+        jwtRoles = jwtRoles.replace("[", "").replace("]", "");
+        String[] roles = jwtRoles.split(",");
+        for (String roleName : roles) {
+            userDetails.addRole(this.roleRepository.findByName(roleName).get());
+        }
 
         if (!this.jwtUtil.validateToken(jwtToken, userDetails)) {
             throw new UnauthorizedException("Usuario", "token no válido", "token", jwtToken);
@@ -76,13 +88,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 || antPathMatcher.match("/js/**", request.getServletPath())
                 || antPathMatcher.match("/Inventario/**", request.getServletPath())
                 || antPathMatcher.match("/", request.getServletPath());
-        if(notfilter){
-            return true;
-        }
-        if(antPathMatcher.match("/api/branch/**",request.getServletPath())){
-            return request.getMethod().equals("GET");
-        }
-        return false;
+        return notfilter;
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {

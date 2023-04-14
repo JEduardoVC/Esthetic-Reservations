@@ -1,7 +1,6 @@
 package com.esthetic.reservations.api.service.impl;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ public class RoleServiceImpl extends GenericServiceImpl<Role, RoleDTO> implement
 
     private RoleRepository roleRepository;
 
-    @Autowired
     public RoleServiceImpl(RoleRepository repository, ModelMapper modelMapper, @Qualifier("RoleRepository") RoleRepository roleRepository) {
         super(repository, modelMapper, Role.class, RoleDTO.class);
         this.roleRepository = roleRepository;

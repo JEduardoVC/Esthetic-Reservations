@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -12,25 +11,25 @@ import com.esthetic.reservations.api.model.Role;
 
 public class UserEntityEditDTO extends GenericModelDTO {
 
-    @NotBlank
+    @NotBlank(message = "El nombre de usuario es requerido.")
     @Pattern(regexp = "^[a-zA-Z0-9._-]{3,}$", message = "El nombre de usuario debe tener al menos 3 letras y/o números sin símbolos especiales.")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "El nombre es requerido.")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "El apellido es requerido.")
     private String lastName;
 
-    @NotEmpty
+    @NotBlank(message = "El número de teléfono es requerido.")
     @Size(max = 10, min = 10, message = "El número de teléfono tiene que tener 10 dígitos")
     private String phoneNumber;
 
-    @NotBlank
+    @NotBlank(message = "La dirección es requerida")
     private String address;
 
     @Email(message = "Correo electrónico no válido", regexp = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")
-    @NotBlank
+    @NotBlank(message = "El correo electrónico es requerido.")
     private String email;
 
     private String password;

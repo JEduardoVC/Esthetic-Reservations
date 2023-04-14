@@ -7,12 +7,15 @@ public class AppConstants {
     public static final String DEFAULT_SORT_ORDER = "id";
     public static final String DEFAULT_SORT_DIR = "asc";
 
-    public static final String ADMIN_ROLE_NAME = "ADMIN";
-    public static final String OWNER_ROLE_NAME = "OWNER";
-    public static final String EMPLOYEE_ROLE_NAME = "EMPLOYEE";
-    public static final String CLIENT_ROLE_NAME = "CLIENT";
+    public static final String ROLE_PREFIX = "ROLE_";
+    public static final String ADMIN_ROLE_NAME = ROLE_PREFIX + "ADMIN";
+    public static final String OWNER_ROLE_NAME = ROLE_PREFIX + "OWNER";
+    public static final String EMPLOYEE_ROLE_NAME = ROLE_PREFIX + "EMPLOYEE";
+    public static final String CLIENT_ROLE_NAME = ROLE_PREFIX + "CLIENT";
 
     public static final String JWT_SECRET = "ersecret";
+
+    public static final String JWT_ISSUER = "esthetic";
 
     public static final Long JWT_SECOND = 1000l;
     public static final Long JWT_MINUTE = JWT_SECOND * 60;

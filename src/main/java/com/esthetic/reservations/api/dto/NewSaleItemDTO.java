@@ -1,9 +1,13 @@
 package com.esthetic.reservations.api.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class NewSaleItemDTO {
 
+    @NotNull(message = "Se requiere el ID del producto.")
     private Long productId;
 
+    @NotNull(message = "Se requiere la cantidad de este producto.")
     private Long quantity;
 
     public NewSaleItemDTO() {
