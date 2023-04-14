@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/generics/header"></head>
@@ -39,4 +39,115 @@
     </div>
 <script src="/js/client_products.js"> </script>
 <script src="/js/logout.js"></script>
+</html> -->
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+<body>
+    <main>
+        <div class="product">
+            <div class="title">
+                <h1 class="title-p">Productos</h1>
+                <img src="/img/Productos-venta.webp">
+            </div>
+            <div class="show-product">
+                <div class="container">
+                    <div>
+                        <form action="/app/client/dashboard">
+                            <button class="btn-secundario">Volver</button>
+                        </form>
+                    </div>
+                    <div class="header-products">
+                        <h1>Gotas de seda</h1>
+                        <span>500 ml</span>
+                    </div>
+                    <div class="product-description">
+                        <img src="/img/servicio-corte.webp">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet aspernatur ab dolor quidem sequi voluptas nemo voluptatibus. Odit nesciunt quo, quae nostrum veritatis optio unde libero sequi deserunt, consectetur natus!</p>
+                    </div>
+                    <p class="price-product">$230</p>
+                    <div class="form-product">
+                        <div class="input-product">
+                            <button class="decrement" id="decrement" type="button" onclick="stepper(this)">-</button>
+                            <input id="quantity-products" type="number" min="0" value="0" step="1"> 
+                            <button class="increment" id="increment" type="button" onclick="stepper(this)">+</button> 
+                        </div>
+                        <button class="btn-principal">Añadir</button>
+                    </div>
+                </div>
+            </div>
+            <div class="more-products">
+                <div class="one-product">
+                    <img class="img-product" src="/img/Productos-venta.webp">
+                    <div class="description-oneproduct">
+                        <h4>Gotas de seda</h4>
+                        <p>Gotas de seda shine Therapy Beohemp Protector Termico Solar</p>
+                        <div class="price-capacity">
+                            <p>$230</p>
+                            <span>500 ml</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="one-product">
+                    <img class="img-product" src="/img/Productos-venta.webp">
+                    <div class="description-oneproduct">
+                        <h4>Tinte #3.5</h4>
+                        <p>Tinte para cabello, se requiere de una decoloracion previa</p>
+                        <div class="price-capacity">
+                            <p>$180</p>
+                            <span>50 ml</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="one-product">
+                    <img class="img-product" src="/img/Productos-venta.webp">
+                    <div class="description-oneproduct">
+                        <h4>Gotas de seda</h4>
+                        <p>Gotas de seda shine Therapy Beohemp Protector Termico Solar</p>
+                        <div class="price-capacity">
+                            <p>$230</p>
+                            <span>500 ml</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="one-product">
+                    <img class="img-product" src="/img/Productos-venta.webp">
+                    <div class="description-oneproduct">
+                        <h4>Gotas de seda</h4>
+                        <p>Gotas de seda shine Therapy Beohemp Protector Termico Solar</p>
+                        <div class="price-capacity">
+                            <p>$230</p>
+                            <span>500 ml</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="one-product">
+                    <img class="img-product" src="/img/Productos-venta.webp">
+                    <div class="description-oneproduct">
+                        <h4>Gotas de seda</h4>
+                        <p>Gotas de seda shine Therapy Beohemp Protector Termico Solar</p>
+                        <div class="price-capacity">
+                            <p>$230</p>
+                            <span>500 ml</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="one-product">
+                    <img class="img-product" src="/img/Productos-venta.webp">
+                    <div class="description-oneproduct">
+                        <h4>Gotas de seda</h4>
+                        <p>Gotas de seda shine Therapy Beohemp Protector Termico Solar</p>
+                        <div class="price-capacity">
+                            <p>$230</p>
+                            <span>500 ml</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script src="/js/client_products.js"> </script>
+<!-- <script src="/js/logout.js"></script> -->
 </html>

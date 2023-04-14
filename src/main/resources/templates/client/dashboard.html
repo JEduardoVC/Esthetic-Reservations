@@ -3,39 +3,75 @@
 
 <head th:insert="/generics/header"></head>
 <body>
-    <div class="client">
-        <div th:insert="/client/navegacion"></div>
-        <div class="container">
-            <div class="cliente">
-                <div class="div-btn-volver">
-                    <form action="/">
-                        <button class="btn-volver">Volver</button>
-                    </form>
+    <main>
+        <div class="dashboard">
+            <nav class="nav-selection">
+                <div class="logo-dashboard">
+                    <img src="/img/logo.webp">
                 </div>
-            </div>
-             <div class="container-options">
-                <div class="option-client" id="only-services">
-                    <h1>Servicios</h1>
-                    <img src="/img/servicio_corte.webp">
+                <div class="shortcuts">
+                    <button class="btn-shortcut">Maquillaje</button>
+                    <button class="btn-shortcut">Cuidado facial</button>
+                    <button class="btn-shortcut">Cabello</button>
+                    <button class="btn-shortcut">Barba</button>
+                    <button class="btn-shortcut">Consejos</button>
                 </div>
-                <div class="option-client" id="only-products">
-                    <h1>Adquirir producto</h1>
-                    <img src="/img/Productos-venta.webp">
-                </div>
-                <div class="option-client" id="services-products">
-                    <h1>Servicios y adquirir producto</h1>
-                    <div class="option-dual">
-                        <img src="/img/servicio_corte.webp">
-                        <div></div>
-                        <div></div>
-                        <img src="/img/Productos-venta.webp">
+                <div class="user-interaction">
+                    <div class="user-animation">
+                        <form action="view_user">
+                            <button id="btn-editar-usuario">
+                                <img class="login-img" src="/img/login.webp">
+                            </button>
+                        <form>
+                    </div>
+                    <div class="options-animation">
+                        <img src="/img/barras.webp">
+                        <div id="actions" class="actions">
+                            <div class="window-options">
+                                <div class="option-menu luna" >
+                                    <img class="login-img dark-mode-boton" src="/img/luna.webp">
+                                    <p>Modo oscuro</p>
+                                </div>
+                                <div class="option-menu no-mostrar sol">
+                                    <img class="login-img ligth-mode-boton" src="/img/soleado.webp">
+                                    <p>Modo claro</p>
+                                </div>
+                                <div class="option-menu">
+                                    <button id="btn-cerrar-sesion" class="btn-logout" type="button">
+                                        <img src="/img/salir.webp">
+                                        <p>Cerrar sesion</p>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </nav>
+            <div class="windows">
+                <div class="option-client" id="products">
+                    <h1 class="title-dashboard">Productos</h1>
+                    <img src="/img/productos.webp">
+                </div>
+                <div class="option-client" id="services">
+                    <h1 class="title-dashboard">Servicios</h1>
+                    <img src="/img/servicios.webp">
+                </div>
+                <div class="option-client" id="employees">
+                    <h1 class="title-dashboard">Encargados</h1>
+                    <img src="/img/encargados.webp">
+                </div>
+                <div class="option-client" id="reservation">
+                    <h1 class="title-dashboard">Reservar</h1>
+                    <img src="/img/reservar.webp">
+                </div>
+            </div>
+            <div class="container-options">
+
             </div>
         </div>
-    </div>
+    </main>
 </body>
 <script src="/js/logout.js"></script>
 <script src="/js/client_dashboard.js"></script>
-<script src="/js/client_appointment.js"></script>
+<!-- <script src="/js/client_appointment.js"></script> -->
 </html>
