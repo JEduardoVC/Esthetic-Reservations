@@ -4,10 +4,10 @@ import javax.validation.constraints.NotNull;
 
 public class UserRoleMinDTO {
 
-    @NotNull
+    @NotNull(message = "El ID del usuario es requerido.")
     private Long userId;
 
-    @NotNull
+    @NotNull(message = "El ID del rol es requerido.")
     private Long roleId;
 
     public UserRoleMinDTO() {

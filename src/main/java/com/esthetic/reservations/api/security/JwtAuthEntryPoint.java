@@ -6,7 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -16,8 +15,11 @@ import com.esthetic.reservations.api.exception.GlobalExceptionHandler;
 @Component("restAuthenticationEntryPoint")
 public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 
-    @Autowired
     GlobalExceptionHandler globalExceptionHandler;
+
+    public JwtAuthEntryPoint(GlobalExceptionHandler globalExceptionHandler) {
+        this.globalExceptionHandler = globalExceptionHandler;
+    }
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,

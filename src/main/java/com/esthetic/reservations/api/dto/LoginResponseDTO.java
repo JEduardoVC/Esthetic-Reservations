@@ -1,6 +1,6 @@
 package com.esthetic.reservations.api.dto;
 
-import java.util.List;
+import java.util.Set;
 
 import com.esthetic.reservations.api.model.Role;
 
@@ -8,11 +8,11 @@ public class LoginResponseDTO {
 
     private String token;
 
-    private List<Role> userRoles;
+    private Set<Role> userRoles;
 
     private Long userId;
 
-    public LoginResponseDTO(String token, List<Role> userRoles, Long userId) {
+    public LoginResponseDTO(String token, Set<Role> userRoles, Long userId) {
         this.token = token;
         this.userRoles = userRoles;
         this.userId = userId;
@@ -29,11 +29,11 @@ public class LoginResponseDTO {
         this.token = token;
     }
 
-    public List<Role> getUserRoles() {
+    public Set<Role> getUserRoles() {
         return this.userRoles;
     }
 
-    public void setUserRoles(List<Role> userRoles) {
+    public void setUserRoles(Set<Role> userRoles) {
         this.userRoles = userRoles;
     }
 

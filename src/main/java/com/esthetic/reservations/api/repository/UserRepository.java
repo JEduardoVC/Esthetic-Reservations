@@ -29,6 +29,6 @@ public interface UserRepository extends GenericRepository<UserEntity, Long> {
 
     public Optional<UserEntity> findByEmail(String email);
 
-    public Page<UserEntity> findByUserRolesIn(Collection<Role> roles, Pageable pageable);
+    public Page<UserEntity> findByRolesIn(Collection<Role> roles, Pageable pageable);
 
 }

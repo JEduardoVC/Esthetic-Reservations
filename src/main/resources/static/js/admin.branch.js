@@ -174,6 +174,7 @@ async function getUsersRequest() {
     const json = await response.json();
     return json;
 }
+
 function actionBranch(action, id, ownerId = -1) {
     const name = document.getElementById("branch-name").value;
     const address = document.getElementById("branch-address").value;

@@ -1,9 +1,7 @@
 package com.esthetic.reservations.api.service;
 
 import com.esthetic.reservations.api.dto.NewSaleDTO;
-import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.SaleDTO;
-import com.esthetic.reservations.api.dto.SaleItemDTO;
 import com.esthetic.reservations.api.model.Sale;
 
 public interface SaleService extends GenericService<Sale, SaleDTO> {

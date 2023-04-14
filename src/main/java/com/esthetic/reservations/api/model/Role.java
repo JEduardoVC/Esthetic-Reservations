@@ -32,4 +32,9 @@ public class Role extends BaseModel<Role> {
 		this.name = role.name;
 	}
 
+	@Override
+	public String toString() {
+		return this.name;
+	}
+
 }
