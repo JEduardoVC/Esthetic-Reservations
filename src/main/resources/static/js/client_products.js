@@ -16,21 +16,21 @@ myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
 
 document.addEventListener('DOMContentLoaded', function() {
     // Show info for nav
-    showInfoClient();
-    showInfoBranch();
+    // showInfoClient();
+    // showInfoBranch();
     
-    // Show Products
-    showInventory();
+    // // Show Products
+    // showInventory();
 
-    // Show seccion 
-    mostrarSeccion()
+    // // Show seccion 
+    // mostrarSeccion()
     
-    // Buttons
-    nextPage();
-    previousPage();
+    // // Buttons
+    // nextPage();
+    // previousPage();
 
-    // Paginator
-    pagerButtons();
+    // // Paginator
+    // pagerButtons();
 });
 async function showInfoClient(){
     const resultadoUsuario = await fetch(`/api/user/${userId}`,{method: 'GET', headers: myHeaders, redirect: 'follow'});
@@ -279,6 +279,18 @@ async function mostrarResumen() {
 
 async function makeAPurcharse(){
     console.log(carrito);
+}
+const input = document.querySelector("#quantity-products");
+function stepper(btn){
+    let id = btn.getAttribute("id");
+    let value = input.getAttribute("value");
+    let step = input.getAttribute("step");
+    let min = input.getAttribute("min");
+    let calStep = (id == "increment") ? (step*1): (step*-1);
+    let newValue = parseInt(calStep) + parseInt(value);
+    if(newValue >= min){
+        input.setAttribute("value", newValue);
+    }
 }
 
 // async function makeAnAppointment(){

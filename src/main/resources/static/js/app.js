@@ -1,38 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
-    //darkMode();
-    //menu();
+    darkMode();
+    menu();
     //isDarkMode();
 });
 
 function darkMode(){
     const botonDarkMode = document.querySelector(".dark-mode-boton");
     const botonLigthMode = document.querySelector(".ligth-mode-boton");
-    botonDarkMode.addEventListener("click", function() {
-        if(!document.querySelector(".dark-mode")){
-            document.body.classList.add("dark-mode");
-            document.querySelector(".luna").classList.add("no-mostrar");
-            document.querySelector(".sol").classList.remove("no-mostrar");
-            sessionStorage.setItem("darkMode", "true");
+    if(botonDarkMode){
+        if(botonLigthMode){
+            botonDarkMode.addEventListener("click", function() {
+                if(!document.querySelector(".dark-mode")){
+                    document.body.classList.add("dark-mode");
+                    document.querySelector(".luna").classList.add("no-mostrar");
+                    document.querySelector(".sol").classList.remove("no-mostrar");
+                    sessionStorage.setItem("darkMode", "true");
+                }
+            });
+            botonLigthMode.addEventListener("click", function() {
+                if(document.querySelector(".dark-mode")){
+                    document.body.classList.remove("dark-mode");
+                    document.querySelector(".luna").classList.remove("no-mostrar");
+                    document.querySelector(".sol").classList.add("no-mostrar");
+                    sessionStorage.removeItem("darkMode");
+                }
+            });
         }
-    });
-    botonLigthMode.addEventListener("click", function() {
-        if(document.querySelector(".dark-mode")){
-            document.body.classList.remove("dark-mode");
-            document.querySelector(".luna").classList.remove("no-mostrar");
-            document.querySelector(".sol").classList.add("no-mostrar");
-            sessionStorage.removeItem("darkMode");
-        }
-    });
+    }
 }
 
 function menu(){
-    const menu = document.querySelector(".animacion-menu");
+    const menu = document.querySelector(".options-animation");
     if(menu){
         menu.addEventListener("click", function(){
-            const acciones = document.querySelector("#acciones");
+            const acciones = document.querySelector("#actions");
             acciones.classList.toggle("mostrar");
-            acciones.classList.toggle("botones-menu");
-            acciones.classList.toggle("acciones");
+            acciones.classList.toggle("menu-buttons");
+            acciones.classList.toggle("actions");
         });
     }
 }

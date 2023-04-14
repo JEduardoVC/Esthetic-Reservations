@@ -6,10 +6,12 @@ myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
 
 var map;
 
+
+
 document.addEventListener('DOMContentLoaded',  function() {
-	initMap();
-	showBranchs();
-	document.querySelector("#selectionBranch").addEventListener("click", seleccionar);
+  initMap();
+  showBranchs();
+  selectedBranch();
 });
 
 
@@ -32,18 +34,21 @@ async function initMap(){
 }
 
 async function showBranchs(){
+  try{
     const resultado = await fetch('/api/branch/all',{method: 'GET'});
     const sucursales = await resultado.json();
     const branchs = sucursales["content"];
-    let select =  document.querySelector("#branchs");
+    const select =  document.querySelector("#branchs");
+    var nameBranch = "";
     branchs.forEach(sucursal => {
-		const option = document.createElement("option");
-		option.innerHTML = `<option name="branchId" value="${sucursal.id}">${sucursal.branchName}</option>`
-		select.appendChild(option)
-	});
-}
-
-function seleccionar() {
-	console.info(document.querySelector("#branchs"))
-	console.warn("Entrando");
+        let { id, branchName  } = sucursal;
+        nameBranch += `<option name="branchId" value="${id}">${branchName}</option>`
+      });
+    select.innerHTML = `
+      <option value="" disabled selected>--Seleccione un local--</option>
+      ${nameBranch}`;
+    }
+  catch(error){
+    console.error(error);
+  }
 }
