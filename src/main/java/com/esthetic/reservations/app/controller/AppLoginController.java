@@ -1,5 +1,6 @@
 package com.esthetic.reservations.app.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ public class AppLoginController {
     @GetMapping("/unauthorized")
     public ModelAndView unauthorizedView() {
         ModelAndView model = new ModelAndView("/unauthorized");
+        model.setStatus(HttpStatus.UNAUTHORIZED);
         return model;
     }
 
@@ -33,6 +35,7 @@ public class AppLoginController {
     public ModelAndView forbiddenView(@ModelAttribute("home") String home) {
         ModelAndView model = new ModelAndView("/forbidden");
         model.addObject("home", home);
+        model.setStatus(HttpStatus.FORBIDDEN);
         return model;
     }
 
