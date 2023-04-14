@@ -140,7 +140,6 @@ public class AuthController {
     @PostMapping("/{role}/register")
     public ResponseEntity<UserEntityDTO> register(@Valid @RequestBody UserEntityDTO userEntityDTO,
             @PathVariable(name = "role", required = true) String role) {
-        role = AppConstants.ROLE_PREFIX + role;
         try {
             Long roleId = Long.parseLong(role);
             if (userService.existsByUsername(userEntityDTO.getUsername())) {
@@ -154,6 +153,7 @@ public class AuthController {
             userEntityDTO.setPassword(this.passwordEncoder.encode(userEntityDTO.getPassword()));
             return new ResponseEntity<>(userService.register(userEntityDTO, roleId), HttpStatus.CREATED);
         } catch (NumberFormatException eFormatException) {
+            role = AppConstants.ROLE_PREFIX + role;
             if (!roleService.existsByName(role)) {
                 throw new BadRequestException("Rol", "no es válido", "nombre", role);
             }
