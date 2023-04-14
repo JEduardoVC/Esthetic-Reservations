@@ -82,9 +82,9 @@ function register() {
 }
 
 function showAlerts(alerts, type) {
-    html = '<div>\n'
+    let html = '<div>\n'
     for (const alert in alerts) {
-        html += `<p class="${type}">${alertas[alert]}</p>\n`;
+        html += `<p class="${type}">${alerts[alert]}</p>\n`;
     }
     html += '</div>';
     document.getElementById('alertas').innerHTML = html;
