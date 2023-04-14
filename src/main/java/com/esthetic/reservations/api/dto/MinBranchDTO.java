@@ -2,35 +2,33 @@ package com.esthetic.reservations.api.dto;
 
 import java.sql.Time;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class MinBranchDTO extends GenericModelDTO {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "El nombre de la sucursal es requerida.")
     private String branchName;
 
     private String location;
 
-    @NotNull
+    @NotNull(message = "Se requiere el ID del dueño.")
     private Long ownerId;
 
-    @NotNull
+    @NotNull(message = "La hora de apertura es requerida.")
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private Time scheduleOpen;
 
     @NotNull
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Time scheduleClose;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "El estado es requerido.")
     private String state;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank(message = "El municipio es requerido.")
     private String municipality;
 
     public MinBranchDTO() {

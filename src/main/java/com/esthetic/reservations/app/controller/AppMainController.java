@@ -1,5 +1,6 @@
 package com.esthetic.reservations.app.controller;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.GetMapping;

@@ -4,10 +4,10 @@ import javax.validation.constraints.NotBlank;
 
 public class LoginDTO {
 
-    @NotBlank
+    @NotBlank(message = "El nombre de usuario es requerido.")
     private String username;
 
-    @NotBlank
+    @NotBlank(message = "La contraseña es requerida.")
     private String password;
 
     public LoginDTO() {

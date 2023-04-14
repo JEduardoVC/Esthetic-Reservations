@@ -1,7 +1,10 @@
 package com.esthetic.reservations.api.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class RoleDTO extends GenericModelDTO {
 
+    @NotBlank(message = "Se requiere el nombre del rol.")
     private String name;
 
     public RoleDTO() {

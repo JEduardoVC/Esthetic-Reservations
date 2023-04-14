@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header.html"></head>
+
+<body>
+    <main>
+        <div class="container-left-primary">
+            <div class="container">
+                <h1>403 Forbidden</h1>
+                <h3>Tienes prohibido realizar esa acción.</h3>
+                <form th:action="${home}" method="GET">
+                    <div class="center">
+                        <button id="btn-login" class="btn-secundario">Regresar</button>
+                    </div>
+                </form>
+            </div>
+            <div class="img-container-left">
+                <img src="/img/servicio_corte.webp">
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div></div>
+    </footer>
+</body>
+<!-- <script src="/js/login.js"></script> -->
+</html>

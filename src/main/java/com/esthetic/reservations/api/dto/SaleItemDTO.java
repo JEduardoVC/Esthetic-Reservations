@@ -1,11 +1,16 @@
 package com.esthetic.reservations.api.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class SaleItemDTO extends GenericModelDTO {
 
+    @NotNull(message = "Se requiere la información del producto.")
     private MinInventory product;
 
+    @NotNull(message = "Se requiere el subtotal de este producto.")
     private Double subtotal;
 
+    @NotNull(message = "Se requiere la cantidad de este producto.")
     private Long quantity;
 
     /**

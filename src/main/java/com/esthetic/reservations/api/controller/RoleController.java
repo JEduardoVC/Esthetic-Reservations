@@ -2,7 +2,6 @@ package com.esthetic.reservations.api.controller;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,7 +26,6 @@ public class RoleController {
 
     private RoleServiceImpl roleService;
 
-    @Autowired
     public RoleController(RoleServiceImpl roleService) {
         this.roleService = roleService;
     }

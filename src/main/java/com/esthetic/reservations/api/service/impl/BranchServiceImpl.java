@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.esthetic.reservations.api.dto.MinBranchDTO;
 import com.esthetic.reservations.api.dto.BranchDTO;
+import com.esthetic.reservations.api.dto.MinBranchDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
@@ -30,7 +29,6 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 	private UserServiceImpl userService;
 	private BranchRepository branchRepository;
 
-	@Autowired
 	public BranchServiceImpl(BranchRepository repository, ModelMapper modelMapper, UserServiceImpl userService) {
 		super(repository, modelMapper, Branch.class, BranchDTO.class);
 		this.userService = userService;
