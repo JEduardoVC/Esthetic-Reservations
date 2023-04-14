@@ -109,6 +109,9 @@ public class AuthController {
         allowed |= userDetails.hasAuthority(AppConstants.OWNER_ROLE_NAME) &&
                 (this.antPathMatcher.match("/app/owner/**", uri));
 
+        allowed |= userDetails.hasAuthority(AppConstants.EMPLOYEE_ROLE_NAME) &&
+                (this.antPathMatcher.match("/app/employee/**", uri));
+
         allowed |= userDetails.hasAuthority(AppConstants.CLIENT_ROLE_NAME) &&
                 (this.antPathMatcher.match("/app/client/**", uri));
 
