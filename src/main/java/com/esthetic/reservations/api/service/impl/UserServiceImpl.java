@@ -143,6 +143,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             roleEntity = roleRepository.findById(roleId).get();
         } catch (NumberFormatException e) {
             // TODO: handle exception
+            role = AppConstants.ROLE_PREFIX + role;
             roleEntity = roleRepository.findByName(role).get();
         }
         if (userEntity.getRoles().contains(roleEntity)) {
@@ -164,6 +165,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             roleEntity = roleRepository.findById(roleId).get();
         } catch (NumberFormatException e) {
             // TODO: handle exception
+            role = AppConstants.ROLE_PREFIX + role;
             roleEntity = roleRepository.findByName(role).get();
         }
         if (!userEntity.getRoles().contains(roleEntity)) {
