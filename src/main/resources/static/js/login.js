@@ -1,6 +1,7 @@
 (function() {
 	const btn_login = document.querySelector("#btn-login");
 	btn_login.addEventListener("click", presionarBoton)
+	sessionStorage.clear();
 })();
 
 async function presionarBoton() {
@@ -62,7 +63,7 @@ async function presionarBoton() {
 }
 
 async function obtenerBranch(id_owner) {
-	const resultado = await fetch(`${BASE_URL}api/branch/all/filter?filterBy=owner&filterTo=${id_owner}`, {
+	const resultado = await fetch(`${BASE_URL}api/branch/all/filter?filterTo=${id_owner}`, {
 		method: "GET",
 		headers: {
 			'Accept': 'application/json',
@@ -72,6 +73,7 @@ async function obtenerBranch(id_owner) {
 		redirect: "follow"
 	});
 	const branch = await resultado.json();
+	console.info(branch);
 	if(branch.content.length == 0) return 0;
 	const id = branch.content[0].id;
 	return id;
