@@ -55,7 +55,7 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 		} catch (IOException e) {
 			return null;
 		}
-		Inventory newInventory = new Inventory(inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), nameImage, sucursal);
+		Inventory newInventory = new Inventory(inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), nameImage, sucursal, inventario.getDescription(), inventario.getCapacibility());
 		return mapToDTO(getRepository().save(newInventory));
 	}
 
@@ -65,8 +65,12 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 		String rutaAbsoluta = "C://Esthetic-Reservation/Inventario";
 		String nameImage = "";
 		if(file == null) {
-			Inventory newInventory = new Inventory(id, inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), inventory.getImagen(), sucursal);
-			return mapToDTO(getRepository().save(newInventory));
+			inventory.setInventory_name(inventario.getInventory_name());
+			inventory.setPrice(inventario.getPrice());
+			inventory.setStore(inventario.getStore());
+			inventory.setDescription(inventario.getDescription());
+			inventory.setCapacibility(inventario.getCapacibility());
+			return mapToDTO(getRepository().save(inventory));
 		}
 		try {
 			byte[] imagenBytes = file.getBytes();
@@ -78,8 +82,12 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 		} catch (IOException e) {
 			return null;
 		}
-		Inventory newInventory = new Inventory(id, inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), nameImage, sucursal);
-		return mapToDTO(getRepository().save(newInventory));
+		inventory.setInventory_name(inventario.getInventory_name());
+		inventory.setPrice(inventario.getPrice());
+		inventory.setStore(inventario.getStore());
+		inventory.setDescription(inventario.getDescription());
+		inventory.setCapacibility(inventario.getCapacibility());
+		return mapToDTO(getRepository().save(inventory));
 	}
 	
 	public void delete(Long id) {

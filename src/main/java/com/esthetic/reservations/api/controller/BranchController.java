@@ -34,7 +34,7 @@ public class BranchController {
     }
 
     @GetMapping("/all")
-    @RolesAllowed({AppConstants.ADMIN_ROLE_NAME})
+    @RolesAllowed({AppConstants.ADMIN_ROLE_NAME, AppConstants.CLIENT_ROLE_NAME})
     public ResponseDTO<BranchDTO> findAll(
             @RequestParam(value = "pageNum", defaultValue = AppConstants.PAGE_NUMBER, required = false) int pageNumber,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) int pageSize,

@@ -6,17 +6,18 @@ myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
 
 var map;
 
-
-
 document.addEventListener('DOMContentLoaded',  function() {
   initMap();
   showBranchs();
-  selectedBranch();
+  document.querySelector("#selectionBranch").addEventListener("click", seleccionar);
 });
 
 
 async function initMap(){
-  const resultado = await fetch('/api/branch/all',{method: 'GET'});
+      const resultado = await fetch('/api/branch/all',{
+		method: 'GET',
+		headers: myHeaders
+	});
   const sucursales = await resultado.json();
   const branchs = sucursales["content"];
   var map = L.map('map').setView([21.1419707351680, -100.31784830972968], 8);
@@ -34,12 +35,13 @@ async function initMap(){
 }
 
 async function showBranchs(){
-  try{
-    const resultado = await fetch('/api/branch/all',{method: 'GET'});
+    const resultado = await fetch('/api/branch/all',{
+		method: 'GET',
+		headers: myHeaders
+	});
     const sucursales = await resultado.json();
     const branchs = sucursales["content"];
     const select =  document.querySelector("#branchs");
-    var nameBranch = "";
     branchs.forEach(sucursal => {
 		const option = document.createElement("option");
 		option.innerHTML = `<option name="branchId" value="${sucursal.id}">${sucursal.branchName}</option>`
