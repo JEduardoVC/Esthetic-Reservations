@@ -17,18 +17,24 @@ public class InventoryDTO extends GenericModelDTO {
 	private String imagen;
 	
 	private Branch id_branch;
+	
+	private String description;
+	
+	private String capacibility;
 
 	public InventoryDTO() {
 		super();
 	}
-
-	public InventoryDTO(Long id, String inventory_name, Double price, Long store, String imagen, Branch id_branch) {
+	
+	public InventoryDTO(Long id, String inventory_name, Double price, Long store, String imagen, Branch id_branch, String description, String capacibility) {
 		super(id);
 		this.inventory_name = inventory_name;
 		this.price = price;
 		this.store = store;
-		this.imagen = imagen;
 		this.id_branch = id_branch;
+		this.imagen = imagen;
+		this.description = description;
+		this.capacibility = capacibility;
 	}
 
 	public String getInventory_name() {
@@ -61,6 +67,22 @@ public class InventoryDTO extends GenericModelDTO {
 
 	public void setImagen(String imagen) {
 		this.imagen = imagen;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getCapacibility() {
+		return capacibility;
+	}
+
+	public void setCapacibility(String capacibility) {
+		this.capacibility = capacibility;
 	}
 
 	public Branch getId_branch() {
