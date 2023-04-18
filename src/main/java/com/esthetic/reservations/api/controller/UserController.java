@@ -78,14 +78,12 @@ public class UserController {
     @PutMapping("/{id}/grant/{role}")
     public ResponseEntity<UserEntityDTO> grantRoleToUser(@PathVariable(name = "id", required = true) Long userId,
             @PathVariable(name = "role", required = true) String role) {
-        role = AppConstants.ROLE_PREFIX + role;
         return new ResponseEntity<>(userService.grantRoleToUser(userId, role), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/revoke/{role}")
     public ResponseEntity<UserEntityDTO> revokeRoleToUser(@PathVariable(name = "id", required = true) Long userId,
             @PathVariable(name = "role", required = true) String role) {
-        role = AppConstants.ROLE_PREFIX + role;
         return new ResponseEntity<>(userService.revokeRoleToUser(userId, role), HttpStatus.OK);
     }
 

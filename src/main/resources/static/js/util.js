@@ -38,14 +38,75 @@ async function enviarMultimediaCorreo(email, branch, appointment, created) {
 	return respuesta;
 }
 
-function alerta(tipo, message) {
-	const icon = (tipo == "error") ? "error" : "success"
-	const title = (tipo == "error") ? "Oops..." : "Correcto"
+function alerta(tipo, message, title = '') {
+	let icon = tipo;
+	if (title === '') {
+		switch (tipo) {
+			case 'error':
+				title = 'Oops...';
+				break;
+			case 'warning':
+				title = 'Cuidado';
+				break;
+			case 'info':
+				title = 'Atención';
+				break;
+			case 'question':
+				title = '¿Seguro?';
+				break;
+			default:
+				title = 'Correcto';
+				icon = 'success';
+				break;
+		}
+	}
 	Swal.fire({
 		icon: icon,
 		title: title,
 		text: message
 	})
+}
+
+function alertaHtml(tipo, htmlContent, title = '') {
+	const icon = tipo;
+	if (title === '') {
+		switch (tipo) {
+			case 'error':
+				title = 'Oops...';
+				break;
+			case 'warning':
+				title = 'Cuidado';
+				break;
+			case 'info':
+				title = 'Atención';
+				break;
+			case 'question':
+				title = '¿Seguro?';
+				break;
+			default:
+				title = 'Correcto';
+				icon = 'success';
+				break;
+		}
+	}
+	Swal.fire({
+		icon: icon,
+		title: title,
+		html: htmlContent,
+	})
+}
+
+async function confirmAlert(tipo = 'warning', title = '¿Estás seguro?', text = 'Esta acción podría ser irreversible.', confirmText = 'Sí, confirmar.') {
+	const result = await Swal.fire({
+		title: title,
+		text: text,
+		icon: tipo,
+		showCancelButton: true,
+		confirmButtonColor: '#d33',
+		cancelButtonColor: '#9623c8',
+		confirmButtonText: confirmText
+	});
+	return result.isConfirmed;
 }
 
 function showLoading(message) {
