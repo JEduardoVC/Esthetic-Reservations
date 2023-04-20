@@ -1,20 +1,20 @@
 (function() {
-	if(!sessionStorage.getItem("token")) {
-		location = `${BASE_URL}app/login`
-	}
+	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`;
 	mostrarProductos();
 	mostrarProducto();
 })();
 
+let carrito = [];
+
 async function mostrarProducto() {
 	const producto = await obtenerProducto();
+	if(!producto) return;
+	const value = carrito.find(prod => prod.id == producto.id) ?? {cantidad: 0};
 	const divProducto = document.createElement("div");
 	divProducto.innerHTML = `
 		<div class="container">
 	        <div>
-	            <form action="/app/client/dashboard">
-	                <button class="btn-secundario">Volver</button>
-	            </form>
+                <button class="btn-secundario" onclick="volver()">Volver</button>
 	        </div>
 	        <div class="header-products">
 	            <h1>${producto.inventory_name}</h1>
@@ -28,14 +28,32 @@ async function mostrarProducto() {
 	        <div class="form-product">
 	            <div class="input-product">
 	                <button class="decrement" id="decrement" type="button" onclick="stepper(this)">-</button>
-	                <input id="quantity-products" type="number" min="0" value="0" step="1"> 
+	                <input id="quantity-products" type="number" min="0" value="${value.cantidad}" step="1">
 	                <button class="increment" id="increment" type="button" onclick="stepper(this)">+</button> 
 	            </div>
-	            <button class="btn-principal">Añadir</button>
+	            <button class="btn-principal" id="btn-añadir">Añadir</button>
 	        </div>
 	    </div>
 	`;
+	if(document.querySelector(".show-product").childNodes.length == 1) document.querySelector(".show-product").removeChild(document.querySelector(".show-product").lastElementChild)
 	document.querySelector(".show-product").appendChild(divProducto);
+	document.querySelector("#btn-añadir").addEventListener("click", () => {
+		const cantidad = document.querySelector("#quantity-products").getAttribute("value");
+		const index = carrito.findIndex(prod => prod.id == producto.id);
+		if(index !== -1) {
+			carrito[index] = {id: producto.id, cantidad: cantidad}
+			alerta("success", "Producto actualizado correctamente", "Hecho");	
+		}
+		else {
+			carrito = [...carrito, {id: producto.id, cantidad: cantidad}];
+			alerta("success", "Producto agregado correctamente", "Hecho");
+		}
+	});
+}
+
+function isProduct(producto) {
+	console.info(producto);
+	return producto.id == sessionStorage.getItem("productId");
 }
 
 async function mostrarProductos() {
@@ -57,7 +75,7 @@ async function mostrarProductos() {
 		const div = document.querySelector(".more-products");
 		prod.addEventListener("click", () => {
 			sessionStorage.setItem("productId", producto.id);
-			location.reload();
+			mostrarProducto();
 		});
 		(producto.id != sessionStorage.getItem("productId")) ? prod.classList.remove("selected") : prod.classList.add("selected");
 		div.appendChild(prod);
@@ -82,7 +100,8 @@ async function obtenerProductos() {
 }
 
 async function obtenerProducto() {
-		const resultado = await fetch(`${BASE_URL}api/client/product/${sessionStorage.getItem("productId")}`, {
+	if(!sessionStorage.getItem("productId")) return null;
+	const resultado = await fetch(`${BASE_URL}api/client/product/${sessionStorage.getItem("productId")}`, {
 		method: "GET",
 		headers: {
 				"Authorization": `Bearer ${sessionStorage.getItem("token")}`
@@ -92,8 +111,6 @@ async function obtenerProducto() {
 	const respuesta = await resultado.json();
 	return respuesta;
 }
-
-const input = document.querySelector("#quantity-products");
 
 function stepper(btn){
 	const input = document.querySelector("#quantity-products");
@@ -106,4 +123,9 @@ function stepper(btn){
     if(newValue >= min){
         input.setAttribute("value", newValue);
     }
+}
+
+function volver() {
+	sessionStorage.removeItem("productId");
+	location = `${BASE_URL}app/client/dashboard`;
 }
