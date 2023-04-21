@@ -38,10 +38,10 @@ public class AppClientController {
     }
     @GetMapping("/reservation")
     public ModelAndView viewClientAppointment() {
-    	return new ModelAndView("client/appointment");
+    	return new ModelAndView("client/reservation");
     }
-    @GetMapping("/appointment/update")
-    public ModelAndView viewClientAppointmentUpdate() {
-    	return new ModelAndView("client/services");
+    @GetMapping("/appointment")
+    public ModelAndView viewClientAppointments() {
+    	return new ModelAndView("client/appointment");
     }
 }
