@@ -1,6 +1,7 @@
 package com.esthetic.reservations.app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,11 +32,11 @@ public class AppClientController {
     public ModelAndView viewClientProducts() {
         return new ModelAndView("client/products");
     }
-    @GetMapping("/services/products")
-    public ModelAndView viewClientServicesProducts() {
-        return new ModelAndView("client/services_products");
+    @GetMapping("/employees")
+    public ModelAndView viewClientManager() {
+    	return new ModelAndView("client/managers");
     }
-    @GetMapping("/citas")
+    @GetMapping("/reservation")
     public ModelAndView viewClientAppointment() {
     	return new ModelAndView("client/appointment");
     }
