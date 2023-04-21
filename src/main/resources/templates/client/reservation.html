@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+<body>
+    <main>
+        <div class="reservation">
+            <div class="title">
+                <h1 class="title-p">Agendar cita</h1>
+                <img src="/img/Productos-venta.webp">
+            </div>
+            <div class="calendar-time">
+                <input type="date">
+                <div class="time">
+                    <p>¡Llegó la hora de agendar tu cita!</p>
+                    <div class="model-time">
+                        <div class="date-saved">
+                            <h1>14</h1>
+                            <h4>marzo 2023</h4>
+                        </div>
+                        <div class="select-time">
+                            <div class="input-time">
+                                <label>Selecciona la hora</label>
+                                <input type="time">
+                            </div>
+                            <button class="btn-principal">Confirmar cita</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script src="/js/client_products.js"> </script>
+<!-- <script src="/js/logout.js"></script> -->
+</html>
