@@ -1,5 +1,6 @@
 const BASE_URL = 'http://localhost:5500/';
 //const BASE_URL = 'http://192.168.1.76:5500/';
+//const BASE_URL = 'http://192.168.1.70:5500/';
 
 async function enviarSimpleCorreo(email) {
 	var formdata = new FormData();

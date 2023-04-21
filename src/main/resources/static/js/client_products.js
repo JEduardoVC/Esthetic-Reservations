@@ -79,7 +79,6 @@ async function mostrarProductos() {
 		});
 		(producto.id != sessionStorage.getItem("productId")) ? prod.classList.remove("selected") : prod.classList.add("selected");
 		div.appendChild(prod);
-		if(!sessionStorage.getItem("productId")) sessionStorage.setItem("productId", producto.id);
 	})
 }
 
