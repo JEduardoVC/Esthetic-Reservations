@@ -7,9 +7,10 @@ myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
 var map;
 
 document.addEventListener('DOMContentLoaded',  function() {
-  initMap();
-  showBranchs();
-  document.querySelector("#selectionBranch").addEventListener("click", seleccionar);
+	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`
+	initMap();
+	showBranchs();
+	document.querySelector("#selectionBranch").addEventListener("click", seleccionar);
 });
 
 
