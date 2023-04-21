@@ -7,14 +7,18 @@ myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
 var map;
 
 document.addEventListener('DOMContentLoaded',  function() {
-  initMap();
-  showBranchs();
-  selectedBranch();
+	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`
+	initMap();
+	showBranchs();
+	document.querySelector("#selectionBranch").addEventListener("click", seleccionar);
 });
 
 
 async function initMap(){
-  const resultado = await fetch('/api/branch/all',{method: 'GET'});
+      const resultado = await fetch('/api/branch/all',{
+		method: 'GET',
+		headers: myHeaders
+	});
   const sucursales = await resultado.json();
   const branchs = sucursales["content"];
   var map = L.map('map').setView([21.1419707351680, -100.31784830972968], 8);
@@ -32,21 +36,27 @@ async function initMap(){
 }
 
 async function showBranchs(){
-  try{
-    const resultado = await fetch('/api/branch/all',{method: 'GET'});
+    const resultado = await fetch('/api/branch/all',{
+		method: 'GET',
+		headers: myHeaders
+	});
     const sucursales = await resultado.json();
     const branchs = sucursales["content"];
     const select =  document.querySelector("#branchs");
-    var nameBranch = "";
     branchs.forEach(sucursal => {
-        let { id, branchName  } = sucursal;
-        nameBranch += `<option name="branchId" value="${id}">${branchName}</option>`
-      });
-    select.innerHTML = `
-      <option value="" disabled selected>--Seleccione un local--</option>
-      ${nameBranch}`;
-    }
-  catch(error){
-    console.error(error);
-  }
+		const option = document.createElement("option");
+		option.innerHTML = `<option name="branchId" value="${sucursal.id}">${sucursal.branchName}</option>`
+		select.appendChild(option)
+	});
+}
+
+function seleccionar() {
+	const select = document.querySelector("#branchs");
+	const value = select.selectedOptions[0].childNodes[0].value
+	if(value == undefined) {
+		alerta("error", "No ha seleccionado una sucursal");
+		return;
+	}
+	sessionStorage.setItem("branchId", value);
+	location = `${BASE_URL}app/client/dashboard`
 }
