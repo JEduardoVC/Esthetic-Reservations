@@ -2,15 +2,14 @@
 	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`;
 	mostrarProductos();
 	mostrarProducto();
-//	sessionStorage.removeItem("carrito");
+	sessionStorage.removeItem("carrito");
 })();
 
-let carrito = JSON.parse(sessionStorage.getItem("carrito")) ?? {productos: []};
+let carrito = JSON.parse(sessionStorage.getItem("carrito")) ?? {productos: [], servicios: []};
 
 async function mostrarProducto() {
 	const producto = await obtenerProducto();
 	if(!producto) return;
-	console.info(carrito);
 	const value = carrito.productos.find(prod => prod.id == producto.id) ?? {cantidad: 0};
 	const divProducto = document.createElement("div");
 	divProducto.innerHTML = `
@@ -45,11 +44,12 @@ async function mostrarProducto() {
 		if(index !== -1) {
 			const carritoObj = JSON.parse(sessionStorage.getItem("carrito"));
 			carritoObj.productos[index] = {id: producto.id, cantidad: cantidad}
-			console.info(carritoObj);
+			carrito = carritoObj;
 			alerta("success", "Producto actualizado correctamente", "Hecho");	
 		}
 		else {
 			carrito.productos = [...carrito.productos, {id: producto.id, cantidad:cantidad}]
+			console.info(carrito);
 			alerta("success", "Producto agregado correctamente", "Hecho");
 		}
 			sessionStorage.setItem("carrito", JSON.stringify(carrito));

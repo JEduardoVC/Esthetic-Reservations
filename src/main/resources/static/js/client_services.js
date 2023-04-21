@@ -1,14 +1,14 @@
 (function() {
 	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`;
-	sessionStorage.setItem("serviceId", "1");
 	mostrarServicios();
-	mostrarServicio();
 })();
 
+let carrito = JSON.parse(sessionStorage.getItem("carrito")) ?? {servicios: [], productos: []};
+
 async function mostrarServicios() {
-	const servicios = await obtenerServicios();
-	if(!servicios) return;
-	servicios.forEach(servicio => {
+	const serviciosObj = await obtenerServicios();
+	if(!serviciosObj) return;
+	serviciosObj.forEach(servicio => {
 		const divServicio = document.createElement("div");
 		divServicio.classList.add("one-product");
 		divServicio.innerHTML = `
@@ -29,33 +29,40 @@ async function mostrarServicios() {
 async function mostrarServicio() {
 	const servicio = await obtenerServicio();
 	if(!servicio) return;
+	const value = carrito.servicios.find(serv => serv.id == servicio.id) ?? {cantidad: 0};
 	const divServicio = document.createElement("div");
 	divServicio.innerHTML = `
 		<div class="container">
-	        <div>
-                <button class="btn-secundario" onclick="volver()">Volver</button>
+			<div>
+	            <button class="btn-secundario" onclick="volver()">Volver</button>
 	        </div>
-            <div class="header-products">
-                <h4>${servicio.service_name}</h4>
-            </div>
-	        <div class="time-cost-service">
-	            <div class="circular-time" id="circular-time">
-	                <div class="value-time" id="value-time"></div>
-	            </div>
-	        </div>
-        	<p class="price-product">$ ${servicio.price}</p>
-	        <div class="form-product">
-	            <div class="input-product">
-	                <button class="decrement" id="decrement" type="button" onclick="stepper(this)">-</button>
-	                <input id="quantity-products" type="number" min="0" value="0" step="1">
-	                <button class="increment" id="increment" type="button" onclick="stepper(this)">+</button> 
-	            </div>
-	            <button class="btn-principal" id="btn-aÃ±adir">Añadir</button>
-	        </div>
-		</div>	
+			<div class="time-cost-service" id="info-service">
+				<div class="title-service">
+					<h4>${servicio.service_name}</h4>
+				</div>	
+				<div class="circular-time" id="circular-time">
+					<div class="value-time" id="value-time"></div>
+				</div>
+				<div class="form-service">
+					<p class="price-service">${servicio.price}</p>
+					<div class="input-service">
+						<button class="decrement" id="decrement" type="button" onclick="stepper(this)">-</button>
+							<input id="quantity-services" type="number" min="0" value="${value.cantidad}" step="1">
+						<button class="increment" id="increment" type="button" onclick="stepper(this)">+</button> 
+					</div>
+					<button class="btn-principal" id="btn-añadir">Añadir</button>
+				</div>
+			</div>
+		</div>
     `;
-    const div = document.querySelector(".show-product");
+    const div = document.querySelector(".show-product"); 
+    if(div.childNodes.length == 1) div.removeChild(div.lastElementChild)
     div.appendChild(divServicio);
+	mostrarTiempo(parseInt(servicio.duration.split(':')[0]) * 60 + parseInt(servicio.duration.split(':')[1]));
+	document.querySelector("#btn-añadir").addEventListener("click", () => {
+		const cantidad = document.querySelector("#quantity-services").getAttribute("value");
+		
+	})
 }
 
 async function obtenerServicios() {
@@ -67,11 +74,11 @@ async function obtenerServicios() {
 		redirect: "follow"
 	})
 	const respuesta = await resultado.json();
-	const servicios = respuesta.content;
-	if(servicios == undefined) {
-		servicios = [];
+	const serviciosObj = respuesta.content;
+	if(serviciosObj == undefined) {
+		serviciosObj = [];
 	}
-	return servicios;
+	return serviciosObj;
 }
 
 async function obtenerServicio() {
@@ -89,12 +96,10 @@ async function obtenerServicio() {
 function mostrarTiempo(time) {
 	let circularTime = document.querySelector("#circular-time");
 	let valueTime = document.querySelector("#value-time");
-	
 	let progressValue = 0;
 	let progressValueEnd = time;
 	let speed = 15;
 	let newValor = 0;
-	
 	let progress = setInterval(() => {
 	    progressValue++;
 	    valueTime.textContent = `${progressValue} Min`;
@@ -115,11 +120,11 @@ function mostrarTiempo(time) {
 	    if(progressValue == progressValueEnd){
 	        clearInterval(progress)
 	    }
-	}, speed);
+	}, speed)
 }
 
 function stepper(btn){
-	const input = document.querySelector("#quantity-products");
+	const input = document.querySelector("#quantity-services");
     let id = btn.getAttribute("id");
     let value = input.getAttribute("value");
     let step = input.getAttribute("step");
