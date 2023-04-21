@@ -10,13 +10,13 @@ async function mostrarServicios() {
 	if(!serviciosObj) return;
 	serviciosObj.forEach(servicio => {
 		const divServicio = document.createElement("div");
-		divServicio.classList.add("one-product");
+		divServicio.classList.add("one-service");
 		divServicio.innerHTML = `
-	        <div class="description-oneproduct">
+	        <div class="description-oneservice">
 	            <h4>${servicio.service_name}</h4>
 	        </div>
 		`;
-		const div = document.querySelector(".more-products");
+		const div = document.querySelector(".more-services");
 		divServicio.addEventListener("click", () => {
 			sessionStorage.setItem("serviceId", servicio.id);
 			mostrarServicio();
@@ -44,7 +44,7 @@ async function mostrarServicio() {
 					<div class="value-time" id="value-time"></div>
 				</div>
 				<div class="form-service">
-					<p class="price-service">${servicio.price}</p>
+					<p class="price-service">$${servicio.price}</p>
 					<div class="input-service">
 						<button class="decrement" id="decrement" type="button" onclick="stepper(this)">-</button>
 							<input id="quantity-services" type="number" min="0" value="${value.cantidad}" step="1">
@@ -55,7 +55,7 @@ async function mostrarServicio() {
 			</div>
 		</div>
     `;
-    const div = document.querySelector(".show-product"); 
+    const div = document.querySelector(".show-service"); 
     if(div.childNodes.length == 1) div.removeChild(div.lastElementChild)
     div.appendChild(divServicio);
 	mostrarTiempo(parseInt(servicio.duration.split(':')[0]) * 60 + parseInt(servicio.duration.split(':')[1]));
