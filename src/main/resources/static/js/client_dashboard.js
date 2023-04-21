@@ -20,6 +20,10 @@
     reservation.addEventListener("click", function(){
         location.href = "/app/client/reservation"
     });
+	const appointment = document.querySelector("#appointment");
+    appointment.addEventListener("click", function(){
+        location.href = "/app/client/appointment"
+    });
 })();
 
 
