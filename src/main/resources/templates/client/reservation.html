@@ -10,7 +10,24 @@
                 <img src="/img/Productos-venta.webp">
             </div>
             <div class="calendar-time">
-                <input type="date">
+                <div class="calendar">
+                    <div class="calendar-info">
+                        <div class="prev" id="prev">&#9664</div>
+                        <div class="month" id="month"></div>
+                        <div class="year" id="year"></div>
+                        <div class="next" id="next">&#9654</div>
+                    </div>
+                    <div class="calendar-week">
+                        <div class="day" id="item">D</div>
+                        <div class="day" id="item">L</div>
+                        <div class="day" id="item">M</div>
+                        <div class="day" id="item">M</div>
+                        <div class="day" id="item">J</div>
+                        <div class="day" id="item">V</div>
+                        <div class="day" id="item">S</div>
+                    </div>
+                    <div class="calendar-dates" id="dates"></div>
+                </div>
                 <div class="time">
                     <p>¡Llegó la hora de agendar tu cita!</p>
                     <div class="model-time">
@@ -21,7 +38,7 @@
                         <div class="select-time">
                             <div class="input-time">
                                 <label>Selecciona la hora</label>
-                                <input type="time">
+                                <input type="time" pattern="[1-12]{2}:[0-59] (am|pm|)">
                             </div>
                             <button class="btn-principal">Confirmar cita</button>
                         </div>
@@ -31,6 +48,6 @@
         </div>
     </main>
 </body>
-<script src="/js/client_products.js"> </script>
+<script src="/js/client_reservation.js"> </script>
 <!-- <script src="/js/logout.js"></script> -->
 </html>
