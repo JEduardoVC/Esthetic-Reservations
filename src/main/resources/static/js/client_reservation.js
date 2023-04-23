@@ -1,3 +1,5 @@
+let pagina = 1;
+
 const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 const dateActally = new Date();
 let currentDate = new Date();
@@ -12,13 +14,21 @@ let next = document.querySelector("#next");
 
 let dates = document.querySelector("#dates");
 
-month.textContent = months[currentMonth];
-year.textContent = currentYear.toString();
+document.addEventListener('DOMContentLoaded', function(){
+    month.textContent = months[currentMonth];
+    year.textContent = currentYear.toString();
+    
+    prev.addEventListener("click", () => lastMonth());
+    next.addEventListener("click", () => nextMonth());
+    
+    writeMonths(currentMonth);
 
-prev.addEventListener("click", () => lastMonth());
-next.addEventListener("click", () => nextMonth());
+    showSeccion();
 
-writeMonths(currentMonth);
+    changeSeccion();
+});
+
+
 
 function writeMonths(month){
     for(let i= startDay(); i>0;i--){
@@ -79,4 +89,41 @@ function setNewDate(){
 
 function selectDay(div){
     div.classList.toggle("selected");
+}
+
+function showSeccion(){
+    const seccionAnterior = document.querySelector('.mostrar-seccion');
+    if (seccionAnterior) {
+        seccionAnterior.classList.remove('mostrar-seccion');
+    }
+    
+    const seccionActual = document.querySelector(`#paso-${pagina}`);
+    seccionActual.classList.add('mostrar-seccion');
+}
+
+function changeSeccion() {
+    const enlaces = document.querySelectorAll('.button');
+    enlaces.forEach(enlace => {
+        enlace.addEventListener('click', e => {
+            e.preventDefault();
+            pagina = parseInt(e.target.dataset.paso);
+            showSeccion();
+
+            // botonesPaginador();
+        })
+    })
+}
+
+function PaginatorButtons(){
+    if (pagina === 1) {
+        paginaAnterior.classList.add('ocultar');
+    } else if (pagina === 3) {
+        paginaSiguiente.classList.add('ocultar');
+        paginaAnterior.classList.remove('ocultar');
+
+        mostrarResumen(); // Estamos en la página 3, carga el resumen de la cita
+    } else {
+        paginaAnterior.classList.remove('ocultar');
+        paginaSiguiente.classList.remove('ocultar');
+    }
 }
