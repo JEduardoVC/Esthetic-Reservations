@@ -4,7 +4,7 @@
 <head th:insert="/generics/header"></head>
 <body>
     <main>
-        <div class="reservation">
+        <div class="reservation" id="paso-1">
             <div class="title">
                 <h1 class="title-p">Agendar cita</h1>
                 <img src="/img/Productos-venta.webp">
@@ -40,10 +40,55 @@
                                 <label>Selecciona la hora</label>
                                 <input type="time" pattern="[1-12]{2}:[0-59] (am|pm|)">
                             </div>
-                            <button class="btn-principal">Confirmar cita</button>
+                            <button class="btn-principal button">Confirmar cita</button>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="show-summary" id="paso-2">
+            <h1>Producto</h1>
+            <h1>Precio</h1>
+            <h1>Cantidad</h1>
+            <h1>Subtotal</h1>
+            <div class="product-service" id="product-service">
+                <div>
+                    <img src="/img/cancelar.webp">
+                    <div>
+                        <p>Gotas de ceda</p>
+                        <span>500 ml</span>
+                    </div>
+                </div>
+            </div>
+            <div class="price" id="price">
+                <span>$230</span>
+            </div>
+            <div class="quantity" id="quantitu">
+                <p>1</p>
+            </div>
+            <div class="subtotal" id="subtotal">
+                <span>$230</span>
+            </div>
+            <div class="product-service" id="product-service">
+                <div>
+                    <img src="/img/cancelar.webp">
+                    <div>
+                        <p>Corte femenino</p>
+                        <div>
+                            <span>14 de Marzo</span>
+                            <span>10:20 am</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="price" id="price">
+                <span>$70</span>
+            </div>
+            <div class="quantity" id="quantity">
+                <p>1</p>
+            </div>
+            <div class="subtotal" id="subtotal">
+                <span>$70</span>
             </div>
         </div>
     </main>
