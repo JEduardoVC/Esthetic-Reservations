@@ -14,6 +14,8 @@ let next = document.querySelector("#next");
 
 let dates = document.querySelector("#dates");
 
+const appointment = sessionStorage.getItem("appointment") ?? {date: "",time: ""};
+
 document.addEventListener('DOMContentLoaded', function(){
     month.textContent = months[currentMonth];
     year.textContent = currentYear.toString();
@@ -21,21 +23,52 @@ document.addEventListener('DOMContentLoaded', function(){
     prev.addEventListener("click", () => lastMonth());
     next.addEventListener("click", () => nextMonth());
     
+    sessionStorage.removeItem("appointment")
+    
     writeMonths(currentMonth);
 
     showSeccion();
 
     changeSeccion();
+    
+    showTime();
 });
 
+function newAppointment() {
+	appointment.time = document.querySelector("#time-appointment").value;
+	sessionStorage.setItem("appointment", JSON.stringify(appointment));
+}
 
+function showTime() {
+	const time = document.querySelector(".time");
+	const date = new Date();
+	time.innerHTML = `
+		<p>¡Llegó la hora de agendar tu cita!</p>
+        <div class="model-time">
+            <div class="date-saved">
+                <h1>${date.getDate()}</h1>
+                <h4>${months[date.getMonth()]} ${date.getFullYear()}</h4>
+            </div>
+            <div class="select-time">
+                <div class="input-time">
+                    <label>Selecciona la hora</label>
+                    <input type="time" id="time-appointment" pattern="[1-12]{2}:[0-59] (am|pm|)">
+                </div>
+                <button class="btn-principal button">Confirmar cita</button>
+            </div>
+        </div>
+	`;
+	document.querySelector(".btn-principal").addEventListener("click", newAppointment);
+}
 
 function writeMonths(month){
+	const date = new Date().getDate();
     for(let i= startDay(); i>0;i--){
-        dates.innerHTML += `<div class="date item color-darken">${getTotalDays(currentMonth-1)-(i-1)}</div>`;
+		const day = getTotalDays(currentMonth-1)-(i-1);
+        dates.innerHTML += `<div class="date item color-darken ${date == day ? "selected" : ""}">${day}</div>`;
     }
     for(let i=1;i<=getTotalDays(month); i++){
-        dates.innerHTML += `<div class="date item" id="date_${i}" onclick="selectDay(this)">${i}</div>`;
+        dates.innerHTML += `<div class="date item ${date == i ? "selected" : ""}" id="date_${i}" onclick="selectDay(${date > i ? "null" : "this"})">${i}</div>`;
     }
 }
 
@@ -46,7 +79,7 @@ function getTotalDays(month){
     } else if(month == 3 || month == 5 || month == 8 || month == 10){
         return 30;
     } else {
-        return isLeap() ? 29:28;
+        return isLeap() ? 29 : 28;
     }
 }
 
@@ -88,7 +121,16 @@ function setNewDate(){
 }
 
 function selectDay(div){
+	if(!div) return;
+	document.querySelector("#dates").childNodes.forEach(element => {
+		if(element.classList.contains("selected")) element.classList.remove("selected")
+	});
     div.classList.toggle("selected");
+    console.info(div.textContent);	
+	const index = months.findIndex(month => month == document.querySelector("#month").textContent);
+    appointment.date = `${document.querySelector("#year").textContent}-${index}-${div.textContent}`;
+    console.info(appointment)
+    sessionStorage.setItem("appointment", JSON.stringify(appointment));
 }
 
 function showSeccion(){
@@ -108,7 +150,6 @@ function changeSeccion() {
             e.preventDefault();
             pagina = parseInt(e.target.dataset.paso);
             showSeccion();
-
             // botonesPaginador();
         })
     })
