@@ -1,0 +1,110 @@
+<div id="alertas"></div>
+<form class="row g-3">
+    <div class="col-md-6">
+
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <i class="bi bi-text-left"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="branch-name" name="branch-name"
+                        placeholder="Nombre de la sucursal">
+                    <label for="branch-name" class="form-label">Nombre</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <i class="bi bi-person-gear"></i>
+                </span>
+                <div class="form-floating">
+                    <select id="select-owner" class="form-select" aria-label="Dueño de la sucursal">
+                    </select>
+                    <label for="select-owner" class="form-label">Dueño</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <i class="bi bi-pin-map-fill"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="branch-address" name="branch-address"
+                        placeholder="Dirección de la sucursal">
+                    <label for="branch-address" class="form-label">Dirección</label>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <i class="bi bi-buildings-fill"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="branch-municipality" name="branch-municipality"
+                        placeholder="Municipio de la sucursal">
+                    <label for="branch-municipality" class="form-label">Municipio</label>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <i class="bi bi-map-fill"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="branch-state" name="branch-state"
+                        placeholder="Estado de la sucursal">
+                    <label for="branch-state" class="form-label">Estado</label>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <i class="bi bi-brightness-high-fill"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control timepicker" id="branch-open" name="branch-open"
+                        placeholder="Hora de apertura">
+                    <label for="branch-open" class="form-label">Hora de Apertura</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <i class="bi bi-moon-fill"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control timepicker" id="branch-close" name="branch-close"
+                        placeholder="Hora de cierre">
+                    <label for="branch-close" class="form-label">Hora de Cierre</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <button type="button" id="btnModal" class="btn btn-primary fw-bold">Confirmar</button>
+    </div>
+</form>

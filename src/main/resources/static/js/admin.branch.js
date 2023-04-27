@@ -9,7 +9,7 @@ let table = $('#branchesTable').DataTable({
 
 window.onload = inflate();
 
-$(document).ready(function () {
+$(function () {
     $('.timepicker').timepicker({
         'step': 15,
         'timeFormat': 'h:i A',
@@ -17,7 +17,7 @@ $(document).ready(function () {
         'maxTime': '11:45pm',
         'scrollDefault': '10:00am'
     });
-    $('.timepicker').keydown(function (e) {
+    $('.timepicker').on('keydown', function (e) {
         e.preventDefault();
     });
 });
@@ -25,7 +25,7 @@ $(document).ready(function () {
 
 $('#branch-open').on('changeTime', function () {
     $('#branch-close').timepicker('option', 'minTime', $(this).val());
-    if($(this).val() !== '12:00 AM'){
+    if ($(this).val() !== '12:00 AM') {
         $('#branch-close').timepicker('option', 'maxTime', '12:00 AM');
     } else {
         $('#branch-close').timepicker('option', 'maxTime', '11:45 PM');
@@ -34,7 +34,7 @@ $('#branch-open').on('changeTime', function () {
 
 $('#branch-close').on('changeTime', function () {
     $('#branch-open').timepicker('option', 'maxTime', $(this).val());
-    if($(this).val() === '12:00 AM'){
+    if ($(this).val() === '12:00 AM') {
         $('#branch-open').timepicker('option', 'minTime', '12:00 AM');
         $('#branch-open').timepicker('option', 'maxTime', '11:45 PM');
     }
@@ -74,8 +74,8 @@ function loadBranches() {
                         <td class="text-dark">${branch.scheduleOpen}</td>
                         <td class="text-dark">${branch.scheduleClose}</td>
                         <td>
-                            <button id="deletebranch${branch.id}" class="btn btn-outline-danger fs-4" onclick="deleteBranch(${branch.id});">Eliminar</button>
-                            <button id="editbranch${branch.id}" class="btn btn-warning fs-4" data-bs-toggle="modal" data-bs-target="#modalBranchesForm" onclick="GetInfo('edit',${branch.id});">Editar</button>
+                            <button id="deletebranch${branch.id}" class="btn btn-outline-danger" onclick="deleteBranch(${branch.id});"><i class="bi bi-trash3-fill"></i>Eliminar</button>
+                            <button id="editbranch${branch.id}" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalBranchesForm" onclick="GetInfo('edit',${branch.id});"><i class="bi bi-pencil-square"></i>Editar</button>
                         </td>
                     </tr>`
                 }).join('');
@@ -184,7 +184,6 @@ async function getUsers(ownerId = -1) {
         opt.selected = true;
         opt.value = -1;
         opt.innerHTML = 'Selecciona un usuario';
-        opt.classList.add('fs-4')
         select.appendChild(opt);
     }
 
@@ -193,7 +192,6 @@ async function getUsers(ownerId = -1) {
         opt.selected = user.id == ownerId;
         opt.value = user.id;
         opt.innerHTML = user.username;
-        opt.classList.add('fs-4')
         select.appendChild(opt);
     });
 
@@ -391,10 +389,10 @@ function strToDate(str) {
 async function setTpDate(str, tpId) {
     strToDate(str).then(date => {
         $('#' + tpId).timepicker('setTime', date);
-        if(tpId == 'branch-close'){
+        if (tpId == 'branch-close') {
             $('#branch-close').timepicker('option', 'minTime', $('#branch-open').val());
         } else {
-            if($('#' + tpId).val() !== '12:00 AM'){
+            if ($('#' + tpId).val() !== '12:00 AM') {
                 $('#branch-close').timepicker('option', 'maxTime', '12:00 AM');
             }
         }

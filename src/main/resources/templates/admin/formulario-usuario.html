@@ -1,0 +1,120 @@
+<div id="alertas"></div>
+<form class="row g-3 my-2">
+    <div class="col-md-12">
+        <div class="input-group mb-3">
+            <span class="input-group-text">
+                <i class="bi bi-person-bounding-box"></i>
+            </span>
+            <div class="form-floating">
+                <input type="text" class="form-control form-control-sm" id="user-username"
+                    name="user-username" placeholder="Nombre de usario">
+                <label for="user-username" class="form-label">Username</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="input-group mb-3">
+            <span class="input-group-text">
+                <i class="bi bi-person-lines-fill"></i>
+            </span>
+            <div class="form-floating">
+                <input type="text" class="form-control form-control-sm" id="user-name" name="user-name"
+                    placeholder="Nombre">
+                <label for="user-name" class="form-label">Nombre</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="input-group mb-3">
+            <span class="input-group-text">
+                <i class="bi bi-person-lines-fill"></i>
+            </span>
+            <div class="form-floating">
+                <input type="text" class="form-control form-control-sm " id="user-lastname"
+                    name="user-lastname" placeholder="Apellidos">
+                <label for="user-lastname" class="form-label">Apellidos</label>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="input-group mb-3">
+            <span class="input-group-text">
+                <i class="bi bi-pin-map-fill"></i>
+            </span>
+            <div class="form-floating">
+                <input type="text" class="form-control form-control-sm " id="user-address"
+                    name="user-address" placeholder="Dirección">
+
+                <label for="user-address" class="form-label">Dirección</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group mb-3">
+            <span class="input-group-text">
+                <i class="bi bi-envelope-at-fill"></i>
+            </span>
+            <div class="form-floating">
+                <input type="email"
+                    class="form-control form-control-sm secondary-border-subtle-lg"
+                    id="user-email" name="user-email" placeholder="Correo">
+                <label for="user-email" class="form-label">Correo</label>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group mb-3">
+            <span class="input-group-text">
+                <i class="bi bi-phone-fill"></i>
+            </span>
+            <div class="form-floating">
+                <input type="phone" class="form-control form-control-sm" id="user-phone" name="user-phone"
+                    placeholder="Teléfono">
+                <label for="user-phone" class="form-label">Teléfono</label>
+            </div>
+        </div>
+    </div>
+    <div id="passworddiv" class="col-md-6">
+        <div class="input-group mb-3">
+            <span class="input-group-text">
+                <i class="bi bi-shield-lock-fill"></i>
+            </span>
+            <div class="form-floating">
+                <input type="password" class="form-control form-control-sm" id="user-password"
+                    name="user-password" placeholder="Contraseña">
+
+                <label for="user-password" class="form-label">Contraseña</label>
+            </div>
+            <span class="input-group-text border border-primary" id="togglePassword" style="cursor: pointer">
+                <i class="bi bi-eye bi-eye-slash" id="togglePasswordIcon" ></i>
+            </span>
+        </div>
+    </div>
+
+    <div id="cpassworddiv" class="col-md-6">
+        <div class="input-group mb-3">
+            <span class="input-group-text">
+                <i class="bi bi-shield-lock"></i>
+            </span>
+            <div class="form-floating">
+                <input type="password" class="form-control form-control-sm" id="user-cpassword"
+                    name="user-cpassword" placeholder="Confirma la contraseña">
+                <label for="user-cpassword" class="form-label">Confirmar Contraseña</label>
+            </div>
+            <span class="input-group-text border border-primary" id="toggleCPassword" style="cursor: pointer">
+                <i class="bi bi-eye bi-eye-slash" id="toggleCPasswordIcon"></i>
+            </span>
+        </div>
+    </div>
+
+    <label for="" class="form-label fw-bold fs-4">Roles</label>
+    <div id="roles-sw" class="col-md-12">
+
+    </div>
+    <div class="col-12">
+        <button type="button" id="btnModal" class="btn btn-primary fw-bold">Confirmar</button>
+    </div>
+</form>

@@ -42,8 +42,8 @@ function loadUsers() {
                         <td class="text-dark">${user.email}</td>
                         <td class="text-dark">${user.phoneNumber}</td>
                         <td>
-                            <button id="deleteuser${user.id}" class="btn btn-outline-danger fs-4" onclick="deleteUser(${user.id});">Eliminar</button>
-                            <button id="edituser${user.id}" class="btn btn-warning fs-4" data-bs-toggle="modal" data-bs-target="#modalUsersForm" onclick="GetInfo('edit',${user.id});">Editar</button>
+                            <button id="deleteuser${user.id}" class="btn btn-outline-danger" onclick="deleteUser(${user.id});"><i class="bi bi-trash3-fill"></i>Eliminar</button>
+                            <button id="edituser${user.id}" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalUsersForm" onclick="GetInfo('edit',${user.id});"><i class="bi bi-pencil-square"></i>Editar</button>
                         </td>
                     </tr>`
                 }).join('');
@@ -170,7 +170,7 @@ function actionUser(action, id) {
         error = true;
     }
     if (lastname == '') {
-        errors.push('Debes introducir el apellido de la usuario');
+        errors.push('Debes introducir el apellido del usuario');
         error = true;
     }
     if (address == 0) {
@@ -416,6 +416,9 @@ function isValidResponse(response) {
 const togglePassword = document.querySelector('#togglePassword');
 const toggleCPassword = document.querySelector('#toggleCPassword');
 
+const togglePasswordIcon = document.querySelector('#togglePasswordIcon');
+const toggleCPasswordIcon = document.querySelector('#toggleCPasswordIcon');
+
 const password = document.querySelector('#user-password');
 const cpassword = document.querySelector('#user-cpassword');
 
@@ -428,7 +431,7 @@ togglePassword.addEventListener('click', () => {
     password.setAttribute('type', type);
 
     // Toggle the eye and bi-eye icon
-    togglePassword.classList.toggle('bi-eye');
+    togglePasswordIcon.classList.toggle('bi-eye');
 });
 
 toggleCPassword.addEventListener('click', () => {
@@ -440,7 +443,7 @@ toggleCPassword.addEventListener('click', () => {
     cpassword.setAttribute('type', type);
 
     // Toggle the eye and bi-eye icon
-    toggleCPassword.classList.toggle('bi-eye');
+    toggleCPasswordIcon.classList.toggle('bi-eye');
 });
 
 function showAlerts(alerts, type = 'error') {
