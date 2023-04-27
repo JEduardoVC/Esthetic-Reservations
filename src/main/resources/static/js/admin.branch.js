@@ -15,10 +15,9 @@ $(function () {
         'timeFormat': 'h:i A',
         'minTime': '0:00am',
         'maxTime': '11:45pm',
-        'scrollDefault': '10:00am'
-    });
-    $('.timepicker').on('keydown', function (e) {
-        e.preventDefault();
+        'scrollDefault': '10:00am',
+        'disableTextInput': true,
+        'disableTouchKeyboard': true
     });
 });
 
@@ -62,6 +61,8 @@ function loadBranches() {
             if (typeof data.errorCode !== 'undefined') {
                 if (data.errorCode == 404) {
                     alerta('warning', 'Sin sucursales.');
+                } else {
+                    alerta('error', JSON.stringify(data));
                 }
             } else {
                 branches = data.content;
@@ -94,7 +95,8 @@ async function deleteBranch(id) {
 async function actionDeleteBranch(id) {
     const response = await deleteBranchRequest(id);
     if (!isValidResponse(response)) {
-        alerta('error', response.message);
+        alerta('error', response.data.message);
+        return;
     }
     alerta('success', 'Sucursal eliminada.');
     loadBranches();
@@ -114,7 +116,10 @@ async function deleteBranchRequest(id) {
         }
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 function GetInfo(action, id) {
@@ -171,12 +176,16 @@ async function getUsers(ownerId = -1) {
     $("#select-owner").empty();
     const response = await getUsersRequest();
     if (!isValidResponse(response)) {
-        alerta('error', 'No hay ningún dueño.');
+        if (response.status === 404) {
+            alerta('error', 'No hay ningún dueño.');
+        } else {
+            alerta('error', JSON.stringify(response.data));
+        }
         $('#modalBranchesForm').modal('hide');
         return;
     }
 
-    const users = response.content;
+    const users = response.data.content;
     const select = document.getElementById('select-owner');
 
     if (ownerId == -1) {
@@ -211,7 +220,10 @@ async function getUsersRequest() {
         }
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 function actionBranch(action, id, ownerId = -1) {
@@ -305,8 +317,12 @@ async function addBranchRequest(name, address, branchEstate, branchMunicipality,
             scheduleClose: branchClose
         })
     });
+
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 async function UpdateBranch(name, address, branchEstate, branchMunicipality, branchOpen, branchClose, id, curOwnerId) {
@@ -350,11 +366,14 @@ async function updateBranchRequest(name, address, branchEstate, branchMunicipali
         })
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 function isValidResponse(response) {
-    return typeof response.errorCode === 'undefined';
+    return typeof response.data.errorCode === 'undefined' && response.status <= 399;
 }
 
 function showAlerts(alerts, type = 'error') {

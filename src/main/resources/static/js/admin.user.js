@@ -30,6 +30,8 @@ function loadUsers() {
             if (typeof data.errorCode !== 'undefined') {
                 if (data.errorCode == 404) {
                     alerta('warning', 'No hay ningún usuario.');
+                } else {
+                    alerta('error', JSON.stringify(data));
                 }
             } else {
                 const users = data.content;
@@ -84,6 +86,8 @@ function GetInfo(action, id = 0) {
                         alerta('error', 'No existe ese usuario.');
                         $('#modalUsersForm').modal('hide');
                         loadUsers();
+                    } else {
+                        alerta('error', JSON.stringify(user));
                     }
                 } else {
                     userId = user.id;
@@ -314,7 +318,10 @@ async function editUserRequest(userUsername, userName, lastname, userAddress, us
         })
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 async function addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password) {
     const url = BASE_URL + `api/auth/${roleId}/register`;
@@ -338,7 +345,10 @@ async function addUserRequest(userUsername, userName, lastname, userAddress, use
         })
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 async function grantRoleRequest(id, idRole) {
@@ -356,7 +366,10 @@ async function grantRoleRequest(id, idRole) {
     });
 
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 async function revokeRoleRequest(id, idRole) {
@@ -374,7 +387,10 @@ async function revokeRoleRequest(id, idRole) {
     });
 
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 async function deleteUser(id) {
@@ -387,7 +403,7 @@ async function deleteUser(id) {
 async function actionDeleteUser(id) {
     const response = await deleteUserRequest(id);
     if (!isValidResponse(response)) {
-        alerta('error', response.message);
+        alerta('error', response.data.message);
     }
     alerta('success', 'Usuario eliminado.');
     loadUsers();
@@ -406,11 +422,14 @@ async function deleteUserRequest(id) {
         }
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 function isValidResponse(response) {
-    return typeof response.errorCode === 'undefined';
+    return typeof response.data.errorCode === 'undefined' && response.status <= 399;
 }
 
 const togglePassword = document.querySelector('#togglePassword');

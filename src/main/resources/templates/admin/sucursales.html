@@ -19,32 +19,34 @@
         </div>
     </div>
     <section layout:fragment="content">
-        <table class="table" id="branchesTable" width="100%" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Dirección</th>
-                    <th>Dueño</th>
-                    <th>Apertura</th>
-                    <th>Cierre</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Dirección</th>
-                    <th>Dueño</th>
-                    <th>Apertura</th>
-                    <th>Cierre</th>
-                    <th>Acciones</th>
-                </tr>
-            </tfoot>
-            <tbody id="tableBody">
-            </tbody>
-        </table>
+        <div class="table-responsive p-2">
+            <table class="table table-striped p-2" id="branchesTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Dueño</th>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Dueño</th>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </tfoot>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
         <div id="modalBranchesForm" class="modal fade">
             <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content ">
@@ -53,7 +55,7 @@
                         <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" th:insert="/admin/formulario-sucursal.html">
-                        
+
                     </div>
                 </div>
             </div>
