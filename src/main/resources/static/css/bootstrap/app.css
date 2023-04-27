@@ -2493,7 +2493,7 @@ textarea.form-control-lg {
   text-align: center;
   white-space: nowrap;
   background-color: #fff;
-  border: 1px solid rgba(0, 0, 0, 0);
+  border: 1px solid #ced4da;
   border-radius: 0.375rem;
 }
 
@@ -10719,68 +10719,9 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
-/*
-   * Sidebar
-   */
-.sidebar {
-  position: fixed;
-  top: 0;
-  /* rtl:raw:
-  right: 0;
-  */
-  bottom: 0;
-  /* rtl:remove */
-  left: 0;
-  z-index: 100;
-  /* Behind the navbar */
-  padding: 48px 0 0;
-  /* Height of navbar */
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
-}
-
-.sidebar-sticky {
-  height: calc(100vh - 48px);
-  overflow-x: hidden;
-  overflow-y: auto;
-  /* Scrollable contents if viewport is shorter than content. */
-}
-
-/*
-   * Navbar
-   */
-.navbar-brand {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  background-color: #013440;
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
-  color: #f2e9e4;
-  font-family: Courgette;
-}
-
-.navbar-brand:hover {
-  color: bisque;
-}
-
-.navbar {
-  background-color: #013440;
-}
-
-.navbar .navbar-toggler {
-  top: 0.5rem;
-  right: 1rem;
-  color: #f2e9e4;
-}
-
-.navbar-toggler-icon {
-  color: #f2e9e4;
-}
-
-.navbar .form-control {
-  padding: 0.75rem 1rem;
-}
-
 .er-header {
   font-family: "Courgette", sans-serif;
+  font-weight: bold;
 }
 
 .form-control {
@@ -10788,62 +10729,9 @@ textarea.form-control-lg {
   border-radius: 40px;
 }
 
-.error {
-  background-color: #ffbcbc;
-  border-left: 5px solid #cb0000;
+.form-select {
+  border: 2px inset #C933C7;
+  border-radius: 40px;
 }
 
-.error,
-.successful {
-  font-weight: 700;
-  margin: 1rem 2rem;
-  padding: 0.2rem 0;
-  text-align: center;
-}
-
-.successful {
-  background-color: #b3ff90;
-  border-left: 5px solid #329f00;
-}
-
-.dark-mode * {
-  background-color: #1a1a1a !important;
-}
-
-.dark-mode * {
-  color: white !important;
-}
-
-.dark-mode a,
-.dark-mode h1,
-.dark-mode .h1,
-.dark-mode h2,
-.dark-mode .h2,
-.dark-mode h3,
-.dark-mode .h3,
-.dark-mode h4,
-.dark-mode .h4 {
-  color: #dcdcdc;
-}
-
-.dark-mode .ventana h1, .dark-mode .ventana .h1,
-.dark-mode .ventana-registro h1,
-.dark-mode .ventana-registro .h1 {
-  color: #013440;
-}
-
-.dark-mode .seleccionar-fecha {
-  color: #f2e9e4;
-}
-
-.container-left-primary {
-  background: linear-gradient(#7218c6, #9623c8);
-  display: grid;
-}
-
-body.dark-mode > .table.dataTable {
-  background-color: #fff;
-  color: white !important;
-}
-
-/*# sourceMappingURL=bootstrap.css.map */
+/*# sourceMappingURL=app.css.map */
