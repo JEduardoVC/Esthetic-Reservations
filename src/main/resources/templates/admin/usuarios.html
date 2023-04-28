@@ -7,8 +7,8 @@
     </div>
     <div layout:fragment="toolbar-btns">
         <div class="btn-toolbar mb-2 mb-md-0">
-            <button id="createuser" class="btn btn-primary fw-bold m-3" data-bs-toggle="modal"
-                data-bs-target="#modalUsersForm" onclick="GetInfo('add');">
+            <button id="createuser" class="btn btn-primary fw-bold m-3 modal-trigger" data-action="add" data-bs-toggle="modal"
+                data-bs-target="#modalUsersForm" data-targer="-1">
                 <i class="bi bi-person-plus-fill"></i>
                 Agregar usuario
             </button>
@@ -25,7 +25,7 @@
                         <th>Dirección</th>
                         <th>Correo</th>
                         <th>Teléfono</th>
-                        <!-- <th>Acciones</th> -->
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -36,7 +36,7 @@
                         <th>Dirección</th>
                         <th>Correo</th>
                         <th>Teléfono</th>
-                        <!-- <th>Acciones</th> -->
+                        <th>Acciones</th>
                     </tr>
                 </tfoot>
                 <tbody id="tableBody">

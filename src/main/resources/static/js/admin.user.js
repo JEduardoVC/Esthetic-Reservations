@@ -3,6 +3,7 @@
 $(async function () {
     const branches = await getBranches();
     const users = await getUsers();
+    await getRoles();
     let lang = languageMX;
     lang.select = {
         rows: {
@@ -38,11 +39,192 @@ $(async function () {
             { "name": "direccion", "data": "address", "targets": 3 },
             { "name": "correo", "data": "email", "targets": 4 },
             { "name": "telefono", "data": "phoneNumber", "targets": 5 },
+            {
+                "searchable": false, "orderable": false,
+                "name": "acciones", "render": function (data, type, row) {
+                    let rowId = Number(data.id);
+                    return `
+                            <button type="button" class="btn btn-warning rounded-pill" data-target="${rowId}"><span class="bi bi-pencil"></span></button>
+                            <button type="button" class="btn btn-danger rounded-pill modal-trigger" data-bs-toggle="modal" data-bs-target="#modalUsersForm" data-target="${rowId}"><span class="bi bi-trash text-white"></span></button>`;
+                }, "data": null, "targets": [6]
+            }
         ],
         language: languageMX
     });
 
-})
+});
+
+$(document).on('click', '.btn-warning', function (e) {
+    const id = $(this).data('target');
+    $('#btnModal').data('action', 'edit');
+    $('#btnModal').data('target', id);
+    inflateForm('edit', id);
+    $('#modalUsersForm').modal('show');
+});
+
+$(document).on('click', '.modal-trigger', function (e) {
+    const action = $(this).data('action');
+    const id = $(this).data('target');
+    inflateForm(action);
+    $('#btnModal').data('action', action);
+    $('#btnModal').data('target', id);
+});
+
+function extraValidation(valid = true) {
+    let branchesIds = [];
+    let selectedBranches = $('#branchesTable').DataTable().rows({ selected: true })
+    selectedBranches.every(function (rowIdx, tableLoop, rowLoop) {
+        const branch = this.data();
+        branchesIds.push(branch.id);
+    });
+    let cont = 0;
+    if (selectedBranches.count() === 0 && $('#switch3').prop('checked') === true) {
+        valid = false;
+        let errors = ['Es necesario al menos una sucursal de trabajo para el empleado.'];
+        cont += errors.length;
+        showFeedback('branches', errors);
+    } else {
+        hideFeedback('branches');
+    }
+    const rolesSwitches = document.querySelectorAll('[id^="role-"]');
+    let selectedRoles = [];
+    let unselectedRoles = [];
+    rolesSwitches.forEach(roleSwitch => {
+        if (roleSwitch.checked) {
+            selectedRoles.push('' + roleSwitch.id.replace('role-', ''));
+        } else {
+            unselectedRoles.push('' + roleSwitch.id.replace('role-', ''));
+        }
+    });
+    if (selectedRoles.length === 0) {
+        valid = false;
+        let errors = ['Selecciona al menos un rol para el usuario.'];
+        cont += errors.length;
+        showFeedback('roles', errors);
+    } else {
+        hideFeedback('roles');
+    }
+    if (!valid) {
+        $('#formFeedback').html('Revisa el formulario.');
+        showFeedback('form',['Revisa el formulario']);
+        return cont;
+    } else {
+        hideFeedback('form');
+        const userId = $('#btnModal').data('target');
+        const action = $('#btnModal').data('action');
+        actionUser(action, userId, selectedRoles, branchesIds);
+    }
+}
+
+function hideFeedback(aria){
+    let feedback = $(`#${aria}Feedback`);
+    feedback.addClass('d-none');
+    feedback.removeClass('d-block');
+    feedback.html('');
+}
+
+function showFeedback(aria, errors) {
+    let feedback = $(`#${aria}Feedback`);
+    if(Array.isArray(errors)){
+        let html = `<ul>`;
+        errors.forEach(error => {
+            html += `<li>${error}</li>`;
+        });
+        html += `</ul>`;
+        feedback.html(html);
+    } else {
+        feedback.html(errors);
+    }
+    feedback.addClass('d-block');
+    feedback.removeClass('d-none');
+}
+
+function validate() {
+
+}
+
+$(document).on('click', '#btnModal', function (e) {
+    const action = $(this).data('action');
+    $('#usersForm').validate().destroy();
+    $('#usersForm').validate({
+        invalidHandler: function (event, validator) {
+            // 'this' refers to the form
+            var errors = validator.numberOfInvalids() + extraValidation(false);
+            if (errors) {
+                var message = errors == 1
+                    ? 'Error en 1 campo. Revisa lo resaltado en rojo.'
+                    : 'Error en ' + errors + ' campos. Han sido resaltados en rojo.';
+                showFeedback('form',[message]);
+            } else {
+                hideFeedback('form');
+            }
+        },
+        submitHandler: function (form) {
+            extraValidation(true);
+        },
+        rules: {
+            'user-username': 'required',
+            'user-email': {
+                required: true,
+                email: true
+            },
+            'user-name': 'required',
+            'user-lastname': 'required',
+            'user-address': 'required',
+            'user-phone': {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                digits: true
+            },
+            'user-password': {
+                required: action !== 'edit',
+                minlength: 8,
+            },
+            'user-cpassword': {
+                required: action !== 'edit',
+                minlength: 8,
+                equalTo: "#user-password"
+            }
+        },
+        messages: {
+            'user-username': 'El nombre de usario es requerido.',
+            'user-email': {
+                required: 'Ingresa el correo electrónico.',
+                email: 'El correo debe ser algo como usuario@dominio.co'
+            },
+            'user-name': 'Ingresa el nombre.',
+            'user-lastname': 'Ingresa el apellido.',
+            'user-address': 'Ingresa la dirección',
+            'user-phone': 'Ingresa un número a 10 dígitos.',
+            'user-password': {
+                required: 'Ingresa la contraseña',
+                minlength: 'La contraseña debe tener 8 caracteres mínimo.'
+            },
+            'user-cpassword': {
+                required: 'Confirma la contraseña',
+                minlength: 'La contraseña debe tener 8 caracteres mínimo.',
+                equalTo: 'Las contraseñas no coinciden.'
+            }
+
+        },
+        errorClass: 'is-invalid',
+        validClass: 'is-valid',
+        errorElement: 'li',
+        wrapper: 'ul',
+        errorPlacement: function (error, element) {
+            const aria = element.attr('aria-label');
+            error.appendTo($(`#${aria}Feedback`));
+            showFeedback(aria, error);
+        }
+    });
+});
+
+$(document).on('input', 'input.form-control', function () {
+    if($(this).hasClass('is-invalid') && $(this).prop('type') === 'email' || $(this).hasClass('is-invalid') && $(this).prop('type')!=='email'){
+        $('#usersForm').validate().element($(this));
+    }
+});
 
 async function getBranches() {
     const response = await branchesRequest();
@@ -100,65 +282,86 @@ async function usersRequest() {
     }
 }
 
-function GetInfo(action, id = 0) {
-    let userId = 0;
-    document.getElementById('alertas').innerHTML = '';
-    document.getElementById("user-password").value = '';
-    document.getElementById("user-cpassword").value = '';
-    if (action == 'add') {
-        document.getElementById("user-username").value = '';
-        document.getElementById("user-name").value = '';
-        document.getElementById("user-lastname").value = '';
-        document.getElementById("user-address").value = '';
-        document.getElementById("user-email").value = '';
-        document.getElementById("user-phone").value = '';
-        getRoles();
-    } else {
-        const url = BASE_URL + `api/user/${id}`;
-        fetch(url + new URLSearchParams({
+function cleanForm() {
+    $('input').each(function () {
+        $(this).val('');
+        hideFeedback($(this).attr('aria-label'));
+    });
+    $('input').removeClass('is-invalid');
+    $('input').removeClass('is-valid');
+    hideFeedback('roles');
+    hideFeedback('form');
+}
 
-        }), {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-            }
-        })
-            .then((response) => response.json())
-            .then(user => {
-                if (typeof user.errorCode !== 'undefined') {
-                    if (user.errorCode == 404) {
-                        alerta('error', 'No existe ese usuario.');
-                        $('#modalUsersForm').modal('hide');
-                    }
-                } else {
-                    userId = user.id;
-                    document.getElementById("user-username").value = user.username;
-                    document.getElementById("user-name").value = user.name
-                    document.getElementById("user-lastname").value = user.lastName;
-                    document.getElementById("user-address").value = user.address;
-                    document.getElementById("user-email").value = user.email;
-                    document.getElementById("user-phone").value = user.phoneNumber;
-                    getRoles(user.userRoles);
-                }
-            })
+async function inflateForm(action, id = -1) {
+    cleanForm();
+    if (action === 'add') {
+        await getRoles();
+    } else {
+        const response = await getUserInfoRequest(id);
+        if (!isValidResponse(response)) {
+            alerta('error', JSON.stringify(response.data));
+            return;
+        }
+        const user = response.data;
+        document.getElementById("user-username").value = user.username;
+        document.getElementById("user-name").value = user.name
+        document.getElementById("user-lastname").value = user.lastName;
+        document.getElementById("user-address").value = user.address;
+        document.getElementById("user-email").value = user.email;
+        document.getElementById("user-phone").value = user.phoneNumber;
+        getRoles(user.userRoles);
     }
-    $('#btnModal').on('click', function(e){
-        let branchesIds = [];
-        let selectedBranches = $('#branchesTable').DataTable().rows({ selected: true })
-        selectedBranches.every(function (rowIdx, tableLoop, rowLoop) {
-            const branch = this.data();
-            branchesIds.push(branch.id);
-        });
-        alert(branchesIds);
-        actionUser(action, userId, branchesIds);
+
+}
+
+async function getUserInfoRequest(id) {
+    const url = BASE_URL + `api/user/${id}`;
+    const response = await fetch(url + new URLSearchParams({
+
+    }), {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+        }
+    });
+    const json = await response.json();
+    return {
+        'data': json,
+        'status': response.status
+    }
+}
+
+async function getRoles(userRoles = []) {
+    const response = await rolesRequest();
+    if (!isValidResponse(response)) {
+        alerta('error', JSON.stringify(response.data));
+        return;
+    }
+    const roles = response.data.content;
+    let userRolesIds = [];
+    userRoles.forEach(userRole => {
+        userRolesIds.push(userRole.id);
+    });
+    const html = roles.map(role => {
+        let hasRole = userRolesIds.includes(role.id);
+        return `<div id="switch${role.id}" class="form-check form-switch">
+                                <input id="role-${role.id}" class="form-check-input" type="checkbox" ${hasRole ? 'checked' : ''}>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">${role.name}</label>
+                            </div>`
+    }).join('');
+    document.getElementById('roles-sw').innerHTML = html;
+    $(`#switch3`).on('change', function (e) {
+        this.checked = !this.checked;
+        $('#branchesdiv').toggleClass('no-mostrar d-none');
     });
 }
 
-function getRoles(userRoles = []) {
+async function rolesRequest() {
     const url = BASE_URL + `api/role/all`;
-    fetch(url + new URLSearchParams({
+    const response = await fetch(url + new URLSearchParams({
 
     }), {
         method: 'GET',
@@ -167,116 +370,30 @@ function getRoles(userRoles = []) {
             'Content-Type': 'application/json',
             "Authorization": `Bearer ${sessionStorage.getItem("token")}`
         },
-    })
-        .then((response) => response.json())
-        .then(data => {
-            if (typeof data.errorCode !== 'undefined') {
-                alerta('error', data.message);
-            } else {
-                const roles = data.content;
-                let userRolesIds = [];
-                userRoles.forEach(userRole => {
-                    userRolesIds.push(userRole.id);
-                });
-                const html = roles.map(role => {
-                    let hasRole = userRolesIds.includes(role.id);
-                    if (role.name === 'ROLE_EMPLOYEE') {
-
-                    }
-                    return `<div id="switch${role.id}" class="form-check form-switch">
-                                <input id="role-${role.id}" class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" ${hasRole ? 'checked' : ''}>
-                                <label class="form-check-label" for="flexSwitchCheckDefault">${role.name}</label>
-                            </div>`
-                }).join('');
-                $('')
-                document.getElementById('roles-sw').innerHTML = html;
-                $(`#switch3`).on('change', function (e) {
-                    $('#branchesdiv').toggleClass('no-mostrar d-none');
-                });
-            }
-        })
-}
-
-function actionUser(action, id, branchesIds) {
-    const username = document.getElementById("user-username").value;
-    const name = document.getElementById("user-name").value;
-    const lastname = document.getElementById("user-lastname").value;
-    const address = document.getElementById("user-address").value;
-    const email = document.getElementById("user-email").value;
-    const phone = document.getElementById("user-phone").value;
-    const password = document.getElementById("user-password").value;
-    const cpassword = document.getElementById("user-cpassword").value;
-    const rolesSwitches = document.querySelectorAll('[id^="role-"]');
-    let selectedRoles = [];
-    let unselectedRoles = [];
-    rolesSwitches.forEach(roleSwitch => {
-        if (roleSwitch.checked) {
-            selectedRoles.push('' + roleSwitch.id.replace('role-', ''));
-        } else {
-            unselectedRoles.push('' + roleSwitch.id.replace('role-', ''));
-        }
     });
-    let error = false;
-    let errors = [];
-    if (selectedRoles.length == 0) {
-        errors.push('Debes seleccionar al menos un rol para el usuario.');
-        error = true;
+    const json = await response.json();
+    return {
+        'data': json,
+        'status': response.status
     }
-    if (username == '') {
-        errors.push('Debes introducir el nombre de usuario');
-        error = true;
-    }
-    if (name == '') {
-        errors.push('Debes introducir el nombre del usuario');
-        error = true;
-    }
-    if (lastname == '') {
-        errors.push('Debes introducir el apellido del usuario');
-        error = true;
-    }
-    if (address == 0) {
-        errors.push('Debes introducir la dirección');
-        error = true;
-    }
-    if (email == '') {
-        errors.push('Debes introducir el correo');
-        error = true;
-    }
-    if (phone == '') {
-        errors.push('Debes introducir el teléfono');
-        error = true;
-    }
+
+}
+
+function actionUser(action, id, selectedRoles, branchesIds) {
+    let data = {};
+    $('form#usersForm :input').each(function(){
+        const aria = $(this).attr('aria-label');
+        data[aria] = $(this).val();
+    });
     if (action == 'add') {
-        if (password == '' || cpassword == '') {
-            errors.push('Debes ingresar una contraseña y confirmarla.');
-            error = true;
-        }
-        if (password !== cpassword) {
-            errors.push('Las contraseñas no coinciden.');
-            error = true;
-        }
-    } else if (password !== '') { // Edita y cambia contraseña
-        if (cpassword == '') {
-            errors.push('Debes ingresar una contraseña y confirmarla.');
-            error = true;
-        }
-        if (password !== cpassword) {
-            errors.push('Las contraseñas no coinciden.');
-            error = true;
-        }
-    }
-    if (error) {
-        showAlerts(errors);
-    } else if (action == 'add') {
-        AddUser(username, name, lastname, address, email, phone, selectedRoles, unselectedRoles, password, branchesIds);
+        addUser(data, id, selectedRoles, branchesIds);
     } else {
-        UpdateUser(username, name, lastname, address, email, phone, selectedRoles, unselectedRoles, id, password, branchesIds);
+        updateUser(data, id, selectedRoles, branchesIds);
     }
 }
 
-async function AddUser(userUsername, userName, lastname, userAddress, userEmail, phone, selectedRoles, unselectedRoles, password, branchesIds) {
-    const roleId = selectedRoles[0];
-    const createResponse = await addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password, selectedRoles, branchesIds);
+async function addUser(data, id, selectedRoles, branchesIds) {
+    const createResponse = await addUserRequest(data, id, selectedRoles, branchesIds);
     if (isValidResponse(createResponse)) {
         id = createResponse.id;
         alerta('success', 'Se creó el usuario.');
@@ -295,21 +412,8 @@ async function AddUser(userUsername, userName, lastname, userAddress, userEmail,
 
 }
 
-async function UpdateUser(userUsername, userName, lastname, userAddress, userEmail, phone, selectedRoles, unselectedRoles, id, password, branchesIds) {
-    const updateResponse = await editUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, id, password);
-    alert(branchesIds);
-    for (const idRole of selectedRoles) {
-        const response = await grantRoleRequest(id, idRole, branchesIds);
-        // if (!isValidResponse(response)) {
-        //     console.log(response.message);
-        // }
-    }
-    for (const idRole of unselectedRoles) {
-        const response = await revokeRoleRequest(id, idRole);
-        // if (!isValidResponse(response)) {
-        //     console.log(response.message);
-        // }
-    }
+async function updateUser(data, id, selectedRoles, branchesIds) {
+    const updateResponse = await editUserRequest(data, id, selectedRoles, branchesIds);
     if (isValidResponse(updateResponse)) {
         alerta('success', 'Se modificó el usuario.');
         $('#modalUsersForm').modal('hide');
@@ -327,9 +431,9 @@ async function UpdateUser(userUsername, userName, lastname, userAddress, userEma
 
 }
 
-async function editUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, id, password) {
-    const url = BASE_URL + `api/user/`;
-    const response = await fetch(url + `${id}` + new URLSearchParams({
+async function editUserRequest(data, id, selectedRoles, branchesIds) {
+    const url = BASE_URL + `api/user/${id}`;
+    const response = await fetch(url + new URLSearchParams({
 
     }), {
         method: 'PUT',
@@ -354,8 +458,8 @@ async function editUserRequest(userUsername, userName, lastname, userAddress, us
         'status': response.status
     };
 }
-async function addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password, selectedRoles, branchesIds) {
-    const url = BASE_URL + `api/auth/${roleId}/register`;
+async function addUserRequest(data, id, selectedRoles, branchesIds) {
+    const url = BASE_URL + `api/auth/register/roles`;
     const response = await fetch(url + new URLSearchParams({
 
     }), {
@@ -366,13 +470,13 @@ async function addUserRequest(userUsername, userName, lastname, userAddress, use
             "Authorization": `Bearer ${sessionStorage.getItem("token")}`
         },
         body: JSON.stringify({
-            username: userUsername,
-            name: userName,
-            lastName: lastname,
-            address: userAddress,
-            phoneNumber: phone,
-            email: userEmail,
-            password: password,
+            username: data.username,
+            name: data.name,
+            lastName: data.lastName,
+            address: data.address,
+            phoneNumber: data.phoneNumber,
+            email: data.email,
+            password: data.password,
             rolesIds: selectedRoles,
             workingBranchesIds: branchesIds
         })

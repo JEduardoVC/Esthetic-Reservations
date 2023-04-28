@@ -82,12 +82,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}/grant/{role}")
-    public ResponseEntity<UserEntityDTO> grantRoleToUser(@RequestBody WorkingBranchesDTO workingBranchesDTO,  @PathVariable(name = "id", required = true) Long userId,
+    public ResponseEntity<UserEntityDTO> grantRoleToUser(@PathVariable(name = "id", required = true) Long userId,
             @PathVariable(name = "role", required = true) String role) {
-        System.out.println(workingBranchesDTO);
-        if(workingBranchesDTO.getBranchesIds().size() > 0){
-            return new ResponseEntity<>(userService.grantRoleToUser(userId, role, workingBranchesDTO.getBranchesIds()), HttpStatus.OK);
-        }
         return new ResponseEntity<>(userService.grantRoleToUser(userId, role), HttpStatus.OK);
     }
 

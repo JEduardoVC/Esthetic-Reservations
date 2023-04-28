@@ -1,15 +1,18 @@
 <div id="alertas"></div>
-<form class="row g-3 my-2">
+<form id="usersForm" action="#" onsubmit="return false" method="POST" class="row g-3 my-2">
     <div class="col-md-12">
         <div class="input-group mb-3">
             <span class="input-group-text">
                 <i class="bi bi-person-bounding-box"></i>
             </span>
             <div class="form-floating">
-                <input type="text" class="form-control form-control-sm" id="user-username"
-                    name="user-username" placeholder="Nombre de usario">
+                <input type="text" class="form-control form-control-sm" id="user-username" name="user-username"
+                    placeholder="Nombre de usario" aria-label="username" >
                 <label for="user-username" class="form-label">Username</label>
             </div>
+        </div>
+        <div id="usernameFeedback" class="invalid-feedback d-block">
+
         </div>
     </div>
 
@@ -20,9 +23,12 @@
             </span>
             <div class="form-floating">
                 <input type="text" class="form-control form-control-sm" id="user-name" name="user-name"
-                    placeholder="Nombre">
+                    placeholder="Nombre" aria-label="name" >
                 <label for="user-name" class="form-label">Nombre</label>
             </div>
+        </div>
+        <div id="nameFeedback" class="invalid-feedback d-block">
+
         </div>
     </div>
     <div class="col-md-8">
@@ -31,11 +37,14 @@
                 <i class="bi bi-person-lines-fill"></i>
             </span>
             <div class="form-floating">
-                <input type="text" class="form-control form-control-sm " id="user-lastname"
-                    name="user-lastname" placeholder="Apellidos">
+                <input type="text" class="form-control form-control-sm " id="user-lastname" name="user-lastname"
+                    aria-label="lastName" placeholder="Apellidos" >
                 <label for="user-lastname" class="form-label">Apellidos</label>
 
             </div>
+        </div>
+        <div id="lastNameFeedback" class="invalid-feedback d-block">
+
         </div>
     </div>
     <div class="col-md-12">
@@ -44,11 +53,14 @@
                 <i class="bi bi-pin-map-fill"></i>
             </span>
             <div class="form-floating">
-                <input type="text" class="form-control form-control-sm " id="user-address"
-                    name="user-address" placeholder="Dirección">
+                <input type="text" class="form-control form-control-sm " id="user-address" name="user-address"
+                    aria-label="address" placeholder="Dirección" >
 
                 <label for="user-address" class="form-label">Dirección</label>
             </div>
+        </div>
+        <div id="addressFeedback" class="invalid-feedback d-block">
+
         </div>
     </div>
     <div class="col-md-6">
@@ -57,12 +69,14 @@
                 <i class="bi bi-envelope-at-fill"></i>
             </span>
             <div class="form-floating">
-                <input type="email"
-                    class="form-control form-control-sm secondary-border-subtle-lg"
-                    id="user-email" name="user-email" placeholder="Correo">
+                <input type="email" class="form-control form-control-sm secondary-border-subtle-lg" id="user-email"
+                    name="user-email" aria-label="email" placeholder="Correo" >
                 <label for="user-email" class="form-label">Correo</label>
 
             </div>
+        </div>
+        <div id="emailFeedback" class="invalid-feedback d-block">
+
         </div>
     </div>
     <div class="col-md-6">
@@ -72,9 +86,12 @@
             </span>
             <div class="form-floating">
                 <input type="phone" class="form-control form-control-sm" id="user-phone" name="user-phone"
-                    placeholder="Teléfono">
+                    placeholder="Teléfono" aria-label="phoneNumber" >
                 <label for="user-phone" class="form-label">Teléfono</label>
             </div>
+        </div>
+        <div id="phoneNumberFeedback" class="invalid-feedback d-block">
+
         </div>
     </div>
     <div id="passworddiv" class="col-md-6">
@@ -83,14 +100,17 @@
                 <i class="bi bi-shield-lock-fill"></i>
             </span>
             <div class="form-floating">
-                <input type="password" class="form-control form-control-sm" id="user-password"
-                    name="user-password" placeholder="Contraseña">
+                <input type="password" class="form-control form-control-sm" id="user-password" name="user-password"
+                    aria-label="password" placeholder="Contraseña" >
 
                 <label for="user-password" class="form-label">Contraseña</label>
             </div>
             <span class="input-group-text border border-primary" id="togglePassword" style="cursor: pointer">
-                <i class="bi bi-eye bi-eye-slash" id="togglePasswordIcon" ></i>
+                <i class="bi bi-eye bi-eye-slash" id="togglePasswordIcon"></i>
             </span>
+        </div>
+        <div id="passwordFeedback" class="invalid-feedback d-block">
+
         </div>
     </div>
 
@@ -100,20 +120,25 @@
                 <i class="bi bi-shield-lock"></i>
             </span>
             <div class="form-floating">
-                <input type="password" class="form-control form-control-sm" id="user-cpassword"
-                    name="user-cpassword" placeholder="Confirma la contraseña">
+                <input type="password" class="form-control form-control-sm" id="user-cpassword" name="user-cpassword"
+                    aria-label="cpassword" placeholder="Confirmar la contraseña" >
                 <label for="user-cpassword" class="form-label">Confirmar Contraseña</label>
             </div>
             <span class="input-group-text border border-primary" id="toggleCPassword" style="cursor: pointer">
                 <i class="bi bi-eye bi-eye-slash" id="toggleCPasswordIcon"></i>
             </span>
         </div>
+        <div id="cpasswordFeedback" class="invalid-feedback d-block">
+
+        </div>
     </div>
 
     <label for="" class="form-label fw-bold fs-4">Roles</label>
-    <div id="roles-sw" class="col-md-3"></div>
+    <div id="rolesFeedback" class="invalid-feedback d-none"></div>
+    <div id="roles-sw" class="col-md-3 form-group"></div>
     <div id="branchesdiv" class="col-md-9 d-none no-mostrar">
         <label for="branchesTable" class="fw-bold fs-5">Sucursales de trabajo...</label>
+        <div id="branchesFeedback" class="invalid-feedback d-none"></div>
         <table class="table" id="branchesTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
@@ -133,7 +158,11 @@
             </tbody>
         </table>
     </div>
-    <div class="col-12">
-        <button type="button" id="btnModal" class="btn btn-primary fw-bold">Confirmar</button>
+    <div class="row mt-3">
+        <div class="col-md-1">
+            <button type="submit" id="btnModal" class="btn btn-primary fw-bold">Confirmar</button>
+        </div>
+        <div id="formFeedback" class="col-md-10 invalid-feedback d-none fw-bold">Revisa el formulario.</div>
+
     </div>
 </form>
