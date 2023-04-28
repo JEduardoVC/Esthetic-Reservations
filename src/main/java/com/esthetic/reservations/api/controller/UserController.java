@@ -22,6 +22,7 @@ import com.esthetic.reservations.api.dto.MessageDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.dto.UserEntityEditDTO;
+import com.esthetic.reservations.api.dto.WorkingBranchesDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.EstheticAppException;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
@@ -39,6 +40,11 @@ public class UserController {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
+
+    // @GetMapping("/owner/{ownerId}/employees")
+    // public ResponseEntity<UserEntityDTO> findEmployeesByOwnerId(@PathVariable(name = "ownerId", required = true) Integer ownerId) {
+
+    // }
 
     @GetMapping
     public ResponseEntity<UserEntityDTO> findBy(@RequestParam(value = "by", required = true) String filterBy,
@@ -76,8 +82,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}/grant/{role}")
-    public ResponseEntity<UserEntityDTO> grantRoleToUser(@PathVariable(name = "id", required = true) Long userId,
+    public ResponseEntity<UserEntityDTO> grantRoleToUser(@RequestBody WorkingBranchesDTO workingBranchesDTO,  @PathVariable(name = "id", required = true) Long userId,
             @PathVariable(name = "role", required = true) String role) {
+        System.out.println(workingBranchesDTO);
+        if(workingBranchesDTO.getBranchesIds().size() > 0){
+            return new ResponseEntity<>(userService.grantRoleToUser(userId, role, workingBranchesDTO.getBranchesIds()), HttpStatus.OK);
+        }
         return new ResponseEntity<>(userService.grantRoleToUser(userId, role), HttpStatus.OK);
     }
 

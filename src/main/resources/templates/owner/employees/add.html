@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+
+<body>
+    <div th:insert="/owner/navegacion"></div>
+    <div class="body-owner">
+        <div class="container-owner">
+            <h1>Personal</h1>
+            <button class="btn-secundario">Añadir empleado</button>
+            <div class="table-responsive p-2">
+                <table class="table table-striped p-2" id="usersTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Username</th>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Correo</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </tfoot>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- <script src="/js/owner.js"></script> -->
+<script src="/js/logout.js"></script>
+</html>

@@ -111,8 +111,27 @@
     </div>
 
     <label for="" class="form-label fw-bold fs-4">Roles</label>
-    <div id="roles-sw" class="col-md-12">
-
+    <div id="roles-sw" class="col-md-3"></div>
+    <div id="branchesdiv" class="col-md-9 d-none no-mostrar">
+        <label for="branchesTable" class="fw-bold fs-5">Sucursales de trabajo...</label>
+        <table class="table" id="branchesTable" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Sucursal</th>
+                    <th>Nombre</th>
+                    <th>Dueño</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>Sucursal</th>
+                    <th>Nombre</th>
+                    <th>Dueño</th>
+                </tr>
+            </tfoot>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
     </div>
     <div class="col-12">
         <button type="button" id="btnModal" class="btn btn-primary fw-bold">Confirmar</button>

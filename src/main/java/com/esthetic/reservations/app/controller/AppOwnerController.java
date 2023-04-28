@@ -62,4 +62,9 @@ public class AppOwnerController {
 	public ModelAndView viewValidateAppointment() {
 		return new ModelAndView("owner/appointment/validar_cita");
 	}
+
+	@GetMapping("/personal")
+	public ModelAndView viewPersonal() {
+		return new ModelAndView("owner/employees/employees");
+	}
 }

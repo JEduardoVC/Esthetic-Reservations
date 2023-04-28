@@ -1,21 +1,89 @@
 'use strict'
-let table = $('#usersTable').DataTable({
-    paging: true,
-    language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json'
+
+$(async function () {
+    const branches = await getBranches();
+    const users = await getUsers();
+    let lang = languageMX;
+    lang.select = {
+        rows: {
+            _: 'Seleccionadas %d sucursales.',
+            0: 'Selecciona una sucursal dando clic.',
+            1: 'Una sucursal seleccionada.'
+        },
+        cols: {
+
+        }
     }
-});
+    $('#branchesTable').DataTable({
+        paging: true,
+        data: branches,
+        select: {
+            style: 'multi'
+        },
+        dom: 'ilfprtlp',
+        columns: [
+            { "name": "id", "data": "id", "targets": 0 },
+            { "name": "nombre", "data": "branchName", "targets": 1 },
+            { "name": "dueño", "data": "owner.username", "targets": 2 },
+        ],
+        language: lang
+    });
+    $('#usersTable').DataTable({
+        paging: true,
+        data: users,
+        columns: [
+            { "name": "id", "data": "id", "targets": 0 },
+            { "name": "username", "data": "username", "targets": 1 },
+            { "name": "nombre", "data": "name", "targets": 2 },
+            { "name": "direccion", "data": "address", "targets": 3 },
+            { "name": "correo", "data": "email", "targets": 4 },
+            { "name": "telefono", "data": "phoneNumber", "targets": 5 },
+        ],
+        language: languageMX
+    });
 
-window.onload = inflate();
+})
 
-function inflate() {
-    loadUsers();
+async function getBranches() {
+    const response = await branchesRequest();
+    if (!isValidResponse(response)) {
+        alerta('error', JSON.stringify(response.data));
+        return null;
+    }
+    return response.data.content;
 }
 
-function loadUsers() {
-    table.clear();
+async function branchesRequest() {
+    const url = BASE_URL + 'api/branch/all';
+    const response = await fetch(url + new URLSearchParams({
+
+    }), {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+        }
+    });
+    const json = await response.json();
+    return {
+        'data': json,
+        'status': response.status
+    }
+}
+
+async function getUsers() {
+    const response = await usersRequest();
+    if (!isValidResponse(response)) {
+        alerta('error', JSON.stringify(response.data));
+        return;
+    }
+    return response.data.content;
+}
+
+async function usersRequest() {
     const url = BASE_URL + 'api/user/all';
-    fetch(url + new URLSearchParams({
+    const response = await fetch(url + new URLSearchParams({
 
     }), {
         method: 'GET',
@@ -25,31 +93,11 @@ function loadUsers() {
             "Authorization": `Bearer ${sessionStorage.getItem("token")}`
         }
     })
-        .then((response) => response.json())
-        .then(data => {
-            if (typeof data.errorCode !== 'undefined') {
-                if (data.errorCode == 404) {
-                    alerta('warning', 'No hay ningún usuario.');
-                }
-            } else {
-                const users = data.content;
-                const html = users.map(user => {
-                    return `<tr>
-                        <td class="text-dark">${user.id}</td>
-                        <td class="text-dark">${user.username}</td>
-                        <td class="text-dark">${user.name + ' ' + user.lastName}</td>
-                        <td class="text-dark">${user.address}</td>
-                        <td class="text-dark">${user.email}</td>
-                        <td class="text-dark">${user.phoneNumber}</td>
-                        <td>
-                            <button id="deleteuser${user.id}" class="btn btn-outline-danger" onclick="deleteUser(${user.id});"><i class="bi bi-trash3-fill"></i>Eliminar</button>
-                            <button id="edituser${user.id}" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalUsersForm" onclick="GetInfo('edit',${user.id});"><i class="bi bi-pencil-square"></i>Editar</button>
-                        </td>
-                    </tr>`
-                }).join('');
-                table.rows.add($(html)).draw();
-            }
-        })
+    const json = await response.json();
+    return {
+        'data': json,
+        'status': response.status
+    }
 }
 
 function GetInfo(action, id = 0) {
@@ -83,7 +131,6 @@ function GetInfo(action, id = 0) {
                     if (user.errorCode == 404) {
                         alerta('error', 'No existe ese usuario.');
                         $('#modalUsersForm').modal('hide');
-                        loadUsers();
                     }
                 } else {
                     userId = user.id;
@@ -97,9 +144,16 @@ function GetInfo(action, id = 0) {
                 }
             })
     }
-    document.getElementById("btnModal").onclick = function () {
-        actionUser(action, userId);
-    };
+    $('#btnModal').on('click', function(e){
+        let branchesIds = [];
+        let selectedBranches = $('#branchesTable').DataTable().rows({ selected: true })
+        selectedBranches.every(function (rowIdx, tableLoop, rowLoop) {
+            const branch = this.data();
+            branchesIds.push(branch.id);
+        });
+        alert(branchesIds);
+        actionUser(action, userId, branchesIds);
+    });
 }
 
 function getRoles(userRoles = []) {
@@ -126,17 +180,24 @@ function getRoles(userRoles = []) {
                 });
                 const html = roles.map(role => {
                     let hasRole = userRolesIds.includes(role.id);
-                    return `<div class="form-check form-switch">
+                    if (role.name === 'ROLE_EMPLOYEE') {
+
+                    }
+                    return `<div id="switch${role.id}" class="form-check form-switch">
                                 <input id="role-${role.id}" class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" ${hasRole ? 'checked' : ''}>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">${role.name}</label>
                             </div>`
                 }).join('');
+                $('')
                 document.getElementById('roles-sw').innerHTML = html;
+                $(`#switch3`).on('change', function (e) {
+                    $('#branchesdiv').toggleClass('no-mostrar d-none');
+                });
             }
         })
 }
 
-function actionUser(action, id) {
+function actionUser(action, id, branchesIds) {
     const username = document.getElementById("user-username").value;
     const name = document.getElementById("user-name").value;
     const lastname = document.getElementById("user-lastname").value;
@@ -207,48 +268,38 @@ function actionUser(action, id) {
     if (error) {
         showAlerts(errors);
     } else if (action == 'add') {
-        AddUser(username, name, lastname, address, email, phone, selectedRoles, unselectedRoles, password);
+        AddUser(username, name, lastname, address, email, phone, selectedRoles, unselectedRoles, password, branchesIds);
     } else {
-        UpdateUser(username, name, lastname, address, email, phone, selectedRoles, unselectedRoles, id, password);
+        UpdateUser(username, name, lastname, address, email, phone, selectedRoles, unselectedRoles, id, password, branchesIds);
     }
 }
 
-async function AddUser(userUsername, userName, lastname, userAddress, userEmail, phone, selectedRoles, unselectedRoles, password) {
+async function AddUser(userUsername, userName, lastname, userAddress, userEmail, phone, selectedRoles, unselectedRoles, password, branchesIds) {
     const roleId = selectedRoles[0];
-    let id = -1;
-    const createResponse = await addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password);
+    const createResponse = await addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password, selectedRoles, branchesIds);
     if (isValidResponse(createResponse)) {
         id = createResponse.id;
         alerta('success', 'Se creó el usuario.');
         $('#modalUsersForm').modal('hide');
-        loadUsers();
     } else {
         if (createResponse.errorCode === 400) {
             showObjectAlerts(createResponse.message, 'error');
-            // document.getElementById('alertas').innerHTML = '';
-            // let html = '<div>\n'
-            // html += `<p>${createResponse.errorCode}</p>\n`;
-            // for (const badField in createResponse.message) {
-            //     html += `<p class="error">${createResponse.message[badField]}</p>\n`;
-            // }
-            // html += '</div>';
-            // alertaHtml('error', html);
         } else if (createResponse.errorCode === 500 || createResponse.errorCode === 409) {
             let errors = [];
             errors.push(createResponse.message);
             showAlerts(errors, 'error');
-            // document.getElementById('alertas').innerHTML = '';
-            // let html = '<div>\n'
-            // html += `<p>${createResponse.errorCode}</p>\n`;
-            // html += `<p class="error">${createResponse.message}</p>\n`;
-            // html += '</div>';
-            // alertaHtml('error', html);
         } else {
             alerta('error', createResponse.errorCode + '\n' + JSON.stringify(createResponse.message));
         }
     }
+
+}
+
+async function UpdateUser(userUsername, userName, lastname, userAddress, userEmail, phone, selectedRoles, unselectedRoles, id, password, branchesIds) {
+    const updateResponse = await editUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, id, password);
+    alert(branchesIds);
     for (const idRole of selectedRoles) {
-        const response = await grantRoleRequest(id, idRole);
+        const response = await grantRoleRequest(id, idRole, branchesIds);
         // if (!isValidResponse(response)) {
         //     console.log(response.message);
         // }
@@ -259,14 +310,9 @@ async function AddUser(userUsername, userName, lastname, userAddress, userEmail,
         //     console.log(response.message);
         // }
     }
-}
-
-async function UpdateUser(userUsername, userName, lastname, userAddress, userEmail, phone, selectedRoles, unselectedRoles, id, password) {
-    const updateResponse = await editUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, id, password);
     if (isValidResponse(updateResponse)) {
         alerta('success', 'Se modificó el usuario.');
         $('#modalUsersForm').modal('hide');
-        loadUsers();
     } else {
         if (updateResponse.errorCode === 400) {
             showObjectAlerts(updateResponse.message, 'error');
@@ -278,18 +324,7 @@ async function UpdateUser(userUsername, userName, lastname, userAddress, userEma
             alerta('error', updateResponse.errorCode + '\n' + JSON.stringify(updateResponse.message));
         }
     }
-    for (const idRole of selectedRoles) {
-        const response = await grantRoleRequest(id, idRole);
-        // if (!isValidResponse(response)) {
-        //     console.log(response.message);
-        // }
-    }
-    for (const idRole of unselectedRoles) {
-        const response = await revokeRoleRequest(id, idRole);
-        // if (!isValidResponse(response)) {
-        //     console.log(response.message);
-        // }
-    }
+
 }
 
 async function editUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, id, password) {
@@ -316,7 +351,7 @@ async function editUserRequest(userUsername, userName, lastname, userAddress, us
     const json = await response.json();
     return json;
 }
-async function addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password) {
+async function addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password, selectedRoles, branchesIds) {
     const url = BASE_URL + `api/auth/${roleId}/register`;
     const response = await fetch(url + new URLSearchParams({
 
@@ -334,18 +369,20 @@ async function addUserRequest(userUsername, userName, lastname, userAddress, use
             address: userAddress,
             phoneNumber: phone,
             email: userEmail,
-            password: password
+            password: password,
+            rolesIds: selectedRoles,
+            workingBranchesIds: branchesIds
         })
     });
     const json = await response.json();
     return json;
 }
 
-async function grantRoleRequest(id, idRole) {
+async function grantRoleRequest(id, idRole, branchesIds) {
     const url = BASE_URL + `api/user/`;
 
     const response = await fetch(url + `${id}/grant/${idRole}` + new URLSearchParams({
-
+        branchesIds: branchesIds
     }), {
         method: 'PUT',
         headers: {
@@ -390,7 +427,6 @@ async function actionDeleteUser(id) {
         alerta('error', response.message);
     }
     alerta('success', 'Usuario eliminado.');
-    loadUsers();
 }
 
 async function deleteUserRequest(id) {
