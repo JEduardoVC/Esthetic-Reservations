@@ -349,7 +349,10 @@ async function editUserRequest(userUsername, userName, lastname, userAddress, us
         })
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 async function addUserRequest(userUsername, userName, lastname, userAddress, userEmail, phone, roleId, password, selectedRoles, branchesIds) {
     const url = BASE_URL + `api/auth/${roleId}/register`;
@@ -375,7 +378,10 @@ async function addUserRequest(userUsername, userName, lastname, userAddress, use
         })
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 async function grantRoleRequest(id, idRole, branchesIds) {
@@ -393,7 +399,10 @@ async function grantRoleRequest(id, idRole, branchesIds) {
     });
 
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 async function revokeRoleRequest(id, idRole) {
@@ -411,7 +420,10 @@ async function revokeRoleRequest(id, idRole) {
     });
 
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 async function deleteUser(id) {
@@ -424,7 +436,7 @@ async function deleteUser(id) {
 async function actionDeleteUser(id) {
     const response = await deleteUserRequest(id);
     if (!isValidResponse(response)) {
-        alerta('error', response.message);
+        alerta('error', response.data.message);
     }
     alerta('success', 'Usuario eliminado.');
 }
@@ -442,11 +454,14 @@ async function deleteUserRequest(id) {
         }
     });
     const json = await response.json();
-    return json;
+    return {
+        'data': json,
+        'status': response.status
+    };
 }
 
 function isValidResponse(response) {
-    return typeof response.errorCode === 'undefined';
+    return typeof response.data.errorCode === 'undefined' && response.status <= 399;
 }
 
 const togglePassword = document.querySelector('#togglePassword');
