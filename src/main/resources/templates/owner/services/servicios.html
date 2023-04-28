@@ -2,22 +2,43 @@
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/generics/header"></head>
-
 <body>
-    <div th:insert="/owner/navegacion"></div>
-    <div class="body-owner">
-        <div class="container-owner">
-            <h1>Modulo servicios</h1>
-            <div id="alertas"></div>
-            <div class="btn-agregar">
-                <form action="/app/owner/servicios/agregar">
-                    <button class="btn-secundario">Agregar servicio</button>
-                </form>
+    <div class="owner-services">
+        <div th:insert="owner/title"></div>
+        <div>
+            <div th:insert="owner/navegation"></div>
+            <div class="btn-new-service">
+                <button class="btn-principal">Agregar nuevo servicio</button>
             </div>
-            <div id="mostrar-servicios"></div>
+            <div class="title-services">
+                <div class="center"><h1>Nombre</h1></div>
+                <div class="center"><h1>Duracion</h1></div>
+                <div class="center"><h1>Precio</h1></div>
+                <div class="center"><h1>Acciones</h1></div>
+            </div>
+            <div class="show-services" id="mostrar-servicios">
+                <div class="service-registered">
+                    <p>Corte de cabello hombre</p>
+                    <p>30 min</p>
+                    <p><span>$</span>40</p>
+                    <div class="actions-services">
+                        <button type="button" class="btn-update">Actualizar</button>
+                        <button type="button" class="btn-remove">Eliminar</button>
+                    </div>
+                </div>
+                <div class="service-registered">
+                    <p>Corte de cabello hombre</p>
+                    <p>30 min</p>
+                    <p><span>$</span>40</p>
+                    <div class="actions-services">
+                        <button type="button" class="btn-update">Actualizar</button>
+                        <button type="button" class="btn-remove">Eliminar</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
-<script src="/js/logout.js"></script>
+<script src="/js/owner.js"></script>
 <script src="/js/service_see.js"></script>
 </html>
