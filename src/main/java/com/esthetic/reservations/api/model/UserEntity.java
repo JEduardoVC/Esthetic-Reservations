@@ -168,6 +168,7 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 		this.address = user.address;
 		this.email = user.email;
 		this.password = user.password;
+		this.roles = user.roles;
 	}
 
 	@Override

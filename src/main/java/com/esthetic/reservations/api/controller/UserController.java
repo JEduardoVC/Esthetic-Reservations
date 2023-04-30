@@ -22,11 +22,14 @@ import com.esthetic.reservations.api.dto.MessageDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.dto.UserEntityEditDTO;
+import com.esthetic.reservations.api.dto.UserEntityEditRolesDTO;
+import com.esthetic.reservations.api.dto.UserEntityRolesDTO;
 import com.esthetic.reservations.api.dto.WorkingBranchesDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.EstheticAppException;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
+import com.esthetic.reservations.api.util.Util;
 
 @RestController
 @RequestMapping("/api/user")
@@ -93,23 +96,29 @@ public class UserController {
         return new ResponseEntity<>(userService.revokeRoleToUser(userId, role), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserEntityDTO> update(@Valid @RequestBody UserEntityEditDTO userDTO,
+    @PutMapping("/{id}/roles")
+    public ResponseEntity<UserEntityDTO> update(@Valid @RequestBody UserEntityEditRolesDTO userDTO,
             @PathVariable(name = "id") Long id) {
-        if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
-            UserEntityDTO userReponse = userService.updateNoPassword(userDTO, id);
-            return new ResponseEntity<>(userReponse, HttpStatus.OK);
-        } else {
-            @Valid
-            UserEntityDTO editUserDTO = new @Valid UserEntityDTO(0l, userDTO.getUsername(), userDTO.getName(),
-                    userDTO.getLastName(), userDTO.getPhoneNumber(), userDTO.getAddress(),
-                    userDTO.getEmail(), userDTO.getPassword(), null);
-            return updatePassword(editUserDTO, id);
-        }
+        return new ResponseEntity<UserEntityDTO>(this.userService.update(userDTO, id), HttpStatus.OK);
     }
 
+    // @PutMapping("/{id}/roles")
+    // public ResponseEntity<UserEntityDTO> updateWithRoles(@Valid @RequestBody UserEntityEditRolesDTO userDTO,
+    //         @PathVariable(name = "id") Long id) {
+    //     if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+    //         UserEntityDTO userReponse = userService.updateNoPassword(userDTO, id);
+    //         return new ResponseEntity<>(userReponse, HttpStatus.OK);
+    //     } else {
+    //         @Valid
+    //         UserEntityRolesDTO editUserDTO = new @Valid UserEntityRolesDTO(0l, userDTO.getUsername(), userDTO.getName(),
+    //                 userDTO.getLastName(), userDTO.getPhoneNumber(), userDTO.getAddress(),
+    //                 userDTO.getEmail(), userDTO.getPassword(), null, userDTO.getRolesIds(), userDTO.getWorkingBranchesIds());
+    //         return updatePasswordWithRoles(editUserDTO, id);
+    //     }
+    // }
+
     private ResponseEntity<UserEntityDTO> updatePassword(@Valid UserEntityDTO userDTO, Long id) {
-        if (!isValidPassword(userDTO.getPassword())) {
+        if (!Util.isValidPassword(userDTO.getPassword())) {
             throw new BadRequestException("Contraseña",
                     "inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)");
         }
@@ -118,12 +127,15 @@ public class UserController {
         return new ResponseEntity<>(userReponse, HttpStatus.OK);
     }
 
-    private Boolean isValidPassword(String password) {
-        final String PATTERN = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[@#$%^&+=!])\\S{8,}\\z";
-        Pattern pattern = Pattern.compile(PATTERN);
-        Matcher matcher = pattern.matcher(password);
-        return matcher.matches();
-    }
+    // private ResponseEntity<UserEntityDTO> updatePasswordWithRoles(@Valid UserEntityRolesDTO userDTO, Long id) {
+    //     if (!isValidPassword(userDTO.getPassword())) {
+    //         throw new BadRequestException("Contraseña",
+    //                 "inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)");
+    //     }
+    //     userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+    //     UserEntityDTO userReponse = userService.updateN(userDTO, id);
+    //     return new ResponseEntity<>(userReponse, HttpStatus.OK);
+    // }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageDTO> delete(@PathVariable(name = "id") Long id) {

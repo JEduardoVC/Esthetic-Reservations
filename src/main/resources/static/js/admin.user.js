@@ -1,5 +1,7 @@
 'use strict'
 
+DataTable.Buttons.defaults.dom.button.className = 'btn';
+
 $(async function () {
     const branches = await getBranches();
     const users = await getUsers();
@@ -15,19 +17,55 @@ $(async function () {
 
         }
     }
-    $('#branchesTable').DataTable({
+    let branchesTable = $('#branchesTable').DataTable({
         paging: true,
         data: branches,
+        rowId: 'id',
         select: {
             style: 'multi'
         },
-        dom: 'ilfprtlp',
+        dom: 'iBlfprtlp',
         columns: [
             { "name": "id", "data": "id", "targets": 0 },
             { "name": "nombre", "data": "branchName", "targets": 1 },
             { "name": "dueño", "data": "owner.username", "targets": 2 },
         ],
+        buttons: [
+            {
+                text: 'Seleccionar filtrados.',
+                action: function () {
+                    this.rows({ search: 'applied' }).select();
+                },
+                className: 'btn-primary m-2 rounded-pill'
+            },
+            {
+                text: 'Deseleccionar filtrados.',
+                action: function () {
+                    this.rows({ search: 'applied' }).deselect();
+                },
+                className: 'btn-outline-primary m-2 rounded-pill'
+            },
+            {
+                text: 'Deseleccionar todos',
+                action: function () {
+                    this.rows().deselect();
+                },
+                className: 'btn-outline-secondary m-2 rounded-pill'
+            },
+            {
+                extend: 'showSelected',
+                text: `Mostrar selección`,
+                className: 'btn-outline-info m-2 rounded-pill'
+            },
+        ],
         language: lang
+    });
+    branchesTable.on('buttons-action', function (e, buttonApi, dataTable, node, config) {
+        if (buttonApi.text() === 'Mostrar selección') {
+            dataTable
+                .search('')
+                .draw()
+        }
     });
     $('#usersTable').DataTable({
         paging: true,
@@ -44,8 +82,8 @@ $(async function () {
                 "name": "acciones", "render": function (data, type, row) {
                     let rowId = Number(data.id);
                     return `
-                            <button type="button" class="btn btn-warning rounded-pill" data-target="${rowId}"><span class="bi bi-pencil"></span></button>
-                            <button type="button" class="btn btn-danger rounded-pill modal-trigger" data-bs-toggle="modal" data-bs-target="#modalUsersForm" data-target="${rowId}"><span class="bi bi-trash text-white"></span></button>`;
+                            <button type="button" class="btn btn-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#modalUsersForm"  data-target="${rowId}"><span class="bi bi-pencil"></span></button>
+                            <button type="button" class="btn btn-danger rounded-pill" data-target="${rowId}"><span class="bi bi-trash text-white"></span></button>`;
                 }, "data": null, "targets": [6]
             }
         ],
@@ -59,7 +97,20 @@ $(document).on('click', '.btn-warning', function (e) {
     $('#btnModal').data('action', 'edit');
     $('#btnModal').data('target', id);
     inflateForm('edit', id);
-    $('#modalUsersForm').modal('show');
+});
+
+$(document).on('click', '.btn-danger', async function (e) {
+    const id = $(this).data('target');
+    const confirmed = await confirmAlert('warning', 'Eliminar usuario', '¿Estás seguro de eliminar el usuario? No se puede deshacer.', 'Sí, eliminar.');
+    if (confirmed) {
+        const done = await actionDeleteUser(id);
+        if(done){
+            $('#usersTable').DataTable().clear();
+            const users = await getUsers();
+            $('#usersTable').DataTable().rows.add(users).draw();
+            $('#modalUsersForm').modal('hide');
+        }
+    }
 });
 
 $(document).on('click', '.modal-trigger', function (e) {
@@ -70,7 +121,7 @@ $(document).on('click', '.modal-trigger', function (e) {
     $('#btnModal').data('target', id);
 });
 
-function extraValidation(valid = true) {
+async function extraValidation(valid = true) {
     let branchesIds = [];
     let selectedBranches = $('#branchesTable').DataTable().rows({ selected: true })
     selectedBranches.every(function (rowIdx, tableLoop, rowLoop) {
@@ -106,17 +157,24 @@ function extraValidation(valid = true) {
     }
     if (!valid) {
         $('#formFeedback').html('Revisa el formulario.');
-        showFeedback('form',['Revisa el formulario']);
+        showFeedback('form', ['Revisa el formulario']);
         return cont;
     } else {
         hideFeedback('form');
         const userId = $('#btnModal').data('target');
         const action = $('#btnModal').data('action');
-        actionUser(action, userId, selectedRoles, branchesIds);
+        const done = await actionUser(action, userId, selectedRoles, branchesIds);
+        if (done) {
+            $('#usersTable').DataTable().clear();
+            const users = await getUsers();
+            $('#usersTable').DataTable().rows.add(users).draw();
+            alerta('success', action === 'add' ? 'Se creó el usuario.' : 'Se editó el usuario.');
+            $('#modalUsersForm').modal('hide');
+        }
     }
 }
 
-function hideFeedback(aria){
+function hideFeedback(aria) {
     let feedback = $(`#${aria}Feedback`);
     feedback.addClass('d-none');
     feedback.removeClass('d-block');
@@ -125,7 +183,7 @@ function hideFeedback(aria){
 
 function showFeedback(aria, errors) {
     let feedback = $(`#${aria}Feedback`);
-    if(Array.isArray(errors)){
+    if (Array.isArray(errors)) {
         let html = `<ul>`;
         errors.forEach(error => {
             html += `<li>${error}</li>`;
@@ -147,20 +205,21 @@ $(document).on('click', '#btnModal', function (e) {
     const action = $(this).data('action');
     $('#usersForm').validate().destroy();
     $('#usersForm').validate({
-        invalidHandler: function (event, validator) {
+        invalidHandler: async function (event, validator) {
             // 'this' refers to the form
-            var errors = validator.numberOfInvalids() + extraValidation(false);
+            const extra = await extraValidation(false);
+            var errors = validator.numberOfInvalids() + extra;
             if (errors) {
                 var message = errors == 1
                     ? 'Error en 1 campo. Revisa lo resaltado en rojo.'
                     : 'Error en ' + errors + ' campos. Han sido resaltados en rojo.';
-                showFeedback('form',[message]);
+                showFeedback('form', [message]);
             } else {
                 hideFeedback('form');
             }
         },
-        submitHandler: function (form) {
-            extraValidation(true);
+        submitHandler: async function (form) {
+            await extraValidation(true);
         },
         rules: {
             'user-username': 'required',
@@ -221,7 +280,7 @@ $(document).on('click', '#btnModal', function (e) {
 });
 
 $(document).on('input', 'input.form-control', function () {
-    if($(this).hasClass('is-invalid') && $(this).prop('type') === 'email' || $(this).hasClass('is-invalid') && $(this).prop('type')!=='email'){
+    if ($(this).hasClass('is-invalid') && $(this).prop('type') === 'email' || $(this).hasClass('is-invalid') && $(this).prop('type') !== 'email') {
         $('#usersForm').validate().element($(this));
     }
 });
@@ -289,6 +348,8 @@ function cleanForm() {
     });
     $('input').removeClass('is-invalid');
     $('input').removeClass('is-valid');
+    $('#branchesdiv').addClass('no-mostrar d-none');
+    $('#branchesTable').DataTable().rows().deselect();
     hideFeedback('roles');
     hideFeedback('form');
 }
@@ -310,9 +371,49 @@ async function inflateForm(action, id = -1) {
         document.getElementById("user-address").value = user.address;
         document.getElementById("user-email").value = user.email;
         document.getElementById("user-phone").value = user.phoneNumber;
+        user.userRoles.forEach(async role => {
+            if (role.id === 3) {
+                $('#branchesdiv').removeClass('no-mostrar d-none');
+                const employee = await getEmployeeInfo(user.id);
+                let branchesIds = [];
+                employee.workingBranches.forEach(branch => {
+                    branchesIds.push('#' + branch.id);
+                });
+                $('#branchesTable').DataTable().rows(branchesIds).select();
+            }
+        });
         getRoles(user.userRoles);
     }
 
+}
+
+async function getEmployeeInfo(id) {
+    const response = await getEmployeeInfoRequest(id);
+    if (!isValidResponse(response)) {
+        alerta('error', JSON.stringify(response.data));
+        return;
+    }
+    return response.data;
+}
+
+async function getEmployeeInfoRequest(id) {
+    const url = BASE_URL + `api/employee?`;
+    const response = await fetch(url + new URLSearchParams({
+        by: 'userid',
+        filterTo: id
+    }), {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+        }
+    });
+    const json = await response.json();
+    return {
+        'data': json,
+        'status': response.status
+    }
 }
 
 async function getUserInfoRequest(id) {
@@ -379,25 +480,23 @@ async function rolesRequest() {
 
 }
 
-function actionUser(action, id, selectedRoles, branchesIds) {
+async function actionUser(action, id, selectedRoles, branchesIds) {
     let data = {};
-    $('form#usersForm :input').each(function(){
+    $('form#usersForm :input').each(function () {
         const aria = $(this).attr('aria-label');
         data[aria] = $(this).val();
     });
     if (action == 'add') {
-        addUser(data, id, selectedRoles, branchesIds);
+        return await addUser(data, id, selectedRoles, branchesIds);
     } else {
-        updateUser(data, id, selectedRoles, branchesIds);
+        return await updateUser(data, id, selectedRoles, branchesIds);
     }
 }
 
 async function addUser(data, id, selectedRoles, branchesIds) {
     const createResponse = await addUserRequest(data, id, selectedRoles, branchesIds);
     if (isValidResponse(createResponse)) {
-        id = createResponse.id;
-        alerta('success', 'Se creó el usuario.');
-        $('#modalUsersForm').modal('hide');
+        return true;
     } else {
         if (createResponse.errorCode === 400) {
             showObjectAlerts(createResponse.message, 'error');
@@ -415,8 +514,7 @@ async function addUser(data, id, selectedRoles, branchesIds) {
 async function updateUser(data, id, selectedRoles, branchesIds) {
     const updateResponse = await editUserRequest(data, id, selectedRoles, branchesIds);
     if (isValidResponse(updateResponse)) {
-        alerta('success', 'Se modificó el usuario.');
-        $('#modalUsersForm').modal('hide');
+        return true;
     } else {
         if (updateResponse.errorCode === 400) {
             showObjectAlerts(updateResponse.message, 'error');
@@ -432,7 +530,20 @@ async function updateUser(data, id, selectedRoles, branchesIds) {
 }
 
 async function editUserRequest(data, id, selectedRoles, branchesIds) {
-    const url = BASE_URL + `api/user/${id}`;
+    let body = {
+        username: data.username,
+        name: data.name,
+        lastName: data.lastName,
+        address: data.address,
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+        rolesIds: selectedRoles,
+        workingBranchesIds: branchesIds
+    };
+    if (data.password !== '') {
+        body['password'] = data.password;
+    }
+    const url = BASE_URL + `api/user/${id}/roles`;
     const response = await fetch(url + new URLSearchParams({
 
     }), {
@@ -442,15 +553,7 @@ async function editUserRequest(data, id, selectedRoles, branchesIds) {
             'Content-Type': 'application/json',
             "Authorization": `Bearer ${sessionStorage.getItem("token")}`
         },
-        body: JSON.stringify({
-            username: userUsername,
-            name: userName,
-            lastName: lastname,
-            address: userAddress,
-            phoneNumber: phone,
-            email: userEmail,
-            password: password
-        })
+        'body': JSON.stringify(body)
     });
     const json = await response.json();
     return {
@@ -488,48 +591,6 @@ async function addUserRequest(data, id, selectedRoles, branchesIds) {
     };
 }
 
-async function grantRoleRequest(id, idRole, branchesIds) {
-    const url = BASE_URL + `api/user/`;
-
-    const response = await fetch(url + `${id}/grant/${idRole}` + new URLSearchParams({
-        branchesIds: branchesIds
-    }), {
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    });
-
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    };
-}
-
-async function revokeRoleRequest(id, idRole) {
-    const url = BASE_URL + `api/user/`;
-
-    const response = await fetch(url + `${id}/revoke/${idRole}` + new URLSearchParams({
-
-    }), {
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    });
-
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    };
-}
-
 async function deleteUser(id) {
     const confirmed = await confirmAlert('warning', 'Eliminar usuario', '¿Estás seguro de eliminar el usuario? No se puede deshacer.', 'Sí, eliminar.');
     if (confirmed) {
@@ -541,8 +602,10 @@ async function actionDeleteUser(id) {
     const response = await deleteUserRequest(id);
     if (!isValidResponse(response)) {
         alerta('error', response.data.message);
+        return false;
     }
     alerta('success', 'Usuario eliminado.');
+    return true;
 }
 
 async function deleteUserRequest(id) {

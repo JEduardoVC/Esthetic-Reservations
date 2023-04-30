@@ -7,15 +7,15 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 import com.esthetic.reservations.api.model.Employee;
-import com.esthetic.reservations.api.model.UserEntity;
+import com.esthetic.reservations.api.model.Employee;
 
 @Transactional
 @Component("EmployeeRepository")
 public interface EmployeeRepository extends GenericRepository<Employee, Long> {
 
-    public Optional<UserEntity> findByUserId(Long id);
+    public Optional<Employee> findByUserId(Long id);
 
-    public Optional<UserEntity> findByUserUsername(String username);
+    public Optional<Employee> findByUserUsername(String username);
 
     public Boolean existsByUserUsername(String username);
 
@@ -25,7 +25,7 @@ public interface EmployeeRepository extends GenericRepository<Employee, Long> {
 
     public boolean existsById(Long id);
 
-    public Optional<UserEntity> findByUserEmail(String email);
+    public Optional<Employee> findByUserEmail(String email);
 
     public void deleteByUserId(Long id);
 

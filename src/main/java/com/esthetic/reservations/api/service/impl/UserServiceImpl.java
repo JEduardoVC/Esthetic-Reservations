@@ -2,6 +2,7 @@ package com.esthetic.reservations.api.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,12 +14,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
 import com.esthetic.reservations.api.dto.UserEntityEditDTO;
+import com.esthetic.reservations.api.dto.UserEntityEditRolesDTO;
 import com.esthetic.reservations.api.dto.UserEntityRolesDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
@@ -33,6 +36,7 @@ import com.esthetic.reservations.api.repository.RoleRepository;
 import com.esthetic.reservations.api.repository.UserRepository;
 import com.esthetic.reservations.api.service.UserService;
 import com.esthetic.reservations.api.util.AppConstants;
+import com.esthetic.reservations.api.util.Util;
 
 @Service
 public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDTO>
@@ -42,14 +46,17 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     private RoleRepository roleRepository;
     private EmployeeRepository employeeRepository;
     private BranchRepository branchRepository;
+    private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository repository, ModelMapper modelMapper,
-            @Qualifier("RoleRepository") RoleRepository roleRepository, EmployeeRepository employeeRepository, BranchRepository branchRepository) {
+            @Qualifier("RoleRepository") RoleRepository roleRepository, EmployeeRepository employeeRepository,
+            BranchRepository branchRepository, PasswordEncoder passwordEncoder) {
         super(repository, modelMapper, UserEntity.class, UserEntityDTO.class);
         this.userRepository = repository;
         this.roleRepository = roleRepository;
         this.employeeRepository = employeeRepository;
         this.branchRepository = branchRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -129,7 +136,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         user.setRoles(roles);
 
         UserEntity newUser = userRepository.save(user); // Database
-        
+
         // Convert Model to DTO
         UserEntityDTO userResponse = mapToDTO(newUser);
 
@@ -139,21 +146,27 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     @Override
     @Transactional
     public UserEntityDTO register(UserEntityRolesDTO userEntityRolesDTO) {
-        Role employeeRole = this.roleRepository.findByName(AppConstants.EMPLOYEE_ROLE_NAME).orElseThrow(()->new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.EMPLOYEE_ROLE_NAME));
-        if(userEntityRolesDTO.getRolesIds().contains(employeeRole.getId()) && (userEntityRolesDTO.getWorkingBranchesIds() == null || userEntityRolesDTO.getWorkingBranchesIds().size() == 0)){
+        Role employeeRole = this.roleRepository.findByName(AppConstants.EMPLOYEE_ROLE_NAME).orElseThrow(
+                () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.EMPLOYEE_ROLE_NAME));
+        if (userEntityRolesDTO.getRolesIds().contains(employeeRole.getId())
+                && (userEntityRolesDTO.getWorkingBranchesIds() == null
+                        || userEntityRolesDTO.getWorkingBranchesIds().size() == 0)) {
             throw new BadRequestException("Registro con roles", "necesita las sucursales de trabajo para el empleado");
         }
         UserEntity user = mapToModel(userEntityRolesDTO);
         UserEntity newUser = userRepository.save(user); // Database
         Set<Role> roles = new HashSet<>();
-        for(Long roleId : userEntityRolesDTO.getRolesIds()){
-            Role newRole = this.roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "id", String.valueOf(roleId)));
-            if(newRole.getName().equals(AppConstants.EMPLOYEE_ROLE_NAME)){
+        for (Long roleId : userEntityRolesDTO.getRolesIds()) {
+            Role newRole = this.roleRepository.findById(roleId).orElseThrow(
+                    () -> new ResourceNotFoundException("Rol", "no encontrado", "id", String.valueOf(roleId)));
+            if (newRole.getName().equals(AppConstants.EMPLOYEE_ROLE_NAME)) {
                 Employee employee = new Employee();
                 employee.setUser(newUser);
-                Set<Branch> branches = new HashSet<>(); 
-                for(Long branchId : userEntityRolesDTO.getWorkingBranchesIds()){
-                    Branch branch = this.branchRepository.findById(branchId).orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id", String.valueOf(branchId)));
+                Set<Branch> branches = new HashSet<>();
+                for (Long branchId : userEntityRolesDTO.getWorkingBranchesIds()) {
+                    Branch branch = this.branchRepository.findById(branchId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id",
+                                    String.valueOf(branchId)));
                     branches.add(branch);
                 }
                 employee.setWorkingBranches(branches);
@@ -163,7 +176,8 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         }
         newUser.setRoles(roles);
         newUser = userRepository.save(newUser);
-        return mapToDTO(userRepository.findById(newUser.getId()).orElseThrow(() -> new ResourceNotFoundException("Usuario", "no encontrado al terminar el registro con roles")));
+        return mapToDTO(userRepository.findById(newUser.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("Usuario", "no encontrado al terminar el registro con roles")));
     }
 
     @Override
@@ -189,7 +203,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             role = AppConstants.ROLE_PREFIX + role;
             final String roleName = role;
             roleEntity = roleRepository.findByName(roleName).orElseThrow(
-                () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", roleName));
+                    () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", roleName));
         }
         if (userEntity.getRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "ya tiene", "rol", roleEntity.getName());
@@ -213,7 +227,7 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             role = AppConstants.ROLE_PREFIX + role;
             final String roleName = role;
             roleEntity = roleRepository.findByName(roleName).orElseThrow(
-                () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", roleName));
+                    () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", roleName));
         }
         if (userEntity.getRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "ya tiene", "rol", roleEntity.getName());
@@ -223,11 +237,13 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         userEntity.setRoles(newRoles);
         UserEntity newUser = userRepository.save(userEntity);
         UserEntityDTO userEntityDTO = mapToDTO(newUser);
-        if(roleEntity.getName().equals(AppConstants.EMPLOYEE_ROLE_NAME)){
+        if (roleEntity.getName().equals(AppConstants.EMPLOYEE_ROLE_NAME)) {
             Employee employee = new Employee();
             employee.setUser(newUser);
-            for(Long branchId : workingBranchesIds){
-                Branch workingBranch = this.branchRepository.findById(branchId).orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id", String.valueOf(branchId)));
+            for (Long branchId : workingBranchesIds) {
+                Branch workingBranch = this.branchRepository.findById(branchId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id",
+                                String.valueOf(branchId)));
                 employee.getWorkingBranches().add(workingBranch);
             }
             this.employeeRepository.save(employee);
@@ -249,12 +265,12 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             role = AppConstants.ROLE_PREFIX + role;
             final String roleName = role;
             roleEntity = roleRepository.findByName(roleName).orElseThrow(
-                () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", roleName));
+                    () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", roleName));
         }
         if (!userEntity.getRoles().contains(roleEntity)) {
             throw new ConflictException("Usuario", "no es", "rol", roleEntity.getName());
         }
-        if(roleEntity.getName().equals(AppConstants.EMPLOYEE_ROLE_NAME)){
+        if (roleEntity.getName().equals(AppConstants.EMPLOYEE_ROLE_NAME)) {
             this.employeeRepository.deleteByUserId(userEntity.getId());
         }
         Set<Role> newRoles = userEntity.getRoles();
@@ -273,25 +289,127 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         UserEntity owner = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
         Role ownerRole = roleRepository.findByName(AppConstants.OWNER_ROLE_NAME).orElseThrow(
-                () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", String.valueOf(AppConstants.OWNER_ROLE_NAME)));
+                () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre",
+                        String.valueOf(AppConstants.OWNER_ROLE_NAME)));
         boolean aver = owner.getRoles().contains(ownerRole);
         System.out.println(aver);
         return aver;
     }
 
     @Override
-    public UserEntityDTO updateNoPassword(UserEntityEditDTO dto, Long id) {
-        UserEntity entity = getRepository().findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(getType().getSimpleName(), "no encontrado", "id",
-                        String.valueOf(id)));
-        dto.setPassword(entity.getPassword());
-        UserEntity editedEntity = new UserEntity(0l, dto.getUsername(), dto.getName(), dto.getLastName(),
-                dto.getPhoneNumber(), dto.getAddress(),
-                dto.getEmail(), dto.getPassword());
-        entity.copy(editedEntity);
-        getRepository().save(entity);
-        return mapToDTO(entity);
+    @Transactional
+    public UserEntityDTO update(UserEntityEditRolesDTO dto, Long id) {
+        // The current entity
+        UserEntity currentEntity = this.userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
+        Role employeeRole = this.roleRepository.findByName(AppConstants.EMPLOYEE_ROLE_NAME).orElseThrow(() -> new ResourceNotFoundException("Rol","no encontrado","nombre",AppConstants.EMPLOYEE_ROLE_NAME));
+        Boolean wasEmployee = currentEntity.getRoles().contains(employeeRole);
+        if(dto.getPassword() != null){
+            // Update with new password
+            if(!Util.isValidPassword(dto.getPassword())){
+                throw new BadRequestException("Contraseña.", AppConstants.INVALID_PASSWORD_MSG);
+            }
+            dto.setPassword(this.passwordEncoder.encode(dto.getPassword())); // Update password
+        } else{
+            dto.setPassword(currentEntity.getPassword()); // The already hashed password
+        }
+        // The edited entity from the request
+        UserEntity editedEntity = new UserEntity(dto.getId(), dto.getUsername(), dto.getName(), dto.getLastName(), dto.getPhoneNumber(), dto.getAddress(), dto.getEmail(), dto.getPassword(), dto.getUserRoles());
+        // Does the request sent new roles to set?
+        if(dto.getRolesIds() != null){
+            // use those roles
+            if(dto.getRolesIds().isEmpty()){
+                throw new BadRequestException("Lista de nuevos roles", "no puede estar vacía");
+            }
+            Set<Role> newRoles = new HashSet<>();
+            for(Long roleId : dto.getRolesIds()){
+                Role newRole = this.roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "id", String.valueOf(roleId)));
+                newRoles.add(newRole);
+            }
+            editedEntity.setRoles(newRoles);
+        } else {
+            // use the same roles
+            editedEntity.setRoles(currentEntity.getRoles());
+        }
+        // Lets save with edited values
+        currentEntity.copy(editedEntity);
+        UserEntity editedUser = this.userRepository.save(currentEntity);
+        // Is a new employee?
+        Boolean isEmployee = editedUser.getRoles().contains(employeeRole); 
+        if(!wasEmployee && isEmployee){
+            Employee newEmployee = new Employee();
+            newEmployee.setUser(editedUser);
+            if(dto.getWorkingBranchesIds() == null){
+                throw new BadRequestException("Editar usuario con un nuevo rol de empleado", "requiere las sucursales donde trabaja.");
+            }
+            Set<Branch> workingBranches = new HashSet<>();
+            for(Long branchId : dto.getWorkingBranchesIds()){
+                Branch workingBranch = this.branchRepository.findById(branchId).orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id", String.valueOf(branchId)));
+                workingBranches.add(workingBranch);
+            }
+            newEmployee.setWorkingBranches(workingBranches);
+            this.employeeRepository.save(newEmployee);
+        }
+        // Used to be an employee but not anymore?
+        if(wasEmployee && !isEmployee){
+            this.employeeRepository.deleteByUserId(editedUser.getId());
+        }
+        return mapToDTO(editedUser);
     }
+
+    // @Override
+    // public UserEntityDTO updateNoPassword(UserEntityEditDTO dto, Long id) {
+    // UserEntity entity = getRepository().findById(id)
+    // .orElseThrow(() -> new ResourceNotFoundException(getType().getSimpleName(),
+    // "no encontrado", "id",
+    // String.valueOf(id)));
+    // dto.setPassword(entity.getPassword());
+    // UserEntity editedEntity = new UserEntity(0l, dto.getUsername(),
+    // dto.getName(), dto.getLastName(),
+    // dto.getPhoneNumber(), dto.getAddress(),
+    // dto.getEmail(), dto.getPassword());
+    // entity.copy(editedEntity);
+    // getRepository().save(entity);
+    // return mapToDTO(entity);
+    // }
+
+    // @Override
+    // @Transactional
+    // public UserEntityDTO updateNoPassword(UserEntityEditRolesDTO dto, Long id) {
+    // // Current entity
+    // UserEntity entity = getRepository().findById(id)
+    // .orElseThrow(() -> new ResourceNotFoundException(getType().getSimpleName(),
+    // "no encontrado", "id",
+    // String.valueOf(id)));
+    // dto.setPassword(entity.getPassword());
+    // UserEntity editedEntity = new UserEntity(0l, dto.getUsername(),
+    // dto.getName(), dto.getLastName(),
+    // dto.getPhoneNumber(), dto.getAddress(),
+    // dto.getEmail(), dto.getPassword());
+    // // the roles setted in edit request
+    // List<Long> rolesIds = dto.getRolesIds();
+    // Set<Role> establishedRoles = new HashSet<>();
+    // for (Long roleId : rolesIds) {
+    // Role role = this.roleRepository.findById(roleId).orElseThrow(
+    // () -> new ResourceNotFoundException("Rol", "no encontrado", "id",
+    // String.valueOf(roleId)));
+    // establishedRoles.add(role);
+    // }
+    // Role employeeRole =
+    // this.roleRepository.findByName(AppConstants.EMPLOYEE_ROLE_NAME).orElseThrow(
+    // () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre",
+    // AppConstants.EMPLOYEE_ROLE_NAME));
+    // // used to have employee role but now it dont?
+    // if (entity.getRoles().contains(employeeRole) &&
+    // !establishedRoles.contains(employeeRole)) {
+    // // Delete employee relation
+    // this.employeeRepository.deleteByUserId(entity.getId());
+    // }
+    // // Set the new values and save
+    // entity.copy(editedEntity);
+    // entity.setRoles(establishedRoles);
+    // getRepository().save(entity);
+    // return mapToDTO(entity);
+    // }
 
     @Override
     public ResponseDTO<UserEntityDTO> findAllByRole(int pageNumber, int pageSize, String sortBy, String sortDir,
@@ -315,6 +433,5 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         userResponseDTO.setLast(entities.isLast());
         return userResponseDTO;
     }
-
 
 }

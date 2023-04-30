@@ -1,5 +1,6 @@
 package com.esthetic.reservations.api.util;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.esthetic.reservations.api.model.Appointment;
@@ -9,6 +10,13 @@ import com.esthetic.reservations.api.model.UserEntity;
 public class Util {
 
     public Util() {
+    }
+
+	public static Boolean isValidPassword(String password) {
+        final String PATTERN = "\\A(?=\\S*?[0-9])(?=\\S*?[a-z])(?=\\S*?[A-Z])(?=\\S*?[@#$%^&+=!])\\S{8,}\\z";
+        Pattern pattern = Pattern.compile(PATTERN);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 
     public boolean isValidEmail(String email) {

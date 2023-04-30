@@ -6,6 +6,8 @@ import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.esthetic.reservations.api.model.Role;
+
 public class UserEntityRolesDTO extends UserEntityDTO {
 
     @NotNull(message = "Se requieren los roles del usuario.")
@@ -22,6 +24,14 @@ public class UserEntityRolesDTO extends UserEntityDTO {
 
     public UserEntityRolesDTO(List<Long> rolesIds, List<Long> workingBranchesIds) {
         super();
+        this.rolesIds = rolesIds;
+        this.workingBranchesIds = workingBranchesIds;
+    }
+
+    public UserEntityRolesDTO(Long id, String username, String name, String lastName, String phoneNumber,
+            String address, String email, String password, List<Role> userRoles, List<Long> rolesIds,
+            List<Long> workingBranchesIds) {
+        super(id, username, name, lastName, phoneNumber, address, email, password, userRoles);
         this.rolesIds = rolesIds;
         this.workingBranchesIds = workingBranchesIds;
     }
