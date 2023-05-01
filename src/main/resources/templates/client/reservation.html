@@ -1,34 +1,3 @@
-
-Skip to content
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
-@LuisGerardoValenciaCamacho
-JEduardoVC /
-Esthetic-Reservations
-Private
-
-Fork your own copy of JEduardoVC/Esthetic-Reservations
-
-Code
-Issues
-Pull requests
-Actions
-Projects
-Security
-
-    Insights
-
-Beta Try the new code view
-Esthetic-Reservations/src/main/resources/templates/client/reservation.html
-@JEduardoVC
-JEduardoVC Reservacion citas listo, falta JS
-Latest commit 059c776 Apr 24, 2023
-History
-1 contributor
-224 lines (223 sloc) 10.4 KB
 <!DOCTYPE html>
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
@@ -43,7 +12,7 @@ History
             <div class="calendar-time">
                 <div class="ca">
                     <div class="back-button">
-                        <button class="btn-secundario" id="back">Volver</button>
+                        <button class="btn-secundario" id="back" onclick="volver()">Volver</button>
                     </div>
                     <div class="calendar">
                         <div class="calendar-info">
@@ -64,170 +33,25 @@ History
                         <div class="calendar-dates" id="dates"></div>
                     </div>
                 </div>
-                <div class="time">
-                    <p>¡Llegó la hora de agendar tu cita!</p>
-                    <div class="model-time">
-                        <div class="date-saved">
-                            <h1>14</h1>
-                            <h4>marzo 2023</h4>
-                        </div>
-                        <div class="select-time">
-                            <div class="input-time">
-                                <label>Selecciona la hora</label>
-                                <input type="time" pattern="[1-12]{2}:[0-59] (am|pm|)">
-                            </div>
-                            <button class="btn-principal button" id="date-times">Confirmar cita</button>
-                        </div>
-                    </div>
-                </div>
+                <div class="time"></div>
                 <div class="btn-next">
-                    <button class="btn-terciario" id="next">Siguiente</button>
+                    <button class="btn-terciario" id="nextPage">Siguiente</button>
                 </div>
             </div>
         </div>
-        <div class="show-summary" id="paso-2">
+        <div class="show-summary" id="paso-2" style="display: none;">
             <div class="title">
                 <h1 class="title-p">Resumen</h1>
                 <img src="/img/Productos-venta.webp">
             </div>
             <div class="summary">
                 <div class="titles">
-                    <h1 >Producto</h1>
+                    <h1 >Producto o Servicio</h1>
                     <h1 >Precio</h1>
                     <h1 >Cantidad</h1>
                     <h1 >Subtotal</h1>
                 </div>
-                <!--                    Productos                    -->
-                <div class="container-show-summary">
-                    <div class="container-summary">
-                        <div class="product-service" id="product-service">
-                            <img class="cancel" src="/img/cancelar.webp">
-                            <img class="product" src="/img/Productos-venta.webp">
-                            <div class="description">
-                                <p>Gotas de ceda</p>
-                                <span>500 ml</span>
-                            </div>
-                        </div>
-                        <div class="price" id="price">
-                            <span>$230</span>
-                        </div>
-                        <div class="quantity" id="quantitu">
-                            <p>1</p>
-                        </div>
-                        <div class="subtotal" id="subtotal">
-                            <span>$230</span>
-                        </div>
-                    </div>
-                    <!--                    Servicios               -->
-                    <div class="container-summary">
-                        <div class="product-service" id="product-service">
-                            <img class="cancel" src="/img/cancelar.webp">
-                            <img class="product" src="/img/Productos-venta.webp">
-                            <div class="description">
-                                <p>Corte femenino</p>
-                                <div class="description-service">
-                                    <span>14 de Marzo</span>
-                                    <span>10:20 am</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="price" id="price">
-                            <span>$70</span>
-                        </div>
-                        <div class="quantity" id="quantity">
-                            <p>1</p>
-                        </div>
-                        <div class="subtotal" id="subtotal">
-                            <span>$70</span>
-                        </div>
-                    </div>
-                    <!--                    Productos                    -->
-                    <div class="container-summary">
-                        <div class="product-service" id="product-service">
-                            <img class="cancel" src="/img/cancelar.webp">
-                            <img class="product" src="/img/Productos-venta.webp">
-                            <div class="description">
-                                <p>Gotas de ceda</p>
-                                <span>500 ml</span>
-                            </div>
-                        </div>
-                        <div class="price" id="price">
-                            <span>$230</span>
-                        </div>
-                        <div class="quantity" id="quantitu">
-                            <p>1</p>
-                        </div>
-                        <div class="subtotal" id="subtotal">
-                            <span>$230</span>
-                        </div>
-                    </div>
-                    <!--                    Servicios               -->
-                    <div class="container-summary">
-                        <div class="product-service" id="product-service">
-                            <img class="cancel" src="/img/cancelar.webp">
-                            <img class="product" src="/img/Productos-venta.webp">
-                            <div class="description">
-                                <p>Corte femenino</p>
-                                <div class="description-service">
-                                    <span>14 de Marzo</span>
-                                    <span>10:20 am</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="price" id="price">
-                            <span>$70</span>
-                        </div>
-                        <div class="quantity" id="quantity">
-                            <p>1</p>
-                        </div>
-                        <div class="subtotal" id="subtotal">
-                            <span>$70</span>
-                        </div>
-                    </div>
-                    <!--                    Productos                    -->
-                    <div class="container-summary">
-                        <div class="product-service" id="product-service">
-                            <img class="cancel" src="/img/cancelar.webp">
-                            <img class="product" src="/img/Productos-venta.webp">
-                            <div class="description">
-                                <p>Gotas de ceda</p>
-                                <span>500 ml</span>
-                            </div>
-                        </div>
-                        <div class="price" id="price">
-                            <span>$230</span>
-                        </div>
-                        <div class="quantity" id="quantitu">
-                            <p>1</p>
-                        </div>
-                        <div class="subtotal" id="subtotal">
-                            <span>$230</span>
-                        </div>
-                    </div>
-                    <!--                    Servicios               -->
-                    <div class="container-summary">
-                        <div class="product-service" id="product-service">
-                            <img class="cancel" src="/img/cancelar.webp">
-                            <img class="product" src="/img/Productos-venta.webp">
-                            <div class="description">
-                                <p>Corte femenino</p>
-                                <div class="description-service">
-                                    <span>14 de Marzo</span>
-                                    <span>10:20 am</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="price" id="price">
-                            <span>$70</span>
-                        </div>
-                        <div class="quantity" id="quantity">
-                            <p>1</p>
-                        </div>
-                        <div class="subtotal" id="subtotal">
-                            <span>$70</span>
-                        </div>
-                    </div>
-                </div>
+                <div class="container-show-summary"></div>
                 <div class="result">
                     <div class="model-result">
                         <p>Tiempo estimado:</p>
@@ -243,7 +67,7 @@ History
                     </div>
                 </div>
                 <div class="buttons">
-                    <button class="btn-terciario" id="previus">Anterior</button>
+                    <button class="btn-terciario" id="previusPage">Anterior</button>
                     <button class="btn-principal" id="reservation">Confirmar</button>
                 </div>
             </div>
@@ -253,3 +77,26 @@ History
 <script src="/js/client_reservation.js"> </script>
 <!-- <script src="/js/logout.js"></script> -->
 </html>
+
+
+<!--                    <div class="container-summary">-->
+<!--                        <div class="product-service" id="product-service">-->
+<!--                            <img class="cancel" src="/img/cancelar.webp">-->
+<!--                            <img class="product" src="/img/Productos-venta.webp">-->
+<!--                            <div class="description">-->
+<!--                                <p>Gotas de ceda</p>-->
+<!--                                <span>500 ml</span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="price" id="price">-->
+<!--                            <span>$230</span>-->
+<!--                        </div>-->
+<!--                        <div class="quantity" id="quantitu">-->
+<!--                            <p>1</p>-->
+<!--                        </div>-->
+<!--                        <div class="subtotal" id="subtotal">-->
+<!--                            <span>$230</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="container-summary">-->
+<!--                    </div>-->
