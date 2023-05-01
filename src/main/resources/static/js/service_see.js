@@ -22,34 +22,17 @@ async function obtenerServicios() {
 
 function mostrarServicios(servicios) {
 	const div = document.querySelector("#mostrar-servicios");
-	const titulos = document.createElement("DIV");
-	titulos.style = `display: grid;grid-template-columns: repeat(4, 1fr);font-weight: bold;`;
-	titulos.innerHTML = `
-		<div style="text-align: center;">
-			<p>Nombre</p>
-		</div>
-		<div style="text-align: center;">
-			<p>Duración</p>
-		</div>
-		<div style="text-align: center;">
-			<p>Precio</p>
-		</div>
-		<div style="text-align: center;">
-			<p>Acciones</p>
-		</div>
-	`;
-	div.appendChild(titulos);
 	servicios.forEach(servicio => {
 		const service = document.createElement("DIV");
 		service.style = `display: grid;grid-template-columns: repeat(4, 1fr);`;
 		service.innerHTML = `
-			<div style="text-align: center;">
+			<div class="center">
 				<p>${servicio.service_name}</p>
 			</div>
-			<div style="text-align: center;">
+			<div class="center">
 				<p>${servicio.duration}</p>
 			</div>
-			<div style="text-align: center;">
+			<div class="center">
 				<p>${servicio.price}</p>
 			</div>
 			<div>

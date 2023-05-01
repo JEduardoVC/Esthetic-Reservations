@@ -3,32 +3,42 @@
 
 <head th:insert="/generics/header"></head>
 <body>
-    <div class="client">
-        <div th:insert="/client/navegacion"></div>
-        <div class="container">
-            <div class="cliente">
-                <div class="div-btn-volver">
-                    <form action="dashboard">
-                        <button class="btn-volver">Volver</button>
-                    </form>
-                </div>
+    <main>
+        <div class="appointment">
+            <div class="title">
+                <h1 class="title-p">Mis citas</h1>
+                <img src="/img/Productos-venta.webp">
             </div>
-            <div>
-                <h2>Mis citas</h2>
-                <div class="mis-citas">
-                    <div style="text-align: center;">
-                        <input name="status" type="radio" checked>Todas
-                        <input name="status" type="radio">Concluida
-                        <input name="status" type="radio">En curso
-                        <input name="status" type="radio">Pendiente
+            <div class="appointment-container">
+                <div class="info-appointment">
+                    <p>Sucursal: <span>Estetica Wendy</span></p>
+                    <p>Encargada: <span>Ma. Guadalupe</span></p>
+                    <p>Ubicacion del local: <span>Guanajuato</span></p>
+                    <p>Fecha y hora de la cita: <span>13 de Mayo del 2023 a las 15 horas</span></p>
+                    <div class="products-services-appointment">
+                        <p>Servicios: </p>
+                        <div class="services-appointment">
+                            <span>Corte con navaja</span>
+                            <span>Tinte</span>
+                        </div>
+                        <p>Productos: </p>
+                        <div class="products-appointment">
+                            <span>Gliserina</span>
+                            <span>Peroximo 20 vol 1L</span>
+                        </div>
                     </div>
-                    <div id="appointment"></div>
+                </div>
+                <div class="actions-appointment">
+                    <h4>Acciones</h4>
+                    <button class="btn-update">Editar reservacion</button>
+                    <button class="btn-remove">Cancelar reservacion</button>
+                    <button class="btn-secundario" id="back">Volver</button>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 </body>
-<script src="/js/logout.js"></script>
-<script src="/js/client_dashboard.min.js"></script>
- <script src="/js/client_appointment.js"></script> 
+<!-- <script src="/js/logout.js"></script> -->
+<!-- <script src="/js/client_dashboard.min.js"></script> -->
+ <!-- <script src="/js/client_appointment.js"></script>  -->
 </html>

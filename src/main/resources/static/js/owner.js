@@ -15,48 +15,48 @@ async function obtenerCitas() {
 }
 
 function mostrarCitas(citas) {
-	const padre = document.querySelector("#mostrar-citas");
+	const padre = document.querySelector("#show-appointment");
 	const divTitulos = document.createElement("div");
 	divTitulos.innerHTML = `
-		<div style="text-align: center;">
+		<div class="center">
 			<p>Usuario</p>
 		</div>
-		<div style="text-align: center;">
+		<div class="center">
 			<p>Servicios</p>
 		</div>
-		<div style="text-align: center;">
+		<div class="center">
 			<p>Fecha</p>
 		</div>
-		<div style="text-align: center;">
+		<div class="center">
 			<p>Hora</p>
 		</div>
-		<div style="text-align: center;">
+		<div class="center">
 			<p>Acciones</p>
 		</div>
 	`;
 	divTitulos.style = "display: grid;grid-template-columns: repeat(5, 1fr);font-weight: bold;";
-	padre.appendChild(divTitulos);
+	// padre.appendChild(divTitulos);
 	citas.forEach(cita => {
 		const divContenido = document.createElement("div");
-		divContenido.style = "display: grid;grid-template-columns: repeat(5, 1fr);";
+		divContenido.classList.add("appointment-container");
 		divContenido.innerHTML = `
-			<div style="display: flex; align-items: center; justify-content: center;">
+			<div class="cont">
 				<p>${cita.id_client.name} ${cita.id_client.lastName}</p>
 			</div>
-			<div style="display: flex; align-items: center; justify-content: center;">
+			<div class="cont">
 				${obtenerServicios(cita.id_service)}
 			</div>
-			<div style="display: flex; align-items: center; justify-content: center;">
+			<div class="cont">
 				<p>${cita.appointment_date}</p>
 			</div>
-			<div style="display: flex; align-items: center; justify-content: center;">
+			<div class="cont">
 				<p>${cita.appointmnet_time}</p>
 			</div>
-			<div style="display: flex; align-items: center; justify-content: center;">
+			<div class="cont">
 				<button id="btn_eliminar">Cancelar</button>
 			</div>
 		`;
-		padre.appendChild(divContenido)
+		// padre.appendChild(divContenido)
 	})
 	
 	function obtenerServicios(servicios) {

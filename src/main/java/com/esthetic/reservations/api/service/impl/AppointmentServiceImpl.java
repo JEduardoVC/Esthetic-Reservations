@@ -148,4 +148,17 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
         	return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
         }
 	}
+	
+	public ResponseDTO<AppointmentDTO> findAllByDate(Long id, String date) {
+		List<Appointment> listaCitas = appointmentRepository.findByDate(date, String.valueOf(id));
+		ArrayList<AppointmentDTO> arregloCitas = new ArrayList<>();
+		for(Appointment appointment : listaCitas) {
+			AppointmentDTO citaDTO = mapToDTO(appointment);
+			citaDTO.setId_service(appointment.getServicios());
+			arregloCitas.add(citaDTO);
+		}
+		ResponseDTO<AppointmentDTO> response = new ResponseDTO<>();
+		response.setContent(arregloCitas);
+		return response;
+	}
 }
