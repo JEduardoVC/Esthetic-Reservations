@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.esthetic.reservations.api.dto.ResponseDTO;
@@ -170,7 +171,12 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
                     branches.add(branch);
                 }
                 employee.setWorkingBranches(branches);
-                this.employeeRepository.save(employee);
+                Employee savedEmployee = this.employeeRepository.save(employee);
+                for (Long branchId : userEntityRolesDTO.getWorkingBranchesIds()) {
+                    Branch branch = this.branchRepository.getReferenceById(branchId);
+                    branch.getEmployees().add(savedEmployee);
+                    this.branchRepository.save(branch);
+                }
             }
             roles.add(newRole);
         }
@@ -300,29 +306,33 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     @Transactional
     public UserEntityDTO update(UserEntityEditRolesDTO dto, Long id) {
         // The current entity
-        UserEntity currentEntity = this.userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
-        Role employeeRole = this.roleRepository.findByName(AppConstants.EMPLOYEE_ROLE_NAME).orElseThrow(() -> new ResourceNotFoundException("Rol","no encontrado","nombre",AppConstants.EMPLOYEE_ROLE_NAME));
+        UserEntity currentEntity = this.userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
+        Role employeeRole = this.roleRepository.findByName(AppConstants.EMPLOYEE_ROLE_NAME).orElseThrow(
+                () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.EMPLOYEE_ROLE_NAME));
         Boolean wasEmployee = currentEntity.getRoles().contains(employeeRole);
-        if(dto.getPassword() != null){
+        if (dto.getPassword() != null) {
             // Update with new password
-            if(!Util.isValidPassword(dto.getPassword())){
+            if (!Util.isValidPassword(dto.getPassword())) {
                 throw new BadRequestException("Contraseña.", AppConstants.INVALID_PASSWORD_MSG);
             }
             dto.setPassword(this.passwordEncoder.encode(dto.getPassword())); // Update password
-        } else{
+        } else {
             dto.setPassword(currentEntity.getPassword()); // The already hashed password
         }
         // The edited entity from the request
-        UserEntity editedEntity = new UserEntity(dto.getId(), dto.getUsername(), dto.getName(), dto.getLastName(), dto.getPhoneNumber(), dto.getAddress(), dto.getEmail(), dto.getPassword(), dto.getUserRoles());
+        UserEntity editedEntity = new UserEntity(dto.getId(), dto.getUsername(), dto.getName(), dto.getLastName(),
+                dto.getPhoneNumber(), dto.getAddress(), dto.getEmail(), dto.getPassword(), dto.getUserRoles());
         // Does the request sent new roles to set?
-        if(dto.getRolesIds() != null){
+        if (dto.getRolesIds() != null) {
             // use those roles
-            if(dto.getRolesIds().isEmpty()){
+            if (dto.getRolesIds().isEmpty()) {
                 throw new BadRequestException("Lista de nuevos roles", "no puede estar vacía");
             }
             Set<Role> newRoles = new HashSet<>();
-            for(Long roleId : dto.getRolesIds()){
-                Role newRole = this.roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "id", String.valueOf(roleId)));
+            for (Long roleId : dto.getRolesIds()) {
+                Role newRole = this.roleRepository.findById(roleId).orElseThrow(
+                        () -> new ResourceNotFoundException("Rol", "no encontrado", "id", String.valueOf(roleId)));
                 newRoles.add(newRole);
             }
             editedEntity.setRoles(newRoles);
@@ -334,23 +344,62 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         currentEntity.copy(editedEntity);
         UserEntity editedUser = this.userRepository.save(currentEntity);
         // Is a new employee?
-        Boolean isEmployee = editedUser.getRoles().contains(employeeRole); 
-        if(!wasEmployee && isEmployee){
+        Boolean isEmployee = editedUser.getRoles().contains(employeeRole);
+        if (isEmployee && dto.getWorkingBranchesIds() == null) {
+            throw new BadRequestException("Editar usuario con un nuevo rol de empleado",
+                    "requiere las sucursales donde trabaja.");
+        }
+        if (!wasEmployee && isEmployee || isEmployee && !this.employeeRepository.existsByUserId(editedUser.getId())) {
             Employee newEmployee = new Employee();
             newEmployee.setUser(editedUser);
-            if(dto.getWorkingBranchesIds() == null){
-                throw new BadRequestException("Editar usuario con un nuevo rol de empleado", "requiere las sucursales donde trabaja.");
-            }
             Set<Branch> workingBranches = new HashSet<>();
-            for(Long branchId : dto.getWorkingBranchesIds()){
-                Branch workingBranch = this.branchRepository.findById(branchId).orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id", String.valueOf(branchId)));
+            for (Long branchId : dto.getWorkingBranchesIds()) {
+                Branch workingBranch = this.branchRepository.findById(branchId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id",
+                                String.valueOf(branchId)));
                 workingBranches.add(workingBranch);
             }
             newEmployee.setWorkingBranches(workingBranches);
-            this.employeeRepository.save(newEmployee);
+            Employee savedEmployee = this.employeeRepository.save(newEmployee);
+            for (Branch branch : savedEmployee.getWorkingBranches()) {
+                Branch refBranch = this.branchRepository.getReferenceById(branch.getId());
+                refBranch.getEmployees().add(savedEmployee);
+                this.branchRepository.save(refBranch);
+            }
+        }
+        if (wasEmployee && isEmployee) {
+            Employee employee = this.employeeRepository.findByUserId(editedUser.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Empleado", "no encontrado", "id de usuario",
+                            String.valueOf(editedUser.getId())));
+            Boolean missing = false;
+            for (Long branchId : dto.getWorkingBranchesIds()) {
+                Branch workingBranch = this.branchRepository.findById(branchId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id",
+                                String.valueOf(branchId)));
+                if (!employee.getWorkingBranches().contains(workingBranch)) {
+                    missing = true;
+                    break;
+                }
+            }
+            if (missing) {
+                Set<Branch> workingBranches = new HashSet<>();
+                for (Long branchId : dto.getWorkingBranchesIds()) {
+                    Branch workingBranch = this.branchRepository.findById(branchId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id",
+                                    String.valueOf(branchId)));
+                    workingBranches.add(workingBranch);
+                }
+                employee.setWorkingBranches(workingBranches);
+                Employee savedEmployee = this.employeeRepository.save(employee);
+                for (Branch branch : savedEmployee.getWorkingBranches()) {
+                    Branch refBranch = this.branchRepository.getReferenceById(branch.getId());
+                    refBranch.getEmployees().add(savedEmployee);
+                    this.branchRepository.save(refBranch);
+                }
+            }
         }
         // Used to be an employee but not anymore?
-        if(wasEmployee && !isEmployee){
+        if (wasEmployee && !isEmployee) {
             this.employeeRepository.deleteByUserId(editedUser.getId());
         }
         return mapToDTO(editedUser);
@@ -432,6 +481,32 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         userResponseDTO.setTotalPages(entities.getTotalPages());
         userResponseDTO.setLast(entities.isLast());
         return userResponseDTO;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void delete(Long id) {
+        UserEntity user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
+        
+        // Get owner's branches
+		if (this.validOwnerId(user.getId())) {
+            String sortDir = AppConstants.DEFAULT_SORT_DIR;
+            String sortBy = AppConstants.DEFAULT_SORT_ORDER;
+            Integer pageNumber = Integer.parseInt(AppConstants.PAGE_NUMBER);
+            Integer pageSize = Integer.parseInt(AppConstants.PAGE_SIZE);
+            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+            Page<Branch> branchesPage = branchRepository.findAllByOwnerId(user.getId(), pageable);
+            ArrayList<Branch> branches = new ArrayList<>(branchesPage.getContent());
+            for(Branch branch : branches){
+                branch.setOwner(null);
+                this.branchRepository.delete(branch);
+            }
+		}
+
+        this.userRepository.delete(user);
+
     }
 
 }

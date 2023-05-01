@@ -2,72 +2,12 @@
 
 DataTable.Buttons.defaults.dom.button.className = 'btn';
 
-$(async function () {
-    const branches = await getBranches();
-    const users = await getUsers();
-    await getRoles();
-    let lang = languageMX;
-    lang.select = {
-        rows: {
-            _: 'Seleccionadas %d sucursales.',
-            0: 'Selecciona una sucursal dando clic.',
-            1: 'Una sucursal seleccionada.'
-        },
-        cols: {
+var usersTable;
+var branchesTable;
 
-        }
-    }
-    let branchesTable = $('#branchesTable').DataTable({
-        paging: true,
-        data: branches,
-        rowId: 'id',
-        select: {
-            style: 'multi'
-        },
-        dom: 'iBlfprtlp',
-        columns: [
-            { "name": "id", "data": "id", "targets": 0 },
-            { "name": "nombre", "data": "branchName", "targets": 1 },
-            { "name": "dueño", "data": "owner.username", "targets": 2 },
-        ],
-        buttons: [
-            {
-                text: 'Seleccionar filtrados.',
-                action: function () {
-                    this.rows({ search: 'applied' }).select();
-                },
-                className: 'btn-primary m-2 rounded-pill'
-            },
-            {
-                text: 'Deseleccionar filtrados.',
-                action: function () {
-                    this.rows({ search: 'applied' }).deselect();
-                },
-                className: 'btn-outline-primary m-2 rounded-pill'
-            },
-            {
-                text: 'Deseleccionar todos',
-                action: function () {
-                    this.rows().deselect();
-                },
-                className: 'btn-outline-secondary m-2 rounded-pill'
-            },
-            {
-                extend: 'showSelected',
-                text: `Mostrar selección`,
-                className: 'btn-outline-info m-2 rounded-pill'
-            },
-        ],
-        language: lang
-    });
-    branchesTable.on('buttons-action', function (e, buttonApi, dataTable, node, config) {
-        if (buttonApi.text() === 'Mostrar selección') {
-            dataTable
-                .search('')
-                .draw()
-        }
-    });
-    $('#usersTable').DataTable({
+$(async function () {
+    const users = await getUsers();
+    usersTable = $('#usersTable').DataTable({
         paging: true,
         data: users,
         columns: [
@@ -90,7 +30,151 @@ $(async function () {
         language: languageMX
     });
 
+    let lang = languageMX;
+    lang.select = {
+        rows: {
+            _: 'Seleccionadas %d sucursales.',
+            0: 'Selecciona una sucursal dando clic.',
+            1: 'Una sucursal seleccionada.'
+        },
+        cols: {
+
+        }
+    }
+    branchesTable = $('#branchesTable').DataTable({
+        paging: true,
+        data: [],
+        rowId: 'id',
+        select: {
+            style: 'multi'
+        },
+        dom: 'iBlfprtlp',
+        columns: [
+            { "name": "id", "data": "id", "targets": 0 },
+            { "name": "nombre", "data": "branchName", "targets": 1 },
+            { "name": "dueño", "data": "owner.username", "targets": 2 },
+        ],
+        buttons: [
+            {
+                text: 'Seleccionar filtrados.',
+                action: function () {
+                    this.rows({ search: 'applied' }).select();
+                },
+                className: 'btn-outline-primary m-2 rounded-pill'
+            },
+            {
+                text: 'Deseleccionar filtrados.',
+                action: function () {
+                    this.rows({ search: 'applied' }).deselect();
+                },
+                className: 'btn-outline-secondary m-2 rounded-pill'
+            },
+            {
+                text: 'Deseleccionar todos',
+                action: function () {
+                    this.rows().deselect();
+                },
+                className: 'btn-outline-warning m-2 rounded-pill'
+            },
+            {
+                extend: 'showSelected',
+                text: `Mostrar selección`,
+                className: 'btn-outline-success m-2 rounded-pill'
+            },
+        ],
+        language: lang
+    });
+    branchesTable.on('buttons-action', function (e, buttonApi, dataTable, node, config) {
+        console.log(node.prop('text'));
+        if (buttonApi.text() === 'Mostrar selección' || buttonApi.text() === 'Mostrar todos') {
+            dataTable
+                .search('')
+                .draw()
+            if (buttonApi.text() === 'Mostrar selección') {
+                buttonApi.text('Mostrar todos');
+            } else {
+                buttonApi.text('Mostrar selección');
+            }
+
+        }
+    });
+
 });
+
+function refreshTable(table, data) {
+    table.clear();
+    table.rows.add(data).draw();
+}
+
+function hideFeedback(aria) {
+    let feedback = $(`#${aria}Feedback`);
+    feedback.addClass('d-none');
+    feedback.removeClass('d-block');
+    feedback.html('');
+}
+
+function showFeedback(aria, errors) {
+    let feedback = $(`#${aria}Feedback`);
+    if (Array.isArray(errors)) {
+        let html = `<ul>`;
+        errors.forEach(error => {
+            html += `<li>${error}</li>`;
+        });
+        html += `</ul>`;
+        feedback.html(html);
+    } else {
+        feedback.html(errors);
+    }
+    feedback.addClass('d-block');
+    feedback.removeClass('d-none');
+}
+
+function cleanForm() {
+    $('input').each(function () {
+        $(this).val('');
+        hideFeedback($(this).attr('aria-label'));
+    });
+    $('input').removeClass('is-invalid');
+    $('input').removeClass('is-valid');
+    $('#branchesdiv').addClass('no-mostrar d-none');
+    $('#branchesTable').DataTable().rows().deselect();
+    $('#alertas').addClass('no-mostrar d-none');
+    hideFeedback('roles');
+    hideFeedback('form');
+}
+
+async function inflateForm(action, id = -1) {
+    cleanForm();
+    refreshTable(branchesTable, await getBranches());
+    if(action === 'add'){
+        await getRoles();
+    }
+    if (action === 'edit') {
+        const user = await getUserInfo(id);
+        document.getElementById("user-username").value = user.username;
+        document.getElementById("user-name").value = user.name
+        document.getElementById("user-lastname").value = user.lastName;
+        document.getElementById("user-address").value = user.address;
+        document.getElementById("user-email").value = user.email;
+        document.getElementById("user-phone").value = user.phoneNumber;
+        user.userRoles.forEach(async role => {
+            if (role.id === 3) {
+                $('#branchesdiv').removeClass('no-mostrar d-none');
+                const employee = await getEmployeeInfo(user.id);
+                // console.log(employee);
+                if(employee === undefined){
+                    refreshTable(branchesTable, await getBranches(false));
+                }
+                let branchesIds = [];
+                employee.workingBranches.forEach(branch => {
+                    branchesIds.push('#' + branch.id);
+                });
+                $('#branchesTable').DataTable().rows(branchesIds).select();
+            }
+        });
+        getRoles(user.userRoles);
+    }
+}
 
 $(document).on('click', '.btn-warning', function (e) {
     const id = $(this).data('target');
@@ -101,16 +185,7 @@ $(document).on('click', '.btn-warning', function (e) {
 
 $(document).on('click', '.btn-danger', async function (e) {
     const id = $(this).data('target');
-    const confirmed = await confirmAlert('warning', 'Eliminar usuario', '¿Estás seguro de eliminar el usuario? No se puede deshacer.', 'Sí, eliminar.');
-    if (confirmed) {
-        const done = await actionDeleteUser(id);
-        if(done){
-            $('#usersTable').DataTable().clear();
-            const users = await getUsers();
-            $('#usersTable').DataTable().rows.add(users).draw();
-            $('#modalUsersForm').modal('hide');
-        }
-    }
+    await deleteUser(id);
 });
 
 $(document).on('click', '.modal-trigger', function (e) {
@@ -121,6 +196,13 @@ $(document).on('click', '.modal-trigger', function (e) {
     $('#btnModal').data('target', id);
 });
 
+
+
+
+function validate() {
+
+}
+
 async function extraValidation(valid = true) {
     let branchesIds = [];
     let selectedBranches = $('#branchesTable').DataTable().rows({ selected: true })
@@ -129,7 +211,7 @@ async function extraValidation(valid = true) {
         branchesIds.push(branch.id);
     });
     let cont = 0;
-    if (selectedBranches.count() === 0 && $('#switch3').prop('checked') === true) {
+    if (selectedBranches.count() === 0 && $('#role-3').prop('checked') === true) {
         valid = false;
         let errors = ['Es necesario al menos una sucursal de trabajo para el empleado.'];
         cont += errors.length;
@@ -165,40 +247,11 @@ async function extraValidation(valid = true) {
         const action = $('#btnModal').data('action');
         const done = await actionUser(action, userId, selectedRoles, branchesIds);
         if (done) {
-            $('#usersTable').DataTable().clear();
-            const users = await getUsers();
-            $('#usersTable').DataTable().rows.add(users).draw();
+            refreshTable(usersTable, await getUsers());
             alerta('success', action === 'add' ? 'Se creó el usuario.' : 'Se editó el usuario.');
             $('#modalUsersForm').modal('hide');
         }
     }
-}
-
-function hideFeedback(aria) {
-    let feedback = $(`#${aria}Feedback`);
-    feedback.addClass('d-none');
-    feedback.removeClass('d-block');
-    feedback.html('');
-}
-
-function showFeedback(aria, errors) {
-    let feedback = $(`#${aria}Feedback`);
-    if (Array.isArray(errors)) {
-        let html = `<ul>`;
-        errors.forEach(error => {
-            html += `<li>${error}</li>`;
-        });
-        html += `</ul>`;
-        feedback.html(html);
-    } else {
-        feedback.html(errors);
-    }
-    feedback.addClass('d-block');
-    feedback.removeClass('d-none');
-}
-
-function validate() {
-
 }
 
 $(document).on('click', '#btnModal', function (e) {
@@ -280,168 +333,97 @@ $(document).on('click', '#btnModal', function (e) {
 });
 
 $(document).on('input', 'input.form-control', function () {
-    if ($(this).hasClass('is-invalid') && $(this).prop('type') === 'email' || $(this).hasClass('is-invalid') && $(this).prop('type') !== 'email') {
+    if ($(this).hasClass('is-invalid') && $(this).prop('type') === 'email' || $(this).prop('type') !== 'email') {
         $('#usersForm').validate().element($(this));
     }
 });
 
-async function getBranches() {
-    const response = await branchesRequest();
-    if (!isValidResponse(response)) {
-        alerta('error', JSON.stringify(response.data));
-        return null;
-    }
-    return response.data.content;
-}
-
-async function branchesRequest() {
-    const url = BASE_URL + 'api/branch/all';
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
+async function getBranches(disableEmployee = true) {
+    const branches = await request({
         method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    });
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
+        endpoint: 'api/branch/all',
+        alertOnError: true
+    }, 'branches');
+    if (branches.length === 0) {
+        $('#role-3').prop('disabled', disableEmployee);
+        Swal.fire({
+            title: 'Sin sucursales',
+            text: 'No podrás agregar empleados',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Sucursales',
+            confirmButtonText: 'Continuar',
+            customClass: {
+                confirmButton: 'btn m-2 btn-primary',
+                cancelButton: 'btn m-2 btn-secondary'
+            },
+            buttonsStyling: false,
+            reverseButtons: true
+        }).then((result) => {
+            console.log(result);
+            if (result.dismiss === Swal.DismissReason.cancel) {
+                location.href = '/app/admin/sucursales';
+            } else {
+                return [];
+            }
+        });
     }
+    $('#switch3').removeProp('disabled');
+    return branches;
 }
 
 async function getUsers() {
-    const response = await usersRequest();
-    if (!isValidResponse(response)) {
-        alerta('error', JSON.stringify(response.data));
-        return;
-    }
-    return response.data.content;
-}
-
-async function usersRequest() {
-    const url = BASE_URL + 'api/user/all';
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
+    const users = await request({
         method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    })
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    }
-}
-
-function cleanForm() {
-    $('input').each(function () {
-        $(this).val('');
-        hideFeedback($(this).attr('aria-label'));
-    });
-    $('input').removeClass('is-invalid');
-    $('input').removeClass('is-valid');
-    $('#branchesdiv').addClass('no-mostrar d-none');
-    $('#branchesTable').DataTable().rows().deselect();
-    hideFeedback('roles');
-    hideFeedback('form');
-}
-
-async function inflateForm(action, id = -1) {
-    cleanForm();
-    if (action === 'add') {
-        await getRoles();
-    } else {
-        const response = await getUserInfoRequest(id);
-        if (!isValidResponse(response)) {
-            alerta('error', JSON.stringify(response.data));
-            return;
-        }
-        const user = response.data;
-        document.getElementById("user-username").value = user.username;
-        document.getElementById("user-name").value = user.name
-        document.getElementById("user-lastname").value = user.lastName;
-        document.getElementById("user-address").value = user.address;
-        document.getElementById("user-email").value = user.email;
-        document.getElementById("user-phone").value = user.phoneNumber;
-        user.userRoles.forEach(async role => {
-            if (role.id === 3) {
-                $('#branchesdiv').removeClass('no-mostrar d-none');
-                const employee = await getEmployeeInfo(user.id);
-                let branchesIds = [];
-                employee.workingBranches.forEach(branch => {
-                    branchesIds.push('#' + branch.id);
-                });
-                $('#branchesTable').DataTable().rows(branchesIds).select();
-            }
-        });
-        getRoles(user.userRoles);
-    }
-
+        endpoint: 'api/user/all',
+        alertOnError: true
+    },'users');
+    return users;
 }
 
 async function getEmployeeInfo(id) {
-    const response = await getEmployeeInfoRequest(id);
-    if (!isValidResponse(response)) {
-        alerta('error', JSON.stringify(response.data));
+    const response = await request({
+        method: 'GET',
+        endpoint: 'api/employee',
+        urlParams: {
+            by: 'userid',
+            filterTo: id
+        },
+        fetch: 'response',
+        alertOnError: true
+    }, 'empleado');
+    if(!response.isValid && response.status === 409){
+        await Swal.fire({
+            title: 'Atención',
+            text: 'El usuario tiene el rol de empleado, sin embargo, no tiene sucursales asignadas.',
+            icon: 'warning',
+            confirmButtonText: 'Entiendo',
+            customClass: {
+                confirmButton: 'btn m-2 btn-primary',
+            },
+            buttonsStyling: false,
+        });
         return;
     }
     return response.data;
 }
 
-async function getEmployeeInfoRequest(id) {
-    const url = BASE_URL + `api/employee?`;
-    const response = await fetch(url + new URLSearchParams({
-        by: 'userid',
-        filterTo: id
-    }), {
+async function getUserInfo(id) {
+    const user = await request({
         method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    });
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    }
-}
-
-async function getUserInfoRequest(id) {
-    const url = BASE_URL + `api/user/${id}`;
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    });
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    }
+        endpoint: `api/user/${id}`,
+        alertOnError: true,
+        fetch: 'data'
+    }, 'get user');
+    return user;
 }
 
 async function getRoles(userRoles = []) {
-    const response = await rolesRequest();
-    if (!isValidResponse(response)) {
-        alerta('error', JSON.stringify(response.data));
-        return;
-    }
-    const roles = response.data.content;
+    const roles = await request({
+        method: 'GET',
+        endpoint: 'api/role/all',
+        alertOnError: true
+    },'get roles');
     let userRolesIds = [];
     userRoles.forEach(userRole => {
         userRolesIds.push(userRole.id);
@@ -454,30 +436,10 @@ async function getRoles(userRoles = []) {
                             </div>`
     }).join('');
     document.getElementById('roles-sw').innerHTML = html;
-    $(`#switch3`).on('change', function (e) {
-        this.checked = !this.checked;
+    $(`#role-3`).on('change', function (e) {
+        // this.checked = !this.checked;
         $('#branchesdiv').toggleClass('no-mostrar d-none');
     });
-}
-
-async function rolesRequest() {
-    const url = BASE_URL + `api/role/all`;
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        },
-    });
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    }
-
 }
 
 async function actionUser(action, id, selectedRoles, branchesIds) {
@@ -494,42 +456,38 @@ async function actionUser(action, id, selectedRoles, branchesIds) {
 }
 
 async function addUser(data, id, selectedRoles, branchesIds) {
-    const createResponse = await addUserRequest(data, id, selectedRoles, branchesIds);
-    if (isValidResponse(createResponse)) {
+    const createResponse = await request({
+        method: 'POST',
+        endpoint: 'api/auth/register/roles',
+        body: {
+            username: data.username,
+            name: data.name,
+            lastName: data.lastName,
+            address: data.address,
+            phoneNumber: data.phoneNumber,
+            email: data.email,
+            password: data.password,
+            rolesIds: selectedRoles,
+            workingBranchesIds: branchesIds
+        },
+        fetch: 'response'
+    }, 'adduser');
+    if (createResponse.isValid) {
         return true;
     } else {
-        if (createResponse.errorCode === 400) {
-            showObjectAlerts(createResponse.message, 'error');
-        } else if (createResponse.errorCode === 500 || createResponse.errorCode === 409) {
+        if (createResponse.status === 400) {
+            showObjectAlerts(createResponse.data.message, 'error');
+        } else if (createResponse.status === 500 || createResponse.status === 409) {
             let errors = [];
-            errors.push(createResponse.message);
+            errors.push(createResponse.data.message);
             showAlerts(errors, 'error');
         } else {
-            alerta('error', createResponse.errorCode + '\n' + JSON.stringify(createResponse.message));
+            alerta('error', createResponse.status + '\n' + JSON.stringify(createResponse.data.message));
         }
     }
-
 }
 
 async function updateUser(data, id, selectedRoles, branchesIds) {
-    const updateResponse = await editUserRequest(data, id, selectedRoles, branchesIds);
-    if (isValidResponse(updateResponse)) {
-        return true;
-    } else {
-        if (updateResponse.errorCode === 400) {
-            showObjectAlerts(updateResponse.message, 'error');
-        } else if (updateResponse.errorCode === 500 || updateResponse.errorCode === 409) {
-            let errors = [];
-            errors.push(updateResponse.message);
-            showAlerts(errors, 'error');
-        } else {
-            alerta('error', updateResponse.errorCode + '\n' + JSON.stringify(updateResponse.message));
-        }
-    }
-
-}
-
-async function editUserRequest(data, id, selectedRoles, branchesIds) {
     let body = {
         username: data.username,
         name: data.name,
@@ -543,125 +501,53 @@ async function editUserRequest(data, id, selectedRoles, branchesIds) {
     if (data.password !== '') {
         body['password'] = data.password;
     }
-    const url = BASE_URL + `api/user/${id}/roles`;
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
+    const updateResponse = await request({
         method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        },
-        'body': JSON.stringify(body)
+        endpoint: `api/user/${id}/roles`,
+        body: body,
+        fetch: 'response'
     });
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    };
-}
-async function addUserRequest(data, id, selectedRoles, branchesIds) {
-    const url = BASE_URL + `api/auth/register/roles`;
-    const response = await fetch(url + new URLSearchParams({
+    if (updateResponse.isValid) {
+        return true;
+    } else {
+        if (updateResponse.status === 400) {
+            showObjectAlerts(updateResponse.message, 'error');
+        } else if (updateResponse.status === 500 || updateResponse.status === 409) {
+            let errors = [];
+            errors.push(updateResponse.data.message);
+            showAlerts(errors, 'error');
+        } else {
+            alerta('error', updateResponse.status + '\n' + JSON.stringify(updateResponse.data.message));
+        }
+    }
 
-    }), {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        },
-        body: JSON.stringify({
-            username: data.username,
-            name: data.name,
-            lastName: data.lastName,
-            address: data.address,
-            phoneNumber: data.phoneNumber,
-            email: data.email,
-            password: data.password,
-            rolesIds: selectedRoles,
-            workingBranchesIds: branchesIds
-        })
-    });
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    };
 }
 
 async function deleteUser(id) {
     const confirmed = await confirmAlert('warning', 'Eliminar usuario', '¿Estás seguro de eliminar el usuario? No se puede deshacer.', 'Sí, eliminar.');
     if (confirmed) {
-        actionDeleteUser(id);
-    }
-}
-
-async function actionDeleteUser(id) {
-    const response = await deleteUserRequest(id);
-    if (!isValidResponse(response)) {
-        alerta('error', response.data.message);
-        return false;
-    }
-    alerta('success', 'Usuario eliminado.');
-    return true;
-}
-
-async function deleteUserRequest(id) {
-    const url = BASE_URL + `api/user/${id}`;
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
-        method: 'DELETE',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+        const response = await request({
+            method: 'DELETE',
+            endpoint: `api/user/${id}`,
+            fetch: 'response'
+        }, 'delete user');
+        if(!response.isValid){
+            alerta('error', response.data.message);
+            return;
         }
-    });
-    const json = await response.json();
-    return {
-        'data': json,
-        'status': response.status
-    };
+        refreshTable(usersTable, await getUsers());
+        alerta('success', 'Usuario eliminado.');
+        return true;
+    }
 }
 
-function isValidResponse(response) {
-    return typeof response.data.errorCode === 'undefined' && response.status <= 399;
-}
-
-const togglePassword = document.querySelector('#togglePassword');
-const toggleCPassword = document.querySelector('#toggleCPassword');
-
-const togglePasswordIcon = document.querySelector('#togglePasswordIcon');
-const toggleCPasswordIcon = document.querySelector('#toggleCPasswordIcon');
-
-const password = document.querySelector('#user-password');
-const cpassword = document.querySelector('#user-cpassword');
-
-togglePassword.addEventListener('click', () => {
-
-    // Toggle the type attribute using
-    // getAttribure() method
-    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-
-    password.setAttribute('type', type);
-
-    // Toggle the eye and bi-eye icon
-    togglePasswordIcon.classList.toggle('bi-eye');
-});
-
-toggleCPassword.addEventListener('click', () => {
-
-    // Toggle the type attribute using
-    // getAttribure() method
-    const type = cpassword.getAttribute('type') === 'password' ? 'text' : 'password';
-
-    cpassword.setAttribute('type', type);
-
-    // Toggle the eye and bi-eye icon
-    toggleCPasswordIcon.classList.toggle('bi-eye');
+$('.password-toggler').on('click', function(){
+    const input = $(this).siblings('.form-floating').find('input.form-control');
+    const icon = $(this).children('.bi');
+    console.log(icon)
+    const type = input.prop('type');
+    input.prop('type', type === 'password' ? 'text' : 'password');
+    icon.toggleClass('bi-eye');
 });
 
 function showAlerts(alerts, type = 'error') {

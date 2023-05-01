@@ -1,5 +1,5 @@
 <div id="alertas"></div>
-<form class="row g-3">
+<form id="branchesForm" class="row g-3" action="#" onsubmit="return false" method="POST">
     <div class="col-md-6">
 
         <div class="col-md-12">
@@ -9,9 +9,12 @@
                 </span>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="branch-name" name="branch-name"
-                        placeholder="Nombre de la sucursal">
+                        placeholder="Nombre de la sucursal" aria-label="branchName">
                     <label for="branch-name" class="form-label">Nombre</label>
                 </div>
+            </div>
+            <div id="branchNameFeedback" class="invalid-feedback d-block">
+
             </div>
         </div>
     </div>
@@ -22,10 +25,13 @@
                     <i class="bi bi-person-gear"></i>
                 </span>
                 <div class="form-floating">
-                    <select id="select-owner" class="form-select" aria-label="Dueño de la sucursal">
+                    <select id="select-owner" name="select-owner" class="form-select" aria-label="owner">
                     </select>
                     <label for="select-owner" class="form-label">Dueño</label>
                 </div>
+            </div>
+            <div id="ownerFeedback" class="invalid-feedback d-block">
+
             </div>
         </div>
     </div>
@@ -36,11 +42,14 @@
                     <i class="bi bi-pin-map-fill"></i>
                 </span>
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="branch-address" name="branch-address"
-                        placeholder="Dirección de la sucursal">
-                    <label for="branch-address" class="form-label">Dirección</label>
+                    <input type="text" class="form-control" id="branch-location" name="branch-location"
+                        placeholder="Dirección de la sucursal" aria-label="location">
+                    <label for="branch-location" class="form-label">Dirección</label>
 
                 </div>
+            </div>
+            <div id="locationFeedback" class="invalid-feedback d-block">
+
             </div>
         </div>
     </div>
@@ -52,10 +61,13 @@
                 </span>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="branch-municipality" name="branch-municipality"
-                        placeholder="Municipio de la sucursal">
+                        placeholder="Municipio de la sucursal" aria-label="municipality">
                     <label for="branch-municipality" class="form-label">Municipio</label>
 
                 </div>
+            </div>
+            <div id="municipalityFeedback" class="invalid-feedback d-block">
+
             </div>
         </div>
     </div>
@@ -67,10 +79,13 @@
                 </span>
                 <div class="form-floating">
                     <input type="text" class="form-control" id="branch-state" name="branch-state"
-                        placeholder="Estado de la sucursal">
+                        placeholder="Estado de la sucursal" aria-label="state">
                     <label for="branch-state" class="form-label">Estado</label>
 
                 </div>
+            </div>
+            <div id="stateFeedback" class="invalid-feedback d-block">
+
             </div>
         </div>
     </div>
@@ -83,9 +98,12 @@
                 </span>
                 <div class="form-floating">
                     <input type="text" class="form-control timepicker" id="branch-open" name="branch-open"
-                        placeholder="Hora de apertura">
+                        placeholder="Hora de apertura" aria-label="scheduleOpen">
                     <label for="branch-open" class="form-label">Hora de Apertura</label>
                 </div>
+            </div>
+            <div id="scheduleOpenFeedback" class="invalid-feedback d-block">
+
             </div>
         </div>
     </div>
@@ -97,14 +115,45 @@
                 </span>
                 <div class="form-floating">
                     <input type="text" class="form-control timepicker" id="branch-close" name="branch-close"
-                        placeholder="Hora de cierre">
+                        placeholder="Hora de cierre" aria-label="scheduleClose">
                     <label for="branch-close" class="form-label">Hora de Cierre</label>
                 </div>
+            </div>
+            <div id="scheduleCloseFeedback"branchesTable class="invalid-feedback d-block">
+
             </div>
         </div>
     </div>
 
+    <div class="col-md-12">
+
+        <div id="employeesdiv" class="col-md-9 container">
+            <label for="employeesTable" class="fw-bold fs-5">Empleados...</label>
+            <div id="employeesFeedback" class="invalid-feedback d-none"></div>
+            <table class="table" id="employeesTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Empleado</th>
+                        <th>Nombre</th>
+                        <th>Username</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Empleado</th>
+                        <th>Nombre</th>
+                        <th>Username</th>
+                    </tr>
+                </tfoot>
+                <tbody id="employeeTableBody">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
     <div class="col-12">
-        <button type="button" id="btnModal" class="btn btn-primary fw-bold">Confirmar</button>
+        <button type="submit" id="btnModal" class="btn btn-primary fw-bold">Confirmar</button>
+        <div id="formFeedback" class="col-md-10 invalid-feedback d-none fw-bold">Revisa el formulario.</div>
     </div>
 </form>

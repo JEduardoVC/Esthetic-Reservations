@@ -2,10 +2,9 @@ package com.esthetic.reservations.api.model;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -22,9 +21,8 @@ public class Employee extends BaseModel<Employee> {
 	@JoinColumn(name = "id_user", referencedColumnName = "id")
 	private UserEntity user;
 
-	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Branch.class)
+	@ManyToMany(mappedBy = "employees")
 	@OnDelete(action = OnDeleteAction.CASCADE)
-	@JoinTable(name = "employee_branch", joinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_branch", referencedColumnName = "id"))
     private Set<Branch> workingBranches;
 
 	public UserEntity getUser() {

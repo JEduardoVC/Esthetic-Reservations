@@ -48,7 +48,13 @@ public class EmployeeController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIR, required = false) String sortDir,
             @RequestParam(value = "by", required = false, defaultValue = "na") String filterBy,
             @RequestParam(value = "filterTo", required = false) String filterTo) {
-        return employeeService.findAll(pageNumber, pageSize, sortBy, sortDir);
+        switch(filterBy){
+            case "branch":
+                Long branchId = Long.parseLong(filterTo);
+                return this.employeeService.findAllByBranchId(pageNumber, pageSize, sortBy, sortDir, filterTo, branchId);
+            default:
+                return employeeService.findAll(pageNumber, pageSize, sortBy, sortDir);
+        }
     }
 
     @GetMapping("/{id}")
