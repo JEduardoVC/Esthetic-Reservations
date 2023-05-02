@@ -2,17 +2,50 @@
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/generics/header"></head>
-
 <body>
-    <div th:insert="/owner/navegacion"></div>
-    <div class="body-owner">
-        <div class="container-owner">
-            <h1>Modulo citas</h1>
-            <div id="mostrar-citas" class="citas"></div>
+    <div class="owner-index">
+        <div th:insert="owner/title"></div>
+        <div>
+            <div th:insert="owner/navegation"></div>
+            <div class="title-appointment">
+                <div class="center"><h1>Usuario</h1></div>
+                <div class="center"><h1>Servicios</h1></div>
+                <div class="center"><h1>Fecha y hora</h1></div>
+                <div class="center"><h1>Acciones</h1></div>
+            </div>
+            <div id="show-appointment" class="citas">
+                <div class="appointment-confirmed">
+                    <p>José Eduardo Valencia Camacho</p>
+                    <div class="services-appointment">
+                        <p>Corte de cabello</p>
+                        <p>Tinte</p>
+                    </div>
+                    <div class="date-time-appointment">
+                        <p>17 de Mayo del 2023</p>
+                        <p>15:00 horas</p>
+                    </div>
+                    <div class="cancel-appointment">
+                        <button class="btn-remove">Cancelar</button>
+                    </div>
+                </div>
+                <div class="appointment-confirmed">
+                    <p>José Eduardo Valencia Camacho</p>
+                    <div class="services-appointment">
+                        <p>Corte de cabello</p>
+                        <p>Tinte</p>
+                    </div>
+                    <div class="date-time-appointment">
+                        <p>17 de Mayo del 2023</p>
+                        <p>15:00 horas</p>
+                    </div>
+                    <div class="cancel-appointment">
+                        <button class="btn-remove">Cancelar</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
-<!-- <script src="/js/owner.js"></script> -->
 <script src="/js/owner.js"></script>
 <script src="/js/logout.js"></script>
 </html>
