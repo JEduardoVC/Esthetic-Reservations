@@ -45,13 +45,39 @@ document.addEventListener('DOMContentLoaded', function(){
 		showSeccion();
 	});
 	
-	document.querySelector("#reservation").addEventListener("click", () => {
+	document.querySelector("#reservation").addEventListener("click", async () => {
 		if(appointment.time == "") {
 			alerta("error", "Seleccionar fecha y hora para la cita")
 			return;
 		}
+		const respuesta = await saveAppointment();
+		if(respuesta.date_created) {
+			alerta("success", "Se le envio un correo con su código QR para hacer valida su reseracion", "Cita confirmada");
+			return;
+		}
 	})
+	
 });
+
+async function saveAppointment() {
+	const respuesta = await fetch(`${BASE_URL}api/appointment/guardar`, {
+		method:"POST",
+		body: JSON.stringify({
+			id_branch: sessionStorage.getItem("branchId"),
+			appointment_date: appointment.date,
+			appointment_time: appointment.time,
+			id_service: carrito.servicios.flatMap(servicio => servicio.id),
+			id_client: sessionStorage.getItem("userId")
+		}),
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		}
+	})
+	const resultado = await respuesta.json();
+	console.info(resultado);
+	return resultado;
+}
 
 async function showReview() {
 	const servicios = await obtenerServicios();
@@ -66,7 +92,7 @@ async function showReview() {
 			div.classList.add("container-summary")
 			div.innerHTML = `
 				<div class="product-service" id="product-service">
-	                <img class="cancel" src="/img/cancelar.webp" onclick="cancelarServicio(${serv.id})">
+	                <img class="cancel" src="/img/cancelar.webp" onclick="cancelarSeccion(${serv.id}, 'servicios')">
 	                <img class="product" src="/img/Productos-venta.webp">
 	                <div class="description">
 	                    <p>${servicio.service_name}</p>
@@ -91,15 +117,65 @@ async function showReview() {
 			priceTotal += parseInt(serv.cantidad) * servicio.price;
 		}
 	})
+	const productos = await obtenerProductos();
+	productos.forEach(producto => {
+		const prod = carrito.productos.find(element => element.id == producto.id) ?? null;
+		if(prod != null && prod.id == producto.id) {
+			const div = document.createElement("div");
+			div.classList.add("container-summary")
+			div.innerHTML = `
+	            <div class="product-service" id="product-service">
+	                    <img class="cancel" src="/img/cancelar.webp" onclick="cancelarSeccion(${prod.id}, 'productos')">
+	                    <img class="product" src="/img/Productos-venta.webp">
+	                    <div class="description">
+	                        <p>${producto.inventory_name}</p>
+	                        <span>${producto.capacibility}</span>
+	                    </div>
+	                </div>
+	                <div class="price" id="price">
+	                    <span>$ ${producto.price}</span>
+	                </div>
+	                <div class="quantity" id="quantitu">
+	                    <p>${prod.cantidad}</p>
+	                </div>
+	                <div class="subtotal" id="subtotal">
+	                    <span>$ ${prod.cantidad * producto.price}</span>
+	                </div>
+	            </div>
+			`;
+			document.querySelector(".container-show-summary").appendChild(div);
+			priceTotal += parseInt(prod.cantidad) * producto.price;
+		}
+	})
 	const hr = parseInt(changeTime(timeTotal, 1) / 60);
 	const min = parseInt(changeTime(timeTotal, 1) % 60);
 	document.querySelector("#time-service").textContent = `${hr} hr ${min} min`;
 	document.querySelector("#price-total").textContent = `$ ${priceTotal}`;	
 }
 
-async function cancelarServicio(id) {
-	if(await confirmAlert()) {		
-		carrito.servicios = carrito.servicios.filter(servicio => servicio.id != id);
+async function obtenerProductos() {
+	const resultado = await fetch(`${BASE_URL}api/client/products/branch/${sessionStorage.getItem("branchId")}`, {
+		method: 'GET',
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`
+		},
+		redirect: "follow"
+	})
+	const respuesta = await resultado.json();
+	const inventario = respuesta.content;
+	if (inventario == undefined) {
+		inventario = [];
+	}
+	return inventario;
+}
+
+async function cancelarSeccion(id, seccion) {
+	if(await confirmAlert()) {
+		if(seccion == "servicios") {
+			carrito.servicios = carrito.servicios.filter(servicio => servicio.id != id);
+		} else {
+			carrito.productos = carrito.productos.filter(producto => producto.id != id);
+		}
 		sessionStorage.setItem("carrito", JSON.stringify(carrito));
 		showReview();
 	}	
@@ -272,14 +348,12 @@ function setNewDate(){
 }
 
 function selectDay(div){
-	console.info(div);
 	if(!div) return;
 	document.querySelector("#dates").childNodes.forEach(element => {
 		if(element.classList.contains("selected")) element.classList.remove("selected")
 	});
     div.classList.toggle("selected");
 	const index = months.findIndex(month => month == document.querySelector("#month").textContent);
-	console.info(index);
     appointment.date = `${document.querySelector("#year").textContent}-${index}-${div.textContent}`;
 }
 
