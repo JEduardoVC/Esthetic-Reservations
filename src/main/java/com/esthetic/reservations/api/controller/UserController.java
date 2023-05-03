@@ -35,7 +35,6 @@ import com.esthetic.reservations.api.util.Util;
 
 @RestController
 @RequestMapping("/api/user")
-@RolesAllowed({AppConstants.ADMIN_ROLE_NAME})
 public class UserController {
 
     private UserServiceImpl userService;

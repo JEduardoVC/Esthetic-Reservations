@@ -371,31 +371,28 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             Employee employee = this.employeeRepository.findByUserId(editedUser.getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Empleado", "no encontrado", "id de usuario",
                             String.valueOf(editedUser.getId())));
-            Boolean missing = false;
+            Set<Branch> formerBranches = new HashSet<>();
+            formerBranches.addAll(employee.getWorkingBranches());
+            // El dto dice cuales son las sucursales
+            Set<Branch> workingBranches = new HashSet<>();
             for (Long branchId : dto.getWorkingBranchesIds()) {
                 Branch workingBranch = this.branchRepository.findById(branchId)
                         .orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id",
                                 String.valueOf(branchId)));
-                if (!employee.getWorkingBranches().contains(workingBranch)) {
-                    missing = true;
-                    break;
+                workingBranches.add(workingBranch);
+            }
+            for(Branch branch : formerBranches){
+                if(!workingBranches.contains(branch)){
+                    branch.getEmployees().remove(employee);
+                    this.branchRepository.save(branch);
                 }
             }
-            if (missing) {
-                Set<Branch> workingBranches = new HashSet<>();
-                for (Long branchId : dto.getWorkingBranchesIds()) {
-                    Branch workingBranch = this.branchRepository.findById(branchId)
-                            .orElseThrow(() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id",
-                                    String.valueOf(branchId)));
-                    workingBranches.add(workingBranch);
-                }
-                employee.setWorkingBranches(workingBranches);
-                Employee savedEmployee = this.employeeRepository.save(employee);
-                for (Branch branch : savedEmployee.getWorkingBranches()) {
-                    Branch refBranch = this.branchRepository.getReferenceById(branch.getId());
-                    refBranch.getEmployees().add(savedEmployee);
-                    this.branchRepository.save(refBranch);
-                }
+            employee.setWorkingBranches(workingBranches);
+            Employee savedEmployee = this.employeeRepository.save(employee);
+            for (Branch branch : savedEmployee.getWorkingBranches()) {
+                Branch refBranch = this.branchRepository.getReferenceById(branch.getId());
+                refBranch.getEmployees().add(savedEmployee);
+                this.branchRepository.save(refBranch);
             }
         }
         // Used to be an employee but not anymore?
@@ -486,10 +483,11 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void delete(Long id) {
-        UserEntity user = this.userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
-        
+        UserEntity user = this.userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
+
         // Get owner's branches
-		if (this.validOwnerId(user.getId())) {
+        if (this.validOwnerId(user.getId())) {
             String sortDir = AppConstants.DEFAULT_SORT_DIR;
             String sortBy = AppConstants.DEFAULT_SORT_ORDER;
             Integer pageNumber = Integer.parseInt(AppConstants.PAGE_NUMBER);
@@ -499,11 +497,11 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
             Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
             Page<Branch> branchesPage = branchRepository.findAllByOwnerId(user.getId(), pageable);
             ArrayList<Branch> branches = new ArrayList<>(branchesPage.getContent());
-            for(Branch branch : branches){
+            for (Branch branch : branches) {
                 branch.setOwner(null);
                 this.branchRepository.delete(branch);
             }
-		}
+        }
 
         this.userRepository.delete(user);
 
