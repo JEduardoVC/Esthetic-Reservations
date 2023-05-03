@@ -1,5 +1,5 @@
-// const BASE_URL = 'http://localhost:5500/';
-const BASE_URL = 'http://192.168.100.5:5500/';
+const BASE_URL = 'http://localhost:5500/';
+// const BASE_URL = 'http://192.168.100.5:5500/';
 //const BASE_URL = 'http://192.168.1.76:5500/';
 //const BASE_URL = 'http://192.168.1.70:5500/';
 

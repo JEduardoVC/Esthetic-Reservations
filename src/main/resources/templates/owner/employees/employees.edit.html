@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:insert="/generics/header"></head>
+
+<link rel="stylesheet" href="/css/vendor/datatables/datatables-dt.min.css">
+<script src="/js/vendor/datatables/datatables-dt.min.js"></script>
+
+<body>
+    <div class="owner-inventory">
+        <div th:insert="owner/title"></div>
+        <div>
+            <div th:insert="owner/navegation"></div>
+            <div class="btn-new-product">
+                <button class="btn-principal">Editar empleado</button>
+            </div>
+            <div class="title-inventory">
+                <div class="center"><h1>Editar Empleado</h1></div>
+            </div>
+            <div class="show-inventory" id="mostrar-productos">
+                <div th:insert="@{owner/employees/formulario-usuario.html}"></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/js/owner.js"></script>
+<script src="/js/owner.employees.edit.js"></script>
+</html>

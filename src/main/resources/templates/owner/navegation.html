@@ -3,10 +3,15 @@
         <img src="/img/logo.webp">
     </div>
     <div class="shortcuts"> 
-        <button id="appointment" class="btn-shortcut">Citas</button>
-        <button id="appointment" class="btn-shortcut">Servicios</button>
-        <button id="appointment" class="btn-shortcut">Inventario</button>
-        <button id="appointment" class="btn-shortcut">Verificar cita</button>
+        <a href="/app/owner/citas" id="appointment" class="btn-shortcut" style="text-decoration: none;">Citas</a>
+        <a href="/app/owner/servicios" id="appointment" class="btn-shortcut" style="text-decoration: none;">Servicios</a>
+        <a href="/app/owner/inventario" id="appointment" class="btn-shortcut" style="text-decoration: none;">Inventario</a>
+        <a href="/app/owner/validar/citas" id="appointment" class="btn-shortcut" style="text-decoration: none;">Verificar cita</a>
+        <a href="/app/owner/personal" id="appointment" class="btn-shortcut" style="text-decoration: none;">Personal</a>
+    </div>
+    <div>
+        <label for="select-branch">Sucursal actual:</label>
+        <select name="select-branch" id="select-branch"></select>
     </div>
     <div class="user-interaction">
         <div class="user-animation">

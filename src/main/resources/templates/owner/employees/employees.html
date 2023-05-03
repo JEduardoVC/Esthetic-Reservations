@@ -1,42 +1,52 @@
 <!DOCTYPE html>
-<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head th:insert="/generics/header"></head>
 
+<link rel="stylesheet" href="/css/vendor/datatables/datatables-dt.min.css">
+<script src="/js/vendor/datatables/datatables-dt.min.js"></script>
+
 <body>
-    <div th:insert="/owner/navegacion"></div>
-    <div class="body-owner">
-        <div class="container-owner">
-            <h1>Personal</h1>
-            <button class="btn-secundario">Añadir empleado</button>
-            <div class="table-responsive p-2">
-                <table class="table table-striped p-2" id="usersTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Nombre</th>
-                            <th>Dirección</th>
-                            <th>Correo</th>
-                            <th>Teléfono</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>Username</th>
-                            <th>Nombre</th>
-                            <th>Dirección</th>
-                            <th>Correo</th>
-                            <th>Teléfono</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </tfoot>
-                    <tbody id="tableBody"></tbody>
-                </table>
+    <div class="owner-inventory">
+        <div th:insert="owner/title"></div>
+        <div>
+            <div th:insert="owner/navegation"></div>
+            <div class="btn-new-product">
+                <button class="btn-principal" id="add-employee">Añadir empleado</button>
+            </div>
+            <div class="title-inventory">
+                <div class="center"><h1>Empleados</h1></div>
+            </div>
+            <div class="show-inventory" id="mostrar-productos">
+                <div class="table-responsive p-2">
+                    <table class="table table-striped p-2" id="employeesTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Nombre</th>
+                                <th>Dirección</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>Username</th>
+                                <th>Nombre</th>
+                                <th>Dirección</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </tfoot>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </body>
-<!-- <script src="/js/owner.js"></script> -->
-<script src="/js/logout.js"></script>
+<script src="/js/owner.js"></script>
+<script src="/js/owner.employees.js"></script>
 </html>
