@@ -67,4 +67,12 @@ public class AppOwnerController {
 	public ModelAndView viewPersonal() {
 		return new ModelAndView("owner/employees/employees");
 	}
+	@GetMapping("/personal/agregar")
+	public ModelAndView viewAddPersonal() {
+		return new ModelAndView("owner/employees/employees.add");
+	}
+	@GetMapping("/personal/editar")
+	public ModelAndView viewEditPersonal() {
+		return new ModelAndView("owner/employees/employees.edit");
+	}
 }
