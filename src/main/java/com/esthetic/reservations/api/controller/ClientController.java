@@ -6,10 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.InventoryDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.ServiceDTO;
+import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
 import com.esthetic.reservations.api.service.impl.InventoryServiceImpl;
 import com.esthetic.reservations.api.service.impl.SeriviceServiceImpl;
 
@@ -22,6 +26,9 @@ public class ClientController {
 	
 	@Autowired
 	SeriviceServiceImpl serviceServiceImpl;
+	
+	@Autowired
+	AppointmentServiceImpl appointmentServiceImpl;
 	
 	@GetMapping("/products/branch/{id}")
 	public ResponseDTO<InventoryDTO> obtenerInventarioSucursal(@PathVariable("id") Long id) {
@@ -41,6 +48,11 @@ public class ClientController {
 	@GetMapping("/service/{id}")
 	public ResponseEntity<ServiceDTO> obtenerServicio(@PathVariable Long id) {
 		return new ResponseEntity<ServiceDTO>(serviceServiceImpl.findById(id), HttpStatus.OK);
+	}
+	
+	@GetMapping("/appointment/date/branch/{id}/{date}")
+	public ResponseDTO<AppointmentDTO> obtenerCitasFecha(@PathVariable Long id, @PathVariable String date) {
+		return appointmentServiceImpl.findAllByDate(id, date);
 	}
 	
 }
