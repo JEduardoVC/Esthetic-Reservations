@@ -40,7 +40,7 @@ function mostrarServicios(servicios) {
                 <button type="button" id="btn-cancel-${servicio.id}" name=${servicio.id}>Eliminar</button>
 			</div>
 		`;
-		div.appendChild(service);
+		// div.appendChild(service);
 		document.querySelector(`#btn-update-${servicio.id}`).addEventListener("click", update);
         document.querySelector(`#btn-cancel-${servicio.id}`).addEventListener("click", deleteProduct);
 	})
