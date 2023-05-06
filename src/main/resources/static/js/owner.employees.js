@@ -7,44 +7,24 @@ var employeesTable;
 $(async function () {
     const branches = await getUserBranches();
     const employees = await getBranchEmployees();
-    employeesTable = $('#employeesTable').DataTable({
-        paging: true,
-        data: employees,
-        rowId: 'user.id',
-        columns: [
-            { "name": "username", "data": "user.username", "targets": 0 },
-            { "name": "nombre", "data": "user.name", "targets": 1 },
-            { "name": "direccion", "data": "user.address", "targets": 2 },
-            { "name": "correo", "data": "user.email", "targets": 3 },
-            { "name": "telefono", "data": "user.phoneNumber", "targets": 4 },
-            {
-                "searchable": false, "orderable": false,
-                "name": "acciones", "render": function (data, type, row) {
-                    let rowId = Number(data.user.id);
-                    return `
-                            <button type="button" class="btn-update" data-target="${rowId}">Editar</button>
-                            <button type="button" class="btn-remove" data-target="${rowId}">Eliminar</button>`;
-                }, "data": null, "targets": [6]
-            }
-        ],
-        language: languageMX
-    });
+    refreshTable('info-employees', employees);
 });
 
-$('#select-branch').on('change', async function(e){
+$('#select-branch').on('change', async function (e) {
     sessionStorage.setItem('branchId', $(this).val());
-    refreshTable(employeesTable, await getBranchEmployees());
+    refreshTable('info-employees', await getBranchEmployees());
 });
 
-function refreshTable(table, data) {
-    table.clear();
-    table.rows.add(data).draw();
+function refreshTable(tableId, html) {
+    const table = $(`#${tableId}`);
+    table.html('');
+    table.html(html);
 }
 
 async function inflateForm(action, id = -1) {
     cleanForm();
     refreshTable(branchesTable, await getBranches());
-    if(action === 'add'){
+    if (action === 'add') {
         await getRoles();
     }
     if (action === 'edit') {
@@ -60,7 +40,7 @@ async function inflateForm(action, id = -1) {
                 $('#branchesdiv').removeClass('no-mostrar d-none');
                 const employee = await getEmployeeInfo(user.id);
                 // console.log(employee);
-                if(employee === undefined){
+                if (employee === undefined) {
                     refreshTable(branchesTable, await getBranches(false));
                 }
                 let branchesIds = [];
@@ -89,11 +69,11 @@ $(document).on('click', '.btn-remove', async function (e) {
     await deleteUser(id);
 });
 
-async function getUserBranches(){
+async function getUserBranches() {
     const branches = await request({
         method: 'GET',
         endpoint: 'api/branch/all/filter',
-        urlParams:{
+        urlParams: {
             filterBy: 'owner',
             filterTo: sessionStorage.getItem('userId')
         },
@@ -101,8 +81,9 @@ async function getUserBranches(){
     });
     const select = $('#select-branch');
     select.append($('<option>', {
+        disabled: 'disabled',
         value: '',
-        text: 'Seleccionar sucursal'
+        text: '--Seleccione--'
     }))
     $(branches).each(function () {
         const branch = this;
@@ -124,7 +105,24 @@ async function getBranchEmployees() {
             filterTo: id
         }
     });
-    return employees;
+    let html = '';
+    employees.forEach(employee => {
+        html += `<div id="show-employee" class="employee">
+                    <div class="center"><p>${employee.user.name} ${employee.user.lastName}</p></div>
+                    <div class="center"><p>${employee.user.phoneNumber}</p></div>
+                    <div class="center"><p>${employee.user.email}</p></div>
+                    <div class="actions-employees">
+                        <button type="button" class="btn-remove" data-target="${employee.user.id}">Eliminar</button> 
+                        <button type="button" class="btn-update" data-target="${employee.user.id}">Editar</button> 
+                    </div>
+                </div>`;
+    });
+    if(html === ''){
+        html += `<div id="show-employee" class="employee">
+                    <div class="center"><p>No tienes empleados en esta sucursal</p></div>
+                </div>`;
+    }
+    return html;
 }
 
 async function deleteUser(id) {
@@ -135,11 +133,11 @@ async function deleteUser(id) {
             endpoint: `api/user/${id}`,
             fetch: 'response'
         }, 'delete user');
-        if(!response.isValid){
+        if (!response.isValid) {
             alerta('error', response.data.message);
             return;
         }
-        refreshTable(employeesTable, await getBranchEmployees());
+        refreshTable('info-employees', await getBranchEmployees());
         alerta('success', 'Usuario eliminado.');
         return true;
     }

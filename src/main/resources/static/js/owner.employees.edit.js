@@ -1,8 +1,6 @@
 'use strict'
 'use strict'
 
-DataTable.Buttons.defaults.dom.button.className = 'btn';
-
 var employeesTable;
 
 $(async function () {
@@ -37,10 +35,26 @@ async function inflateForm() {
 $(document).on('click', '#btnAction', async function (e) {
     const id = sessionStorage.getItem('targetEmployee');
     let data = {};
-    $('form#usersForm :input').each(function () {
+    let errors = [];
+    $('.employee-field').each(function () {
         const aria = $(this).attr('aria-label');
+        const ph = $(this).attr('placeholder');
         data[aria] = $(this).val();
+        if($(this).val() === ''){
+            errors.push(`${ph} es requerido.`);
+        }
     });
+    if(!validPassword($('#user-password').val())){
+        errors.push('La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)');
+    }else if ($('#user-password').val() !== $('#user-cpassword').val()) {
+        errors.push('Las contraseñas no coinciden');
+    } 
+    if(!validEmail($('#user-email').val())){
+        errors.push('Introduce un email válido.');
+    }
+    if(!validPhoneNumber($('#user-phone').val())){
+        errors.push('El número de teléfono debe tener 10 dígitos');
+    }
     const employee = await getEmployeeInfo(id);
     const employeeRoles = employee.user.userRoles;
     let workingBranchesIds = new Set();
@@ -50,15 +64,38 @@ $(document).on('click', '#btnAction', async function (e) {
             workingBranchesIds.add(Number($(this).text()));
         }
     });
+    if(workingBranchesIds.size === 0){
+        errors.push('Selecciona al menos una sucursal de trabajo.');
+    }
     employeeRoles.forEach(role => {
         rolesIds.add(role.id);
     });
     rolesIds.add(3);
-    const done = await updateUser(data, id, Array.from(rolesIds), Array.from(workingBranchesIds));
-    if (done) {
-        alerta('success', 'Se editó el usuario.');
+    if(errors.length !== 0){
+        const done = await updateUser(data, id, Array.from(rolesIds), Array.from(workingBranchesIds));
+        if (done) {
+            await swal('success', 'Se editó el usuario.');
+            location.href = '/app/owner/personal';
+        }
+    } else {
+        showAlerts(errors, 'error');
     }
 });
+
+function validEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
+function validPassword(password){
+    var re = /^(?=^.{8,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[@#\$%\^&\+=!]).*/;
+    return re.test(password);
+}
+
+function validPhoneNumber(phoneNumber){
+    let re  =/^\d{10}$/;
+    return re.test(phoneNumber);
+}
 
 async function getUserBranches() {
     const branches = await request({
@@ -126,7 +163,6 @@ async function getEmployeeInfo(id) {
 }
 
 async function updateUser(data, id, rolesIds, workingBranchesIds) {
-    alert(workingBranchesIds);
     let body = {
         username: data.username,
         name: data.name,
@@ -168,6 +204,8 @@ function showAlerts(alerts, type = 'error') {
         html += `<p class="${type}">${alert}</p>\n`;
     })
     html += '</div>';
+    alert(html);
+    $('#alertas').removeClass('no-mostrar d-none');
     document.getElementById('alertas').innerHTML = html;
     document.getElementById('alertas').scrollIntoView();
 }
@@ -178,6 +216,36 @@ function showObjectAlerts(alerts, type) {
         html += `<p class="${type}">${alerts[alert]}</p>\n`;
     }
     html += '</div>';
+    $('#alertas').removeClass('no-mostrar d-none');
     document.getElementById('alertas').innerHTML = html;
     document.getElementById('alertas').scrollIntoView();
+}
+
+async function swal(tipo, message, title = '') {
+	let icon = tipo;
+	if (title === '') {
+		switch (tipo) {
+			case 'error':
+				title = 'Oops...';
+				break;
+			case 'warning':
+				title = 'Cuidado';
+				break;
+			case 'info':
+				title = 'Atención';
+				break;
+			case 'question':
+				title = '¿Seguro?';
+				break;
+			default:
+				title = 'Correcto';
+				icon = 'success';
+				break;
+		}
+	}
+	await Swal.fire({
+		icon: icon,
+		title: title,
+		text: message
+	})
 }

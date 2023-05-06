@@ -3,9 +3,6 @@
 
 <head th:insert="/generics/header"></head>
 
-<link rel="stylesheet" href="/css/vendor/datatables/datatables-dt.min.css">
-<script src="/js/vendor/datatables/datatables-dt.min.js"></script>
-
 <body>
     <div class="owner-inventory">
         <div th:insert="owner/title"></div>
@@ -18,6 +15,7 @@
                 <div class="center"><h1>Editar Empleado</h1></div>
             </div>
             <div class="show-inventory" id="mostrar-productos">
+                <div id="alertas"></div>
                 <div th:insert="@{owner/employees/formulario-usuario.html}"></div>
             </div>
         </div>

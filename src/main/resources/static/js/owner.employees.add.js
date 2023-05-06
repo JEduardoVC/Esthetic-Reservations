@@ -1,10 +1,6 @@
 'use strict'
 'use strict'
 
-DataTable.Buttons.defaults.dom.button.className = 'btn';
-
-var employeesTable;
-
 $(async function () {
     await getUserBranches();
     inflateForm();
@@ -23,23 +19,62 @@ async function inflateForm() {
 
 $(document).on('click', '#btnAction', async function (e) {
     let data = {};
-    $('form#usersForm :input').each(function () {
+    let errors = [];
+    $('.employee-field').each(function () {
         const aria = $(this).attr('aria-label');
+        const ph = $(this).attr('placeholder');
         data[aria] = $(this).val();
+        if ($(this).val() === '') {
+            errors.push(`${ph} es requerido.`);
+        }
     });
+    if(!validPassword($('#user-password').val())){
+        errors.push('La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)');
+    }else if ($('#user-password').val() !== $('#user-cpassword').val()) {
+        errors.push('Las contraseñas no coinciden');
+    } 
+    if(!validEmail($('#user-email').val())){
+        errors.push('Introduce un email válido.');
+    }
+    if(!validPhoneNumber($('#user-phone').val())){
+        errors.push('El número de teléfono debe tener 10 dígitos');
+    }
     let workingBranchesIds = new Set();
-    $('.branch-checkbox').each(function(){
-        if($(this).prop('checked')){
+    $('.branch-checkbox').each(function () {
+        if ($(this).prop('checked')) {
             workingBranchesIds.add(Number($(this).text()));
         }
     });
+    if (workingBranchesIds.size === 0) {
+        errors.push('Selecciona al menos una sucursal de trabajo.');
+    }
     let rolesIds = new Set();
     rolesIds.add(3);
-    const done = await addUser(data, Array.from(rolesIds), Array.from(workingBranchesIds));
-    if (done) {
-        alerta('success', 'Se creó el usuario.');
+    if (errors.length === 0) {
+        const done = await addUser(data, Array.from(rolesIds), Array.from(workingBranchesIds));
+        if (done) {
+            await swal('success', 'Se creó el usuario.');
+            location.href = '/app/owner/personal';
+        }
+    } else {
+        showAlerts(errors);
     }
 });
+
+function validEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
+function validPassword(password){
+    var re = /^(?=^.{8,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[@#\$%\^&\+=!]).*/;
+    return re.test(password);
+}
+
+function validPhoneNumber(phoneNumber){
+    let re  =/^\d{10}$/;
+    return re.test(phoneNumber);
+}
 
 async function getUserBranches() {
     const branches = await request({
@@ -70,7 +105,7 @@ async function getUserBranches() {
             id: `cb${branch.id}`,
             value: branch.id,
         }))
-        checkboxes.append($('<label>',{
+        checkboxes.append($('<label>', {
             for: `cb${branch.id}`,
             text: branch.branchName
         }))
@@ -106,7 +141,7 @@ async function addUser(data, rolesIds, workingBranchesIds) {
             errors.push(createResponse.data.message);
             showAlerts(errors, 'error');
         } else {
-            alerta('error', createResponse.status + '\n' + JSON.stringify(createResponse.data.message));
+            await swal('error', createResponse.status + '\n' + JSON.stringify(createResponse.data.message));
         }
     }
 }
@@ -118,6 +153,7 @@ function showAlerts(alerts, type = 'error') {
     })
     html += '</div>';
     document.getElementById('alertas').innerHTML = html;
+    $('#alertas').removeClass('no-mostrar d-none');
     document.getElementById('alertas').scrollIntoView();
 }
 
@@ -128,5 +164,35 @@ function showObjectAlerts(alerts, type) {
     }
     html += '</div>';
     document.getElementById('alertas').innerHTML = html;
+    $('#alertas').removeClass('no-mostrar d-none');
     document.getElementById('alertas').scrollIntoView();
+}
+
+async function swal(tipo, message, title = '') {
+	let icon = tipo;
+	if (title === '') {
+		switch (tipo) {
+			case 'error':
+				title = 'Oops...';
+				break;
+			case 'warning':
+				title = 'Cuidado';
+				break;
+			case 'info':
+				title = 'Atención';
+				break;
+			case 'question':
+				title = '¿Seguro?';
+				break;
+			default:
+				title = 'Correcto';
+				icon = 'success';
+				break;
+		}
+	}
+	await Swal.fire({
+		icon: icon,
+		title: title,
+		text: message
+	})
 }

@@ -1,64 +1,64 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // darkMode();
+    darkMode();
     menu();
-    // isDarkMode();
+    isDarkMode();
 });
 
-$(function () {
-    let darkMode = sessionStorage.getItem('darkMode');
-    if (darkMode === null) {
-        sessionStorage.setItem('darkMode', 'false');
-        darkMode = 'false';
-    }
-    if(darkMode === 'false'){
-        $('.luna').removeClass('d-none no-mostrar');
-        $('.sol').addClass('d-none no-mostrar');
-    } else {
-        $('.sol').removeClass('d-none no-mostrar');
-        $('.luna').addClass('d-none no-mostrar');
-    }
-    if(darkMode === 'false' && $('html').hasClass('dark-mode') === true){
-        $('html').removeClass('dark-mode');
-    }
-    if(darkMode === 'true' && $('html').hasClass('dark-mode') === false){
-        $('html').addClass('dark-mode');
-    }
-    $('.dark-mode-boton').on('click', toggleDarkMode);
-    $('.ligth-mode-boton').on('click', toggleDarkMode);
-})
+// $(function () {
+//     let darkMode = sessionStorage.getItem('darkMode');
+//     if (darkMode === null) {
+//         sessionStorage.setItem('darkMode', 'false');
+//         darkMode = 'false';
+//     }
+//     if(darkMode === 'false'){
+//         $('.luna').removeClass('d-none no-mostrar');
+//         $('.sol').addClass('d-none no-mostrar');
+//     } else {
+//         $('.sol').removeClass('d-none no-mostrar');
+//         $('.luna').addClass('d-none no-mostrar');
+//     }
+//     if(darkMode === 'false' && $('html').hasClass('dark-mode') === true){
+//         $('html').removeClass('dark-mode');
+//     }
+//     if(darkMode === 'true' && $('html').hasClass('dark-mode') === false){
+//         $('html').addClass('dark-mode');
+//     }
+//     $('.dark-mode-boton').on('click', toggleDarkMode);
+//     $('.ligth-mode-boton').on('click', toggleDarkMode);
+// })
 
-const toggleDarkMode = function () {
-    $('html').toggleClass('dark-mode');
-    sessionStorage.setItem('darkMode', sessionStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
-    $('.sol').toggleClass('d-none no-mostrar');
-    $('.luna').toggleClass('d-none no-mostrar');
-};
+// const toggleDarkMode = function () {
+//     $('html').toggleClass('dark-mode');
+//     sessionStorage.setItem('darkMode', sessionStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
+//     $('.sol').toggleClass('d-none no-mostrar');
+//     $('.luna').toggleClass('d-none no-mostrar');
+// };
 
-// function darkMode() {
-//     const botonDarkMode = document.querySelector(".dark-mode-boton");
-//     const botonLigthMode = document.querySelector(".ligth-mode-boton");
-//     botonDarkMode.addEventListener("click", function () {
-//         if (!document.querySelector(".dark-mode")) {
-//             document.body.classList.add("dark-mode");
-//             document.querySelector(".luna").classList.add("no-mostrar");
-//             document.querySelector(".sol").classList.remove("no-mostrar");
-//             document.querySelector(".luna").classList.add("d-none");
-//             document.querySelector(".sol").classList.remove("d-none");
-//             sessionStorage.setItem("darkMode", "true");
-//         }
-//     });
-//     botonLigthMode.addEventListener("click", function () {
-//         if (document.querySelector(".dark-mode")) {
-//             document.body.classList.remove("dark-mode");
-//             document.querySelector(".luna").classList.remove("no-mostrar");
-//             document.querySelector(".sol").classList.add("no-mostrar");
-//             document.querySelector(".luna").classList.remove("d-none");
-//             document.querySelector(".sol").classList.add("d-none");
-//             sessionStorage.removeItem("darkMode");
-//             isDarkMode();
-//         }
-//     });
-// }
+function darkMode() {
+    const botonDarkMode = document.querySelector(".dark-mode-boton");
+    const botonLigthMode = document.querySelector(".ligth-mode-boton");
+    botonDarkMode.addEventListener("click", function () {
+        if (!document.querySelector(".dark-mode")) {
+            document.body.classList.add("dark-mode");
+            document.querySelector(".luna").classList.add("no-mostrar");
+            document.querySelector(".sol").classList.remove("no-mostrar");
+            document.querySelector(".luna").classList.add("d-none");
+            document.querySelector(".sol").classList.remove("d-none");
+            sessionStorage.setItem("darkMode", "true");
+        }
+    });
+    botonLigthMode.addEventListener("click", function () {
+        if (document.querySelector(".dark-mode")) {
+            document.body.classList.remove("dark-mode");
+            document.querySelector(".luna").classList.remove("no-mostrar");
+            document.querySelector(".sol").classList.add("no-mostrar");
+            document.querySelector(".luna").classList.remove("d-none");
+            document.querySelector(".sol").classList.add("d-none");
+            sessionStorage.removeItem("darkMode");
+            isDarkMode();
+        }
+    });
+}
 
 function menu() {
     const menu = document.querySelector(".options-animation");
