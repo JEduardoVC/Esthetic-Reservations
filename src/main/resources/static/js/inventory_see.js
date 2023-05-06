@@ -40,8 +40,8 @@ function mostrarInventario(inventario) {
 			<p>Acciones</p>
 		</div>
 	`;
-	divTitulos.style = "display: grid;grid-template-columns: repeat(5, 1fr);font-weight: bold;";
-	mostrarInventory.appendChild(divTitulos);
+	// divTitulos.style = "display: grid;grid-template-columns: repeat(5, 1fr);font-weight: bold;";
+	// mostrarInventory.appendChild(divTitulos);
 	inventario.forEach(producto => {
 		const divContenido = document.createElement("div");
 		divContenido.style = "display: grid;grid-template-columns: repeat(5, 1fr);";
@@ -63,7 +63,7 @@ function mostrarInventario(inventario) {
                 <button type="button" id="btn-cancel-${producto.id}" name=${producto.id}>Eliminar</button>
 			</div>
 		`;
-		mostrarInventory.appendChild(divContenido);
+		// mostrarInventory.appendChild(divContenido);
 		document.querySelector(`#btn-update-${producto.id}`).addEventListener("click", update);
         document.querySelector(`#btn-cancel-${producto.id}`).addEventListener("click", deleteProduct);
 	})

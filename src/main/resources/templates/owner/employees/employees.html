@@ -1,52 +1,59 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/generics/header"></head>
-
-<link rel="stylesheet" href="/css/vendor/datatables/datatables-dt.min.css">
-<script src="/js/vendor/datatables/datatables-dt.min.js"></script>
-
 <body>
-    <div class="owner-inventory">
+    <div class="owner-employee">
         <div th:insert="owner/title"></div>
         <div>
             <div th:insert="owner/navegation"></div>
-            <div class="btn-new-product">
-                <button class="btn-principal" id="add-employee">Añadir empleado</button>
+            <div class="header-employee">
+                <div class="btn-new-service">
+                    <button class="btn-principal" id="add-employee">Agregar empleado</button>
+                </div>
+                <div class="select-branch-admin">
+                    <p>Sucursal: </p>
+                    <select id="selected">
+                        <option disabled selected>--Seleccione--</option>
+                        <option>Estetica Wendy</option>
+                        <option>Barberia juancho</option>
+                    </select>
+                </div>
+                <div class="search-employee">
+                    <p>Empleado: </p>
+                    <input type="search">
+                    <button class="search btn-terciario">Buscar</button>
+                </div>
             </div>
-            <div class="title-inventory">
-                <div class="center"><h1>Empleados</h1></div>
+            <div class="title-employee">
+                <div class="center"><h1>Nombre</h1></div>
+                <div class="center"><h1>Numero de telefono</h1></div>
+                <div class="center"><h1>Email</h1></div>
+                <div class="center"><h1>Acciones</h1></div>
             </div>
-            <div class="show-inventory" id="mostrar-productos">
-                <div class="table-responsive p-2">
-                    <table class="table table-striped p-2" id="employeesTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Nombre</th>
-                                <th>Dirección</th>
-                                <th>Correo</th>
-                                <th>Teléfono</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>Username</th>
-                                <th>Nombre</th>
-                                <th>Dirección</th>
-                                <th>Correo</th>
-                                <th>Teléfono</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </tfoot>
-                        <tbody id="tableBody"></tbody>
-                    </table>
+            <div id="show-employee" class="employee">
+                <div class="center"><p>José Eduardo Valencia Camacho</p></div>
+                <div class="center"><p>4428921687</p></div>
+                <div class="center"><p>eduardo.valencia99@outlook.com</p></div>
+                <div class="actions-employees">
+                    <button type="button" class="btn-remove">Eliminar</button>
+                </div>
+            </div>
+            <div id="show-employee" class="employee">
+                <div class="center"><p>José Eduardo Valencia Camacho</p></div>
+                <div class="center"><p>4428921687</p></div>
+                <div class="center"><p>eduardo.valencia99@outlook.com</p></div>
+                <div class="actions-employees">
+                    <button type="button" class="btn-remove">Eliminar</button>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="add-new-employee">
+        
+    </div>
 </body>
-<script src="/js/owner.js"></script>
-<script src="/js/owner.employees.js"></script>
+<!-- <script src="/js/owkkkner.js"></script> -->
+<script src="/js/logout.js"></script>
 </html>
