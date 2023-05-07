@@ -3,11 +3,11 @@
         <img src="/img/logo.webp">
     </div>
     <div class="shortcuts"> 
-        <button id="appointment" class="btn-shortcut">Citas</button>
-        <button id="services" class="btn-shortcut">Servicios</button>
-        <button id="inventory" class="btn-shortcut">Inventario</button>
-        <button id="employees" class="btn-shortcut">Empleados</button>
-        <button id="validate_appointment" class="btn-shortcut">Verificar cita</button>
+        <a th:href="@{/app/owner/validar/citas}"><button id="appointment" class="btn-shortcut">Citas</button></a> 
+        <a th:href="@{/app/owner/servicios}"><button id="services" class="btn-shortcut">Servicios</button></a>
+        <a th:href="@{/app/owner/inventario}"><button id="inventory" class="btn-shortcut">Inventario</button></a>
+        <a th:href="@{/app/owner/personal}"><button id="employees" class="btn-shortcut">Empleados</button></a>
+        <a th:href="@{/app/owner/validar/citas}"><button id="validate_appointment" class="btn-shortcut">Verificar cita</button></a>
     </div>
     <div class="user-interaction">
         <div class="user-animation">

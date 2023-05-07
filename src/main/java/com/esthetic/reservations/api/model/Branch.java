@@ -1,11 +1,19 @@
 package com.esthetic.reservations.api.model;
 
 import java.sql.Time;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.OnDelete;
@@ -38,12 +46,37 @@ public class Branch extends BaseModel<Branch> {
 	@Column(name = "municipality", length = 20)
 	private String municipality;
 
+	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Employee.class, cascade = {CascadeType.REMOVE, CascadeType.DETACH})
+	@JoinTable(name = "branch_employee", joinColumns = @JoinColumn(name = "id_branch", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"))
+	private Set<Employee> employees = new HashSet<>();
+
+	@PreRemove
+    public void removeEmployees() {
+        this.getEmployees().forEach(employee->{
+            employee.getWorkingBranches().removeIf(e->e.equals(this));
+        });
+        
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Branch)) return false;
+        Branch branch = (Branch) o;
+        return this.getId() != null && this.getId().equals(branch.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Branch.class);
+    }
+
 	public Branch() {
 		super();
 	}
 
 	public Branch(String name, String location, UserEntity owner, Time scheduleOpen, Time scheduleClose, String state,
-			String municipality) {
+			String municipality, Set<Employee> employees) {
 		this.name = name;
 		this.location = location;
 		this.owner = owner;
@@ -51,10 +84,11 @@ public class Branch extends BaseModel<Branch> {
 		this.scheduleClose = scheduleClose;
 		this.state = state;
 		this.municipality = municipality;
+		this.employees = employees;
 	}
 
 	public Branch(Long id, String name, String location, UserEntity owner, Time scheduleOpen, Time scheduleClose,
-			String state, String municipality) {
+			String state, String municipality, Set<Employee> employees) {
 		super(id);
 		this.name = name;
 		this.location = location;
@@ -63,6 +97,15 @@ public class Branch extends BaseModel<Branch> {
 		this.scheduleClose = scheduleClose;
 		this.state = state;
 		this.municipality = municipality;
+		this.employees = employees;
+	}
+
+	public Set<Employee> getEmployees() {
+		return this.employees;
+	}
+
+	public void setEmployees(Set<Employee> employees) {
+		this.employees = employees;
 	}
 
 	public String getBranchName() {
@@ -138,6 +181,7 @@ public class Branch extends BaseModel<Branch> {
 		this.owner = branch.owner;
 		this.scheduleOpen = branch.scheduleOpen;
 		this.scheduleClose = branch.scheduleClose;
+		this.employees = branch.employees;
 	}
 
 }

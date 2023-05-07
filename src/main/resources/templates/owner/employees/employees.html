@@ -2,6 +2,9 @@
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/generics/header"></head>
+
+<link rel="stylesheet" href="/css/vendor/datatables/datatables-dt.min.css">
+
 <body>
     <div class="owner-employee">
         <div th:insert="owner/title"></div>
@@ -13,10 +16,7 @@
                 </div>
                 <div class="select-branch-admin">
                     <p>Sucursal: </p>
-                    <select id="selected">
-                        <option disabled selected>--Seleccione--</option>
-                        <option>Estetica Wendy</option>
-                        <option>Barberia juancho</option>
+                    <select id="select-branch">
                     </select>
                 </div>
                 <div class="search-employee">
@@ -31,22 +31,7 @@
                 <div class="center"><h1>Email</h1></div>
                 <div class="center"><h1>Acciones</h1></div>
             </div>
-            <div id="show-employee" class="employee">
-                <div class="center"><p>José Eduardo Valencia Camacho</p></div>
-                <div class="center"><p>4428921687</p></div>
-                <div class="center"><p>eduardo.valencia99@outlook.com</p></div>
-                <div class="actions-employees">
-                    <button type="button" class="btn-remove">Eliminar</button>
-                </div>
-            </div>
-            <div id="show-employee" class="employee">
-                <div class="center"><p>José Eduardo Valencia Camacho</p></div>
-                <div class="center"><p>4428921687</p></div>
-                <div class="center"><p>eduardo.valencia99@outlook.com</p></div>
-                <div class="actions-employees">
-                    <button type="button" class="btn-remove">Eliminar</button>
-                </div>
-            </div>
+            <div id="info-employees"></div>
         </div>
     </div>
     <!-- Modal -->
@@ -54,6 +39,7 @@
         
     </div>
 </body>
-<!-- <script src="/js/owkkkner.js"></script> -->
+<script src="/js/vendor/datatables/datatables-dt.min.js"></script>
+<script src="/js/owner.employees.js"></script>
 <script src="/js/logout.js"></script>
 </html>
