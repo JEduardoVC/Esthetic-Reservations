@@ -7,11 +7,15 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.NewSaleDTO;
 import com.esthetic.reservations.api.dto.NewSaleItemDTO;
+import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.dto.SaleDTO;
+import com.esthetic.reservations.api.dto.SaleItemDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ResourceNotFoundException;
+import com.esthetic.reservations.api.model.Appointment;
 import com.esthetic.reservations.api.model.Branch;
 import com.esthetic.reservations.api.model.Inventory;
 import com.esthetic.reservations.api.model.Sale;
@@ -149,6 +153,27 @@ public class SaleServiceImpl extends GenericServiceImpl<Sale, SaleDTO> implement
         oldSale.copy(editedSale);
         Sale newSale = saleRepository.save(oldSale);
         return mapToDTO(newSale);
+    }
+    
+    public ResponseDTO<SaleDTO> findAllByIdAndByBranchId(Long id_usuario, Long id_branch) {
+    	ArrayList<Sale> sales = saleRepository.findByIdAndByBranch(String.valueOf(id_usuario), String.valueOf(id_branch));
+    	ArrayList<SaleDTO> arraySales = new ArrayList<>();
+		for(Sale sale : sales) {
+			SaleDTO saleDTO = mapToDTO(sale);
+			saleDTO.setProductsList(getSalesProductDTO(sale.getSaleProducts()));
+			arraySales.add(saleDTO);
+		}
+		ResponseDTO<SaleDTO> response = new ResponseDTO<>();
+		response.setContent(arraySales);
+		return response;
+    }
+    
+    public List<SaleItemDTO> getSalesProductDTO(List<SaleItem> sales) {
+    	List<SaleItemDTO> newListSaleDTO = new ArrayList<>();
+    	sales.forEach(sale -> {
+    		newListSaleDTO.add(saleItemService.mapToDTO(sale));
+    	});
+    	return newListSaleDTO;
     }
 
 }

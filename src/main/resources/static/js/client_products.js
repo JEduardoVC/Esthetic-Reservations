@@ -50,6 +50,7 @@ async function mostrarProducto() {
 			carrito.productos = [...carrito.productos, {id: producto.id, cantidad:cantidad}]
 			alerta("success", "Producto agregado correctamente", "Hecho");
 		}
+		carrito.productos = carrito.productos.filter(producto => producto.cantidad != "0");
 		sessionStorage.setItem("carrito", JSON.stringify(carrito));
 	});
 }

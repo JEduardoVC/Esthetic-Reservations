@@ -1,53 +1,125 @@
-const userId = sessionStorage.getItem("userId");
-const branchId = sessionStorage.getItem("branchId");
-const myHeaders = new Headers();
+(function() {
+	showSale();
+	showAppointment();
+	sessionStorage.removeItem("carrito");
+	sessionStorage.removeItem("appointmentId");
+})();
 
-myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
+async function showAppointment() {
+	const citas = await getAppointment();
+	const divPadre = document.querySelector("#appointment-services");
+	citas.forEach(cita => {
+		const div = document.createElement("div");
+		div.classList.add("appointment-container")
+		div.innerHTML = `
+			<div class="info-appointment">
+			    <p>Sucursal: <span>${cita.id_branch.name}</span></p>
+			    <p>Encargada: <span>AQUÍ VA EL EMPLEADO</span></p>
+			    <p>Ubicacion del local: <span>${cita.id_branch.location}</span></p>
+			    <p>Fecha y hora de la cita: <span>${cita.appointment_date} a las ${cita.appointmnet_time} horas</span></p>
+			    <div class="products-services-appointment">
+			        <p>Servicios: </p>
+			        <div class="services-appointment">${getItems(cita.id_service)}</div>
+			    </div>
+			</div>
+			<div class="actions-appointment">
+			    <h4>Acciones</h4>
+			    <button class="btn-update" onclick="updateAppointment(${cita.id})">Editar reservación</button>
+			    <button class="btn-remove" onclick="deleteAppointment(${cita.id})">Cancelar reservación</button>
+			</div>
+		`;
+		divPadre.appendChild(div);
+	});
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-    getAppointment();
-});
+function updateAppointment(id) {
+	sessionStorage.setItem("appointmentId", id);
+	location = `${BASE_URL}app/client/update/reservation`;
+}
+
+async function deleteAppointment(id) {
+	const accion = await confirmAlert("warning", "Cancelar Reservación", "¿Esta seguro de cancelar su reservación?", "Aceptar");
+	if(accion) {
+		const resultado = await fetch(`${BASE_URL}api/appointment/eliminar/${id}`, {
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${sessionStorage.getItem("token")}`
+			}
+		})
+		const respuesta = await resultado.text();
+		if(respuesta) alerta("success", "Su reservación fue cancelada exitosamete!", "Reservación cancelada")
+		setTimeout(() => {
+			location.reload();
+		},1500);
+	}
+}
+
+async function showSale() {
+	const sales = await getSales();
+	const divPadre = document.querySelector("#appointment-services");
+	sales.forEach(sale => {
+		const div = document.createElement("div");
+		div.classList.add("appointment-container")
+		div.innerHTML = `
+			<div class="info-appointment">
+			    <p>Sucursal: <span>${sale.branch.branchName}</span></p>
+			    <p></p>
+			    <p>Ubicacion del local: <span>${sale.branch.location}</span></p>
+			    <div class="products-services-appointment">
+			        <p>Productos: </p>
+			        <div class="services-appointment">${getItems(sale.productsList, false)}</div>
+			    </div>
+			</div>
+			<div class="actions-appointment">
+			    <h4>Acciones</h4>
+			    <button class="btn-update" onclick="updateSale(${sale.id})">Editar compra</button>
+			    <button class="btn-remove">Cancelar compra</button>
+			</div>
+		`;
+		divPadre.appendChild(div);
+	});
+}
+
+function updateSale(id) {
+	sessionStorage.setItem("saleId", id);
+	location.href = `${BASE_URL}app/client/reservation`
+}
+
+function getItems(items, isServices = true) {
+	let div = "";
+	items.forEach(item => {
+		const span = document.createElement("span");
+		span.textContent = isServices ? item.service_name : item.product.inventory_name;
+		div += span.outerHTML;
+	})
+	return div;
+}
 
 async function getAppointment() {
-    const resultGetAppointment = await fetch(`/api/appointment/usuario/${userId}`, {method: 'GET', headers: myHeaders, redirect: 'follow'});
-    const appointments = await resultGetAppointment.json();
-    const show_appointment = document.querySelector("#appointment");
-    appointments["content"].forEach(appointment => {
-        const {id_branch, id_service, appointment_date, appointmnet_time, id} = appointment;
-        const {location,  branchName, owner} = id_branch;
-        const {name} = owner;
-        let services = "";
-        id_service.forEach(service => {
-            let {service_name} = service;
-            services += `<br><span>&nbsp;&nbsp;${service_name}</span>`
-        })
-        const newAppointment = document.createElement("div");
-        newAppointment.innerHTML = `
-            <p>Sucursal:<span> ${branchName}</span></p>
-            <p>Encargada:<span> ${name}</span></p>
-            <p>Ubicación:<span> ${location}</span></p>
-            <p>Fecha y hora:<span> ${appointment_date} : ${appointmnet_time}</span></p>
-            <p>Servicios: ${services}</p>
-            <p>Status:<span> Pendiente</span></p>
-            <div>
-                <button type="button" id="btn-update-${id}" name=${id}>Editar reservacion</button>
-                <button type="button" id="btn-cancel-${id}" name=${id}>Cancelar</button>
-            </div>
-            <hr>
-        `;
-        show_appointment.appendChild(newAppointment);
-        document.querySelector(`#btn-update-${id}`).addEventListener("click", update);
-        document.querySelector(`#btn-cancel-${id}`).addEventListener("click", cancel);
-    });
+	const respuesta = await fetch(`${BASE_URL}api/client/appointment/branch/${sessionStorage.getItem("userId")}/${sessionStorage.getItem("branchId")}`, {
+		method: "GET",
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		}
+	});
+	const resultado = await respuesta.json();
+	const citasObj = resultado.content;
+	if(citasObj == undefined) citasObj = [];
+	return citasObj;
 }
 
-function update(event){
-    console.log(event.target.name);
-    id = event.target.name;
-    sessionStorage.setItem("appoitment", id);
-    location.href = `/app/client/appointment/update`;
-}
-function cancel(event){
-    id = event.target.name;
-    console.log(event.target.name);
+async function getSales() {
+	const resultado = await fetch(`${BASE_URL}api/client/sales/branch/${sessionStorage.getItem("userId")}/${sessionStorage.getItem("branchId")}`, {
+		method: "GET",
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		}
+	});
+	const respuesta = await resultado.json();
+	const saleObj = respuesta.content;
+	if(saleObj == undefined) saleObj = [];
+	return saleObj;
 }

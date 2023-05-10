@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/auth/update/password/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/mail/reestablecer").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/client/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/branch/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/").permitAll()

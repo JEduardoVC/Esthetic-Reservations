@@ -40,8 +40,6 @@ public class AppointmentController {
 	UserServiceImpl serviceImpl;
 	@Autowired
 	BranchServiceImpl branchServiceImpl;
-	@Autowired
-    MailService mailService;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<AppointmentDTO> obtenerCita(@PathVariable("id") Long id){
@@ -72,14 +70,4 @@ public class AppointmentController {
 	public ResponseEntity<String> eliminarCita(@PathVariable("id") Long id) {
 		return new ResponseEntity<String>(appointmentServiceImpl.eliminar(id), HttpStatus.ACCEPTED);
 	}
-	
-    @PostMapping("/sendMultiMail")
-    public ResponseEntity<Object> sendMultiMail(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
-    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita, true), HttpStatus.ACCEPTED);
-    }
-    
-    @PostMapping("/sendMultiMailUpdate")
-    public ResponseEntity<Object> sendMultiMailUpdate(@RequestParam("mail") Long mail, @RequestParam("branch") Long id, @RequestParam("appointment") Long id_cita) {
-    	return new ResponseEntity<Object>(appointmentServiceImpl.sendMail(mail, id, id_cita, false), HttpStatus.ACCEPTED);
-    }
 }

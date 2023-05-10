@@ -13,7 +13,8 @@ async function enviarSimpleCorreo(email) {
 		redirect: 'follow'
 	};
 	let respuesta;
-	await fetch(`${BASE_URL}api/auth/sendSimpleMail`, requestOptions)
+	console.info(`${BASE_URL}api/mail/reestablecer`)
+	await fetch(`${BASE_URL}api/mail/reestablecer`, requestOptions)
 		.then(response => response.json())
 		.then(data => {
 			respuesta = data;
@@ -21,22 +22,23 @@ async function enviarSimpleCorreo(email) {
 	return respuesta;
 }
 
-async function enviarMultimediaCorreo(email, branch, appointment, created) {
-	var formdata = new FormData();
-	const myHeaders = new Headers();
-	myHeaders.append("Accept", 'application/json');
-	myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}`);
-	formdata.append("mail", email);
-	formdata.append("branch", branch);
-	formdata.append("appointment", appointment)
-	var requestOptions = {
-		method: 'POST',
-		headers: myHeaders,
-		body: formdata,
-		redirect: 'follow'
-	};
-	const url = created ? `${BASE_URL}api/appointment/sendMultiMail` : `${BASE_URL}api/appointment/sendMultiMailUpdate`;
-	const resultado = await fetch(url, requestOptions)
+async function sendMail(id, created, appointment) {
+	const url = `${BASE_URL}api/mail/${created ? "new" : "update"}/${appointment ? "appointment" : "sale"}`;
+	console.warn(url);
+	const newFormData = new FormData();
+	newFormData.append("mail", sessionStorage.getItem("userId"));
+	newFormData.append("branch", sessionStorage.getItem("branchId"));
+	newFormData.append("id", id);
+	console.warn(newFormData);
+	console.error(created ? "POST" : "PUT");
+	const resultado = await fetch(url, {
+		method: created ? "POST" : "PUT",
+		body: newFormData,
+		headers: {
+			Accept: "application/json",
+			Authorization: `Bearer ${sessionStorage.getItem("token")}`
+		}
+	});
 	const respuesta = await resultado.json();
 	return respuesta;
 }
