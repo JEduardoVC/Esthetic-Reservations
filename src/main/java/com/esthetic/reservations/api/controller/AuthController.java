@@ -202,23 +202,4 @@ public class AuthController {
         user.setPassword(this.passwordEncoder.encode(usuario.getPassword()));
         return new ResponseEntity<UserEntityDTO>(userService.save(userService.mapToDTO(user)), HttpStatus.ACCEPTED);
     }
-
-    @PostMapping("/sendSimpleMail")
-    public ResponseEntity<Object> sendsimpleMail(@RequestParam("mail") String mail) {
-        if (mail == "")
-            new ResourceNotFoundException("Email", "Vacio");
-        UserEntityDTO usuario = userService.findByEmail(mail);
-        Map<String, String> map = new HashMap<String, String>();
-        String message = util.typeEmail(3, userService.mapToModel(usuario), null, null);
-        try {
-            mailService.sendMail(mail, message);
-            map.put("message", "Correo Enviado Correctamente");
-            map.put("errorCode", "200");
-            return new ResponseEntity<Object>(map, HttpStatus.OK);
-        } catch (MailException e) {
-            map.put("message", e.getMessage());
-            return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
-        }
-    }
-
 }
