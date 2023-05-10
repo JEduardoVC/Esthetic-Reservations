@@ -72,12 +72,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 			const respuesta = sessionStorage.getItem("saleId") ? await updateSale() : await saveSale();
 			if(respuesta.id) {
 				showLoading("Enviando correo...")
-				console.info(!sessionStorage.getItem("saleId"))
 				await sendMail(respuesta.id, !sessionStorage.getItem("saleId"), false);
 				alerta("success", "Se le envio un correo con su código QR para recoger sus productos en sucursal", `Compra ${sessionStorage.getItem("saleId") ? "Actualizada" : "Exitosa"}`)
-				setTimeout(() => {
-					location.href = `${BASE_URL}app/client/appointment`
-				},1500);
 			}
 		}
 		if(carrito.servicios.length > 0) {
@@ -90,9 +86,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 				showLoading("Enviando correo...")
 				await sendMail(respuestaCita.id, !sessionStorage.getItem("appointmentId"), true);
 				alerta("success", "Se le envio un correo con su código QR para hacer valida su reseracion", `Cita ${sessionStorage.getItem("appointmentId") ? "Actualizada" : "Confirmada"}`);
-				setTimeout(() => {
-					location.href = `${BASE_URL}app/client/appointment`
-				},1500);
 			}
 		}
 	})
@@ -186,7 +179,7 @@ async function saveAppointment() {
 		body: JSON.stringify({
 			id_branch: sessionStorage.getItem("branchId"),
 			appointment_date: appointment.date,
-			appointment_time: `$00:{appointment.time}`,
+			appointment_time: `${appointment.time}`,
 			id_service: carrito.servicios.flatMap(servicio => servicio.id),
 			cantidad: carrito.servicios.flatMap(servicio => parseInt(servicio.cantidad)),
 			id_client: sessionStorage.getItem("userId")
@@ -217,7 +210,6 @@ async function updateAppointment() {
 		}
 	})
 	const resultado = await respuesta.json();
-	console.warn(resultado);
 	return resultado;
 }
 
