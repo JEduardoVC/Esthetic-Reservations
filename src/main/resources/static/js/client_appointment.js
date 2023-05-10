@@ -48,10 +48,12 @@ async function deleteAppointment(id) {
 			}
 		})
 		const respuesta = await resultado.text();
-		if(respuesta) alerta("success", "Su reservación fue cancelada exitosamete!", "Reservación cancelada")
-		setTimeout(() => {
-			location.reload();
-		},1500);
+		if(respuesta) {
+			alerta("success", "Su reservación fue cancelada exitosamete!", "Reservación cancelada")
+			setTimeout(() => {
+				location.reload();
+			},1500);
+		}
 	}
 }
 
@@ -74,11 +76,32 @@ async function showSale() {
 			<div class="actions-appointment">
 			    <h4>Acciones</h4>
 			    <button class="btn-update" onclick="updateSale(${sale.id})">Editar compra</button>
-			    <button class="btn-remove">Cancelar compra</button>
+			    <button class="btn-remove" onclick="deleteSale(${sale.id})">Cancelar compra</button>
 			</div>
 		`;
 		divPadre.appendChild(div);
 	});
+}
+
+async function deleteSale(id) {
+	const accion = await confirmAlert("warning", "Cancelar Compra", "¿Esta seguro de cancelar su compra?", "Aceptar");
+	if(accion) {
+		const resultado = await fetch(`${BASE_URL}api/sale/${id}`, {
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${sessionStorage.getItem("token")}`
+			}
+		});
+		const respuesta = await resultado.json();
+		console.info(respuesta);
+		if(respuesta) {
+			alerta("success", "Su compra fue cancelada exitosamete!", "Compra cancelada")
+			setTimeout(() => {
+				location.reload();
+			}, 1500);
+		}
+	}
 }
 
 function updateSale(id) {
