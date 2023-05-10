@@ -1,6 +1,6 @@
 package com.esthetic.reservations.api.dto;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -34,14 +34,14 @@ public class UserEntityEditDTO extends GenericModelDTO {
 
     private String password;
 
-    private List<Role> userRoles;
+    private Set<Role> userRoles;
 
     public UserEntityEditDTO() {
         super();
     }
 
     public UserEntityEditDTO(Long id, String username, String name, String lastName, String phoneNumber, String address,
-            String email, String password, List<Role> userRoles) {
+            String email, String password, Set<Role> userRoles) {
         super(id);
         this.username = username;
         this.name = name;
@@ -109,11 +109,11 @@ public class UserEntityEditDTO extends GenericModelDTO {
         this.password = password;
     }
 
-    public List<Role> getUserRoles() {
+    public Set<Role> getUserRoles() {
         return this.userRoles;
     }
 
-    public void setUserRoles(List<Role> userRoles) {
+    public void setUserRoles(Set<Role> userRoles) {
         this.userRoles = userRoles;
     }
 

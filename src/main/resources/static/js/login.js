@@ -1,7 +1,7 @@
 (function() {
 	const btn_login = document.querySelector("#btn-login");
 	btn_login.addEventListener("click", presionarBoton)
-	sessionStorage.clear();
+	// sessionStorage.clear();
 })();
 
 async function presionarBoton() {
@@ -37,7 +37,7 @@ async function presionarBoton() {
 			sessionStorage.setItem("rol", data.userRoles[0].id);
 			switch(data.userRoles[0].id) {
 				case 1:
-					document.location = `${BASE_URL}app/admin`;
+					location = `admin`;
 					break;
 				case 2:
 					obtenerBranch(data.userId)
@@ -47,15 +47,15 @@ async function presionarBoton() {
 							return;
 						} else {
 							sessionStorage.setItem("branchId", data);
-							location = `${BASE_URL}app/owner`;
+							location = `owner`;
 						}
 					})
 					break;
 				case 3:
-					location = `${BASE_URL}app/employee`;
+					location = `employee`;
 					break;
 				case 4:
-					location = `${BASE_URL}app/client/location`;
+					location = `client/location`;
 					break;
 			}
 		}

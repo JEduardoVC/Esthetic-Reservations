@@ -32,6 +32,7 @@ import com.esthetic.reservations.api.dto.LoginDTO;
 import com.esthetic.reservations.api.dto.LoginResponseDTO;
 import com.esthetic.reservations.api.dto.MessageDTO;
 import com.esthetic.reservations.api.dto.UserEntityDTO;
+import com.esthetic.reservations.api.dto.UserEntityRolesDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
 import com.esthetic.reservations.api.exception.ConflictException;
 import com.esthetic.reservations.api.exception.ResourceNotFoundException;
@@ -168,6 +169,20 @@ public class AuthController {
             userEntityDTO.setPassword(this.passwordEncoder.encode(userEntityDTO.getPassword()));
             return new ResponseEntity<>(userService.register(userEntityDTO, role), HttpStatus.CREATED);
         }
+    }
+
+    @PostMapping("/register/roles")
+    public ResponseEntity<UserEntityDTO> registerWithRoles(@Valid @RequestBody UserEntityRolesDTO userEntityRolesDTO) {
+        if (userService.existsByUsername(userEntityRolesDTO.getUsername())) {
+            throw new ConflictException("Usuario", "ya está siendo usado", "nombre de usuario",
+                    userEntityRolesDTO.getUsername());
+        }
+        if (userService.existsByEmail(userEntityRolesDTO.getEmail())) {
+            throw new ConflictException("Usuario", "ya está siendo usado", "correo electrónico",
+            userEntityRolesDTO.getEmail());
+        }
+        userEntityRolesDTO.setPassword(this.passwordEncoder.encode(userEntityRolesDTO.getPassword()));
+        return new ResponseEntity<>(userService.register(userEntityRolesDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("/user/login")

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org>
+
+<head th:insert="/generics/header"></head>
+
+<link rel="stylesheet" href="/css/vendor/datatables/datatables-dt.min.css">
+
+<body>
+    <div class="owner-employee">
+        <div th:insert="owner/title"></div>
+        <div>
+            <div th:insert="owner/navegation"></div>
+            <div class="header-employee">
+                <div class="btn-new-service">
+                    <button class="btn-principal" id="add-employee">Agregar empleado</button>
+                </div>
+                <div class="select-branch-admin">
+                    <p>Sucursal: </p>
+                    <select id="select-branch">
+                    </select>
+                </div>
+                <div class="search-employee">
+                    <p>Empleado: </p>
+                    <input type="search">
+                    <button class="search btn-terciario">Buscar</button>
+                </div>
+            </div>
+            <div class="title-employee">
+                <div class="center"><h1>Nombre</h1></div>
+                <div class="center"><h1>Numero de telefono</h1></div>
+                <div class="center"><h1>Email</h1></div>
+                <div class="center"><h1>Acciones</h1></div>
+            </div>
+            <div id="info-employees"></div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="add-new-employee">
+        
+    </div>
+</body>
+<script src="/js/vendor/datatables/datatables-dt.min.js"></script>
+<script src="/js/owner.employees.js"></script>
+<script src="/js/logout.js"></script>
+</html>
