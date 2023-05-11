@@ -22,6 +22,9 @@ public interface AppointmentRepository extends GenericRepository<Appointment, Lo
 	
 	@Query(value = "select * from appointment where id_branch_id = :id and id_client_id = :id_branch", nativeQuery = true)
 	ArrayList<Appointment> findByIdAndByBranch(@Param("id") String id,@Param("id_branch") String id_branch);
+	
+	@Query(value = "select * from appointment where appointment_date = :date and id_branch_id = :id and id_employee_id = :idEmployee", nativeQuery = true)
+	ArrayList<Appointment> findByIdEmployeeAndByBranch(@Param("date") String date,@Param("id") String id, @Param("idEmployee") String idEmployee);
 		
 	ArrayList<Appointment> findAllByIdBranch(Branch idbranch);
 	

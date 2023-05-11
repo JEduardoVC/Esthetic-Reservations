@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
+import javax.management.StringValueExp;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.esthetic.reservations.api.dto.AppointmentDTO;
+import com.esthetic.reservations.api.dto.GenericModelDTO;
 import com.esthetic.reservations.api.dto.MinAppointmentDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.exception.ResourceNotFoundException;
@@ -156,5 +158,22 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		ResponseDTO<AppointmentDTO> response = new ResponseDTO<>();
 		response.setContent(arregloCitas);
 		return response;
+	}
+	
+	public ResponseDTO<AppointmentDTO> findByDateAndEmployee(Long id_branch, String date, Long id_employee) {
+		List<Appointment> listaCitas = appointmentRepository.findByIdEmployeeAndByBranch(date, String.valueOf(id_branch), String.valueOf(id_employee));
+		ResponseDTO<AppointmentDTO> response = new ResponseDTO<>();
+		response.setContent(changeModelToDTO(listaCitas));
+		return response;
+	}
+	
+	private ArrayList<AppointmentDTO> changeModelToDTO(List<Appointment> lista) {
+		ArrayList<AppointmentDTO> arregloCitas = new ArrayList<>();
+		for(Appointment appointment : lista) {
+			AppointmentDTO citaDTO = mapToDTO(appointment);
+			citaDTO.setId_service(appointment.getServicios());
+			arregloCitas.add(citaDTO);
+		}
+		return arregloCitas;
 	}
 }

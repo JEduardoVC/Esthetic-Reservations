@@ -21,7 +21,7 @@ const appointment = {
 	time: ""
 };
 
-document.addEventListener('DOMContentLoaded', async () => {
+(async () => {
 	month.textContent = months[currentMonth];
     year.textContent = currentYear.toString();
     
@@ -88,8 +88,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 				alerta("success", "Se le envio un correo con su código QR para hacer valida su reseracion", `Cita ${sessionStorage.getItem("appointmentId") ? "Actualizada" : "Confirmada"}`);
 			}
 		}
+		if(carrito.productos.length == 0 && carrito.servicios.length == 0) alerta("error", "No ha seleccionado servicios o productos para agender su reservación")
 	})
-});
+})();
 
 async function getSale() {
 	const resultado = await fetch(`${BASE_URL}api/client/sale/${sessionStorage.getItem("saleId")}`, {
@@ -122,7 +123,7 @@ async function getAppointment() {
 	return {
 		date: respuesta.appointment_date,
 		time: respuesta.appointmnet_time
-	}	
+	}
 }
 
 function agruparItems(items) {
@@ -317,7 +318,7 @@ async function cancelarSeccion(id, seccion) {
 
 async function newAppointment() {
 	const time = `00:${document.querySelector("#time-appointment").value}`;
-	if(time == "00:") {
+	if(document.querySelector("#time-appointment").value == "") {
 		alerta("error", "Seleccionar una hora");
 		return;
 	}
@@ -327,7 +328,6 @@ async function newAppointment() {
 		alerta("error", "Ya se encuentra una cita a esa hora", "Hora no disponible");
 		return;
 	}
-	
 	if(validarTiempoCitas(citas, tiempoTotal, time) == 1) {
 		alerta("error", "Hora ocupada por servicio");
 		return;
@@ -384,7 +384,7 @@ function validarHora(citas, hora) {
 }
 
 async function obtenerCitas() {
-	const resultado = await	fetch(`${BASE_URL}api/client/appointment/date/branch/${sessionStorage.getItem("branchId")}/${appointment.date}`, {
+	const resultado = await	fetch(`${BASE_URL}api/client/appointment/date/branch/employee/${sessionStorage.getItem("branchId")}/${appointment.date}/1`, {
 		method: "GET",
 		headers: {
 				"Authorization": `Bearer ${sessionStorage.getItem("token")}`
@@ -422,8 +422,7 @@ function writeMonths(month, dateReservation = null){
 	const date = dateReservation ? new Date(dateReservation.split("-")[0], dateReservation.split("-")[1], dateReservation.split("-")[2]) : new Date();
 	let index = months.findIndex(month => month == document.querySelector("#month").textContent);
     for(let i= startDay(); i>0;i--){
-		const day = getTotalDays(currentMonth-1)-(i-1);
-        dates.innerHTML += `<div class="date item color-darken>${day}</div>`;
+        dates.innerHTML += `<div class="date item color-darken">${getTotalDays(currentMonth-1)-(i-1)}</div>`;
     }
     for(let i=1;i<=getTotalDays(month); i++){
         dates.innerHTML += `<div class="date item ${date.getDate() == i && date.getMonth() == month ? "selected" : ""}" id="date_${i}" onclick="selectDay(${date.getDate() > i && month == date.getMonth() ? "null" : "this"})">${i}</div>`;
