@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     darkMode();
+    darkModePhone();
     menu();
+    menuPhone();
     isDarkMode();
 });
 
@@ -28,6 +30,30 @@ function darkMode(){
         }
     }
 }
+function darkModePhone(){
+    const botonDarkMode = document.querySelector(".dark-mode-boton-phone");
+    const botonLigthMode = document.querySelector(".ligth-mode-boton-phone");
+    if(botonDarkMode){
+        if(botonLigthMode){
+            botonDarkMode.addEventListener("click", function() {
+                if(!document.querySelector(".dark-mode")){
+                    document.body.classList.add("dark-mode");
+                    document.querySelector(".luna-phone").classList.add("no-mostrar");
+                    document.querySelector(".sol-phone").classList.remove("no-mostrar");
+                    sessionStorage.setItem("darkMode", "true");
+                }
+            });
+            botonLigthMode.addEventListener("click", function() {
+                if(document.querySelector(".dark-mode")){
+                    document.body.classList.remove("dark-mode");
+                    document.querySelector(".luna-phone").classList.remove("no-mostrar");
+                    document.querySelector(".sol-phone").classList.add("no-mostrar");
+                    sessionStorage.removeItem("darkMode");
+                }
+            });
+        }
+    }
+}
 
 function menu(){
     const menu = document.querySelector(".options-animation");
@@ -40,12 +66,42 @@ function menu(){
         });
     }
 }
+function menuPhone(){
+    const menu = document.querySelector("#menuPhone");
+    if(menu){
+        menu.addEventListener("click", function(){
+            const shortCuts = document.querySelector("#menuShortCuts");
+            shortCuts.classList.toggle("mostrar");
+            shortCuts.classList.toggle("no-mostrar");
+        });
+    }
+}
 
 function isDarkMode(){
-    if(sessionStorage.getItem("darkMode")){
-        document.body.classList.add("dark-mode");
-        document.querySelector(".luna").classList.add("no-mostrar");
-        document.querySelector(".sol").classList.remove("no-mostrar");
+    const lunaDesktop = document.querySelector(".luna");
+    const solDesktop = document.querySelector(".sol");
+    const lunaDesktopPhone = document.querySelector(".luna-phone");
+    const solDesktopPhone = document.querySelector(".sol-phone");
+    if(lunaDesktop){
+        if(solDesktop){
+            if(lunaDesktopPhone){
+                if(solDesktopPhone){
+                    if(sessionStorage.getItem("darkMode")){
+                        document.body.classList.add("dark-mode");
+                            lunaDesktop.classList.add("no-mostrar");
+                            lunaDesktopPhone.classList.add("no-mostrar");
+                            solDesktop.classList.remove("no-mostrar");
+                            solDesktopPhone.classList.remove("no-mostrar");
+                        }
+                    else{
+                        lunaDesktop.classList.remove("no-mostrar");
+                        lunaDesktopPhone.classList.remove("no-mostrar");
+                        solDesktop.classList.add("no-mostrar");
+                        solDesktopPhone.classList.add("no-mostrar");
+                    }
+                }
+            }
+        }
     }
 }
 

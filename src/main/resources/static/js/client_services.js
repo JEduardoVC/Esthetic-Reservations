@@ -33,9 +33,6 @@ async function mostrarServicio() {
 	const divServicio = document.createElement("div");
 	divServicio.innerHTML = `
 		<div class="container">
-			<div>
-	            <button class="btn-secundario" onclick="volver()">Volver</button>
-	        </div>
 			<div class="time-cost-service" id="info-service">
 				<div class="title-service">
 					<h4>${servicio.service_name}</h4>
@@ -55,7 +52,7 @@ async function mostrarServicio() {
 			</div>
 		</div>
     `;
-    const div = document.querySelector(".show-service"); 
+    const div = document.querySelector("#show-service"); 
     if(div.childNodes.length == 1) div.removeChild(div.lastElementChild)
     div.appendChild(divServicio);
 	mostrarTiempo(parseInt(servicio.duration.split(':')[0]) * 60 + parseInt(servicio.duration.split(':')[1]));
