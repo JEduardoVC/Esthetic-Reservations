@@ -65,6 +65,11 @@ public class ClientController {
 		return appointmentServiceImpl.findAllByDate(id, date);
 	}
 	
+	@GetMapping("/appointment/date/branch/employee/{id}/{date}/{employee}")
+	public ResponseDTO<AppointmentDTO> obtenerCitasFechaEmpleado(@PathVariable Long id, @PathVariable String date, @PathVariable Long employee) {
+		return appointmentServiceImpl.findByDateAndEmployee(id, date, employee);
+	}
+	
 	@GetMapping("/appointment/branch/{id}/{branch}")
 	public ResponseDTO<AppointmentDTO> obtenerCitaUsuario(@PathVariable("id") Long id_client, @PathVariable("branch") Long id_branch) {
 		return appointmentServiceImpl.findByIdAndbyBranch(id_client, id_branch);

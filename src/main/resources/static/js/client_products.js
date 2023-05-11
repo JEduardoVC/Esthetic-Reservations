@@ -56,7 +56,6 @@ async function mostrarProducto() {
 }
 
 function isProduct(producto) {
-	console.info(producto);
 	return producto.id == sessionStorage.getItem("productId");
 }
 
@@ -82,7 +81,6 @@ async function mostrarProductos() {
 			sessionStorage.setItem("productId", producto.id);
 			mostrarProducto();
 		});
-		(producto.id != sessionStorage.getItem("productId")) ? prod.classList.remove("selected") : prod.classList.add("selected");
 		div.appendChild(prod);
 	})
 }

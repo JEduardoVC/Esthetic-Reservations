@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "employee")
 public class Employee extends BaseModel<Employee> {
@@ -23,6 +25,7 @@ public class Employee extends BaseModel<Employee> {
 
 	@ManyToMany(mappedBy = "employees")
 	@OnDelete(action = OnDeleteAction.CASCADE)
+	@JsonBackReference
     private Set<Branch> workingBranches;
 
 	public UserEntity getUser() {

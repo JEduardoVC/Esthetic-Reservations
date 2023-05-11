@@ -21,7 +21,6 @@ async function mostrarServicios() {
 			sessionStorage.setItem("serviceId", servicio.id);
 			mostrarServicio();
 		});
-		(servicio.id != sessionStorage.getItem("serviceId")) ? divServicio.classList.remove("selected") : divServicio.classList.add("selected");
 		div.appendChild(divServicio);
 	});
 }
@@ -29,7 +28,6 @@ async function mostrarServicios() {
 async function mostrarServicio() {
 	const servicio = await obtenerServicio();
 	if(!servicio) return;
-	console.info(carrito.servicios)
 	const value = carrito.servicios.find(serv => serv.id == servicio.id) ?? {cantidad: 0};
 	const divServicio = document.createElement("div");
 	divServicio.innerHTML = `

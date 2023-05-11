@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "branch")
 public class Branch extends BaseModel<Branch> {
@@ -48,6 +50,7 @@ public class Branch extends BaseModel<Branch> {
 
 	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Employee.class, cascade = {CascadeType.REMOVE, CascadeType.DETACH})
 	@JoinTable(name = "branch_employee", joinColumns = @JoinColumn(name = "id_branch", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"))
+	@JsonBackReference
 	private Set<Employee> employees = new HashSet<>();
 
 	@PreRemove

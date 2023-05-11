@@ -6,7 +6,7 @@
 })();
 
 async function showAppointment() {
-	const citas = await getAppointment();
+	const citas = await getAppointments();
 	const divPadre = document.querySelector("#appointment-services");
 	citas.forEach(cita => {
 		const div = document.createElement("div");
@@ -94,7 +94,6 @@ async function deleteSale(id) {
 			}
 		});
 		const respuesta = await resultado.json();
-		console.info(respuesta);
 		if(respuesta) {
 			alerta("success", "Su compra fue cancelada exitosamete!", "Compra cancelada")
 			setTimeout(() => {
@@ -119,7 +118,7 @@ function getItems(items, isServices = true) {
 	return div;
 }
 
-async function getAppointment() {
+async function getAppointments() {
 	const respuesta = await fetch(`${BASE_URL}api/client/appointment/branch/${sessionStorage.getItem("userId")}/${sessionStorage.getItem("branchId")}`, {
 		method: "GET",
 		headers: {
