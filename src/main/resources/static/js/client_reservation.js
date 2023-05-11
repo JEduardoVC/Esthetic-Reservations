@@ -17,23 +17,45 @@ let dates = document.querySelector("#dates");
 const carrito = JSON.parse(sessionStorage.getItem("carrito")) ?? {productos: [], servicios: []};
 
 const appointment = {
-		date: "",
-		time: ""
-	};
+	date: "",
+	time: ""
+};
 
-document.addEventListener('DOMContentLoaded', function(){
-    month.textContent = months[currentMonth];
+(async () => {
+	month.textContent = months[currentMonth];
     year.textContent = currentYear.toString();
     
     prev.addEventListener("click", () => lastMonth());
     next.addEventListener("click", () => nextMonth());
     
-    writeMonths(currentMonth);
-    
-    showTime();
-    
+    if(sessionStorage.getItem("appointmentId")) {
+		const newAppointment = carrito.servicios;
+		const appointmentReservation = await getAppointment();
+		document.querySelector("#reservation").textContent = "Actualizar";
+		document.querySelector(".title-p").textContent = "Actualizar cita";
+		writeMonths(appointmentReservation.date.split("-")[1], appointmentReservation.date);
+		showTime(`${appointmentReservation.time.split(":")[1]}:${appointmentReservation.time.split(":")[2]}`);
+		if(newAppointment.length != 0) {
+			carrito.servicios = newAppointment;
+			sessionStorage.setItem("carrito", JSON.stringify(carrito));
+		}
+	} else {
+		writeMonths(currentMonth);
+	    showTime();
+	}
+	if(sessionStorage.getItem("saleId")) {
+		const newSale = carrito.productos;
+		await getSale();
+		document.querySelector("#reservation").textContent = "Actualizar";
+		document.querySelector(".title-p").textContent = "Actualizar cita";
+		if(newSale.length != 0) {
+			carrito.productos = newSale;
+			sessionStorage.setItem("carrito", JSON.stringify(carrito));
+		}
+	}
+	
     showSeccion();
-    
+	
     document.querySelector("#nextPage").addEventListener("click",() => {
 		pagina++;
 		showSeccion();
@@ -46,18 +68,111 @@ document.addEventListener('DOMContentLoaded', function(){
 	});
 	
 	document.querySelector("#reservation").addEventListener("click", async () => {
-		if(appointment.time == "") {
-			alerta("error", "Seleccionar fecha y hora para la cita")
-			return;
+		if(carrito.productos.length > 0) {
+			const respuesta = sessionStorage.getItem("saleId") ? await updateSale() : await saveSale();
+			if(respuesta.id) {
+				showLoading("Enviando correo...")
+				await sendMail(respuesta.id, !sessionStorage.getItem("saleId"), false);
+				alerta("success", "Se le envio un correo con su código QR para recoger sus productos en sucursal", `Compra ${sessionStorage.getItem("saleId") ? "Actualizada" : "Exitosa"}`)
+			}
 		}
-		const respuesta = await saveAppointment();
-		if(respuesta.date_created) {
-			alerta("success", "Se le envio un correo con su código QR para hacer valida su reseracion", "Cita confirmada");
-			return;
+		if(carrito.servicios.length > 0) {
+			if(appointment.time == "") {
+				alerta("error", "Seleccionar fecha y hora para la cita")
+				return;
+			}
+			const respuestaCita = sessionStorage.getItem("appointmentId") ? await updateAppointment() : await saveAppointment();
+			if(respuestaCita.date_created) {
+				showLoading("Enviando correo...")
+				await sendMail(respuestaCita.id, !sessionStorage.getItem("appointmentId"), true);
+				alerta("success", "Se le envio un correo con su código QR para hacer valida su reseracion", `Cita ${sessionStorage.getItem("appointmentId") ? "Actualizada" : "Confirmada"}`);
+			}
+		}
+		if(carrito.productos.length == 0 && carrito.servicios.length == 0) alerta("error", "No ha seleccionado servicios o productos para agender su reservación")
+	})
+})();
+
+async function getSale() {
+	const resultado = await fetch(`${BASE_URL}api/client/sale/${sessionStorage.getItem("saleId")}`, {
+		method: "GET",
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
 		}
 	})
-	
-});
+	const respuesta = await resultado.json();
+	let saleArray = [];
+	respuesta.productsList.forEach(producto => {
+		saleArray = [...saleArray, {"id": parseInt(producto.product.id), "cantidad": `${producto.quantity}`}]
+	})
+	carrito.productos = saleArray;
+	sessionStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+async function getAppointment() {
+	const resultado = await fetch(`${BASE_URL}api/client/appointment/${sessionStorage.getItem("appointmentId")}`, {
+		method: "GET",
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		}
+	})
+	const respuesta = await resultado.json();
+	carrito.servicios = agruparItems(respuesta.id_service)
+	sessionStorage.setItem("carrito", JSON.stringify(carrito));
+	return {
+		date: respuesta.appointment_date,
+		time: respuesta.appointmnet_time
+	}
+}
+
+function agruparItems(items) {
+	let itemArray = [];
+	let itemObj = {};
+	items.forEach(el => (itemObj[el.id] = itemObj[el.id] + 1 || 1))
+	Object.entries(itemObj).forEach(([key, value]) => {
+		itemArray = [...itemArray, {"id": parseInt(key), "cantidad": `${value}`}]
+	})
+	return itemArray;
+}
+
+async function saveSale() {
+	const obj = new Object();
+	const products = carrito.productos.flatMap(producto => obj.constructor({productId: producto.id, quantity: parseInt(producto.cantidad)}))
+	const respuesta = await fetch(`${BASE_URL}api/sale`, {
+		method:"POST",
+		body: JSON.stringify({
+			branchId: parseInt(sessionStorage.getItem("branchId")),
+			clientId: parseInt(sessionStorage.getItem("userId")),
+			products: products
+		}),
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		}
+	})
+	const resultado = await respuesta.json();
+	return resultado;
+}
+
+async function updateSale() {
+	const obj = new Object();
+	const products = carrito.productos.flatMap(producto => obj.constructor({productId: producto.id, quantity: parseInt(producto.cantidad)}))
+	const respuesta = await fetch(`${BASE_URL}api/sale/${sessionStorage.getItem("saleId")}`, {
+		method:"PUT",
+		body: JSON.stringify({
+			branchId: parseInt(sessionStorage.getItem("branchId")),
+			clientId: parseInt(sessionStorage.getItem("userId")),
+			products: products
+		}),
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		}
+	})
+	const resultado = await respuesta.json();
+	return resultado;
+}
 
 async function saveAppointment() {
 	const respuesta = await fetch(`${BASE_URL}api/appointment/guardar`, {
@@ -65,8 +180,9 @@ async function saveAppointment() {
 		body: JSON.stringify({
 			id_branch: sessionStorage.getItem("branchId"),
 			appointment_date: appointment.date,
-			appointment_time: appointment.time,
+			appointment_time: `${appointment.time}`,
 			id_service: carrito.servicios.flatMap(servicio => servicio.id),
+			cantidad: carrito.servicios.flatMap(servicio => parseInt(servicio.cantidad)),
 			id_client: sessionStorage.getItem("userId")
 		}),
 		headers: {
@@ -75,7 +191,26 @@ async function saveAppointment() {
 		}
 	})
 	const resultado = await respuesta.json();
-	console.info(resultado);
+	return resultado;
+}
+
+async function updateAppointment() {
+	const respuesta = await fetch(`${BASE_URL}api/appointment/actualizar/${sessionStorage.getItem("appointmentId")}`, {
+		method:"PUT",
+		body: JSON.stringify({
+			id_branch: sessionStorage.getItem("branchId"),
+			appointment_date: appointment.date,
+			appointment_time: appointment.time,
+			id_service: carrito.servicios.flatMap(servicio => servicio.id),
+			cantidad: carrito.servicios.flatMap(servicio => parseInt(servicio.cantidad)),
+			id_client: sessionStorage.getItem("userId")
+		}),
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		}
+	})
+	const resultado = await respuesta.json();
 	return resultado;
 }
 
@@ -183,7 +318,7 @@ async function cancelarSeccion(id, seccion) {
 
 async function newAppointment() {
 	const time = `00:${document.querySelector("#time-appointment").value}`;
-	if(time == "00:") {
+	if(document.querySelector("#time-appointment").value == "") {
 		alerta("error", "Seleccionar una hora");
 		return;
 	}
@@ -193,16 +328,12 @@ async function newAppointment() {
 		alerta("error", "Ya se encuentra una cita a esa hora", "Hora no disponible");
 		return;
 	}
-	
 	if(validarTiempoCitas(citas, tiempoTotal, time) == 1) {
 		alerta("error", "Hora ocupada por servicio");
 		return;
 	}
 	appointment.time = time;
 	alerta("success", "Fecha y hora registrada");
-	pagina++;
-	showSeccion();
-	showReview();
 }
 
 function validarTiempoCitas(citas, tiempoTotal, hora) {
@@ -253,7 +384,7 @@ function validarHora(citas, hora) {
 }
 
 async function obtenerCitas() {
-	const resultado = await	fetch(`${BASE_URL}api/client/appointment/date/branch/${sessionStorage.getItem("branchId")}/${appointment.date}`, {
+	const resultado = await	fetch(`${BASE_URL}api/client/appointment/date/branch/employee/${sessionStorage.getItem("branchId")}/${appointment.date}/1`, {
 		method: "GET",
 		headers: {
 				"Authorization": `Bearer ${sessionStorage.getItem("token")}`
@@ -264,7 +395,7 @@ async function obtenerCitas() {
 	return (citas == undefined) ? [] : citas.content
 }
 
-function showTime() {
+function showTime(timeReservation = null) {
 	const time = document.querySelector(".time");
 	const date = new Date();
 	time.innerHTML = `
@@ -277,21 +408,21 @@ function showTime() {
             <div class="select-time">
                 <div class="input-time">
                     <label>Selecciona la hora</label>
-                    <input type="time" pattern="[1-12]{2}:[0-59] (am|pm|)" id="time-appointment" value="19:19">
+                    <input type="time" pattern="[1-12]{2}:[0-59] (am|pm|)" id="time-appointment" value="${timeReservation ?? ""}">
                 </div>
                 <button class="btn-principal button" id="date-times">Confirmar cita</button>
             </div>
         </div>
 	`;
+	if(timeReservation) appointment.time = timeReservation;
 	document.querySelector("#date-times").addEventListener("click", newAppointment);
 }
 
-function writeMonths(month){
-	const date = new Date();
+function writeMonths(month, dateReservation = null){
+	const date = dateReservation ? new Date(dateReservation.split("-")[0], dateReservation.split("-")[1], dateReservation.split("-")[2]) : new Date();
 	let index = months.findIndex(month => month == document.querySelector("#month").textContent);
     for(let i= startDay(); i>0;i--){
-		const day = getTotalDays(currentMonth-1)-(i-1);
-        dates.innerHTML += `<div class="date item color-darken>${day}</div>`;
+        dates.innerHTML += `<div class="date item color-darken">${getTotalDays(currentMonth-1)-(i-1)}</div>`;
     }
     for(let i=1;i<=getTotalDays(month); i++){
         dates.innerHTML += `<div class="date item ${date.getDate() == i && date.getMonth() == month ? "selected" : ""}" id="date_${i}" onclick="selectDay(${date.getDate() > i && month == date.getMonth() ? "null" : "this"})">${i}</div>`;

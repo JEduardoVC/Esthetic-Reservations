@@ -1,6 +1,7 @@
 package com.esthetic.reservations.api.dto;
 
 import java.sql.Time;
+import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -31,11 +32,13 @@ public class MinBranchDTO extends GenericModelDTO {
     @NotBlank(message = "El municipio es requerido.")
     private String municipality;
 
+    private Set<Long> employeesIds;
+
     public MinBranchDTO() {
     }
 
     public MinBranchDTO(String branchName, String location, Long ownerId, Time scheduleOpen, Time scheduleClose,
-            String state, String municipality) {
+            String state, String municipality, Set<Long> employeesIds) {
         this.branchName = branchName;
         this.location = location;
         this.ownerId = ownerId;
@@ -43,10 +46,11 @@ public class MinBranchDTO extends GenericModelDTO {
         this.scheduleClose = scheduleClose;
         this.state = state;
         this.municipality = municipality;
+        this.employeesIds = employeesIds;
     }
 
     public MinBranchDTO(Long id, String branchName, String location, Long ownerId, Time scheduleOpen,
-            Time scheduleClose, String state, String municipality) {
+            Time scheduleClose, String state, String municipality, Set<Long> employeesIds) {
         super(id);
         this.branchName = branchName;
         this.location = location;
@@ -55,6 +59,15 @@ public class MinBranchDTO extends GenericModelDTO {
         this.scheduleClose = scheduleClose;
         this.state = state;
         this.municipality = municipality;
+        this.employeesIds = employeesIds;
+    }
+
+    public Set<Long> getEmployeesIds() {
+        return this.employeesIds;
+    }
+
+    public void setEmployeesIds(Set<Long> employeesIds) {
+        this.employeesIds = employeesIds;
     }
 
     public String getBranchName() {

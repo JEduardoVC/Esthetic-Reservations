@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang=”es” xmlns:th=http://www.thymeleaf.org xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <title>Esthetic Reservations</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Ubuntu&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="/img/Logo.webp" />
+
+    <link rel="stylesheet" th:href="@{/css/bootstrap/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/vendor/datatables/datatables.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/vendor/bootstrap-icons/font/bootstrap-icons.css}">
+    
+    <div layout:fragment="page-styles">
+
+    </div>
+
+    <script th:src="@{/js/vendor/jquery/jquery-3.6.1.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/vendor/jquery/jquery.validate.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/vendor/jquery/additional-methods.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/app.js}" type="text/javascript"></script>
+    <script th:src="@{/js/util.js}" type="text/javascript"></script>
+    <script th:src="@{/js/ApiUtils.js}" type="text/javascript"></script>
+    <script th:src="@{/js/vendor/sweetalert2/sweetalert2.all.min.js}" type="text/javascript"></script>
+    
+</head>
+
+<body>
+    <header class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Esthetic Reservations</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column flex-shrink-0 p-3">
+                    <h6
+                    class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                        <span>ADMINISTRACIÓN</span>
+                        <a class="link-secondary" href="#" aria-label="Add a new report">
+                            <span data-feather="plus-circle" class="align-text-bottom"></span>
+                        </a>
+                    </h6>
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item mb-2 border rounded-4">
+                            <a href="/app/admin" class="nav-link" th:classappend="${route} == '/app/admin/usuarios' ? 'active rounded-4' : ''" aria-current="page">
+                                <i class="bi bi-people-fill"></i>
+                                Usuarios
+                            </a>
+                        </li>
+                        <li class="nav-item border rounded-4">
+                            <a href="/app/admin/sucursales" class="nav-link" th:classappend="${route} == '/app/admin/sucursales' ? 'active rounded-4' : ''" aria-current="page">
+                                <i class="bi bi-shop"></i>
+                                Sucursales
+                            </a>
+                        </li>
+                        <hr class="bg-primary border-2 border-top border-primary">
+                        <h6
+                            class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                            <span>ACCIONES</span>
+                            <a class="link-secondary" href="#" aria-label="Add a new report">
+                                <span data-feather="plus-circle" class="align-text-bottom"></span>
+                            </a>
+                        </h6>
+                        <li id="btn-cerrar-sesion" class="nav-item border rounded-4 btn btn-primary text-white m-2">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-box-arrow-left"></i>
+                                Cerrar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item border rounded-4 btn btn-primary text-white m-2 luna dark-mode-boton">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-sun-fill"></i>
+                                Modo Oscuro (OFF)
+                            </a>
+                        </li>
+                        <li class="nav-item border rounded-4 btn btn-primary text-white m-2 sol d-none ligth-mode-boton">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-moon-stars-fill"></i>
+                                Modo Oscuro (ON)
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <div layout:fragment="title">
+                    <h1 class="text-primary er-header fw-bold">Título</h1>
+                </div>
+                <div layout:fragment="toolbar-btns"></div>
+            </div>
+            
+            <div class="body-admin">
+                <div class="container-admin">
+                    
+                    <div layout:fragment="content"></div>
+                    
+                </div>
+            </div>
+
+        </main>
+    </div>
+    </div>
+
+</body>
+
+<script th:src="@{/js/vendor/bootstrap/bootstrap.bundle.js}" type="text/javascript"></script>
+<script th:src="@{/js/vendor/datatables/languageMX.js}" type="text/javascript"></script>
+<script th:src="@{/js/vendor/datatables/datatables.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/logout.js}"></script>
+<div layout:fragment="page-scripts"></div>
+
+</html>

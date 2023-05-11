@@ -1,4 +1,5 @@
 const BASE_URL = 'http://localhost:5500/';
+// const BASE_URL = 'http://192.168.100.5:5500/';
 //const BASE_URL = 'http://192.168.1.76:5500/';
 //const BASE_URL = 'http://192.168.1.70:5500/';
 //const BASE_URL = 'http://172.15.41.174:5500/';
@@ -12,7 +13,8 @@ async function enviarSimpleCorreo(email) {
 		redirect: 'follow'
 	};
 	let respuesta;
-	await fetch(`${BASE_URL}api/auth/sendSimpleMail`, requestOptions)
+	console.info(`${BASE_URL}api/mail/reestablecer`)
+	await fetch(`${BASE_URL}api/mail/reestablecer`, requestOptions)
 		.then(response => response.json())
 		.then(data => {
 			respuesta = data;
@@ -20,22 +22,20 @@ async function enviarSimpleCorreo(email) {
 	return respuesta;
 }
 
-async function enviarMultimediaCorreo(email, branch, appointment, created) {
-	var formdata = new FormData();
-	const myHeaders = new Headers();
-	myHeaders.append("Accept", 'application/json');
-	myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}`);
-	formdata.append("mail", email);
-	formdata.append("branch", branch);
-	formdata.append("appointment", appointment)
-	var requestOptions = {
-		method: 'POST',
-		headers: myHeaders,
-		body: formdata,
-		redirect: 'follow'
-	};
-	const url = created ? `${BASE_URL}api/appointment/sendMultiMail` : `${BASE_URL}api/appointment/sendMultiMailUpdate`;
-	const resultado = await fetch(url, requestOptions)
+async function sendMail(id, created, appointment) {
+	const url = `${BASE_URL}api/mail/${created ? "new" : "update"}/${appointment ? "appointment" : "sale"}`;
+	const newFormData = new FormData();
+	newFormData.append("mail", sessionStorage.getItem("userId"));
+	newFormData.append("branch", sessionStorage.getItem("branchId"));
+	newFormData.append("id", id);
+	const resultado = await fetch(url, {
+		method: created ? "POST" : "PUT",
+		body: newFormData,
+		headers: {
+			Accept: "application/json",
+			Authorization: `Bearer ${sessionStorage.getItem("token")}`
+		}
+	});
 	const respuesta = await resultado.json();
 	return respuesta;
 }

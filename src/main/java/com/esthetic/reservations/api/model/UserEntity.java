@@ -6,16 +6,19 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,9 +48,13 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 	@Column(name = "password", length = 255, nullable = false)
 	private String password;
 
-	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class, cascade = CascadeType.PERSIST)
+	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Role.class)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "id_user", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_role", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<>();
+
+	@OneToMany(targetEntity = Comment.class)
+	private Set<Comment> comments = new HashSet<>();
 
 	public UserEntity() {
 		super();
@@ -165,6 +172,7 @@ public class UserEntity extends BaseModel<UserEntity> implements UserDetails {
 		this.address = user.address;
 		this.email = user.email;
 		this.password = user.password;
+		this.roles = user.roles;
 	}
 
 	@Override

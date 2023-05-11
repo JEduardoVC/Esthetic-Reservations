@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.InventoryDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
+import com.esthetic.reservations.api.dto.SaleDTO;
 import com.esthetic.reservations.api.dto.ServiceDTO;
 import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
 import com.esthetic.reservations.api.service.impl.InventoryServiceImpl;
+import com.esthetic.reservations.api.service.impl.SaleServiceImpl;
 import com.esthetic.reservations.api.service.impl.SeriviceServiceImpl;
 
 @RestController
@@ -29,6 +31,9 @@ public class ClientController {
 	
 	@Autowired
 	AppointmentServiceImpl appointmentServiceImpl;
+	
+	@Autowired
+	SaleServiceImpl saleServiceImpl;
 	
 	@GetMapping("/products/branch/{id}")
 	public ResponseDTO<InventoryDTO> obtenerInventarioSucursal(@PathVariable("id") Long id) {
@@ -50,9 +55,33 @@ public class ClientController {
 		return new ResponseEntity<ServiceDTO>(serviceServiceImpl.findById(id), HttpStatus.OK);
 	}
 	
+	@GetMapping("/appointment/{id}")
+	public ResponseEntity<AppointmentDTO> obtenerCita(@PathVariable Long id) {
+		return new ResponseEntity<AppointmentDTO>(appointmentServiceImpl.getId(id), HttpStatus.OK);
+	}
+	
 	@GetMapping("/appointment/date/branch/{id}/{date}")
 	public ResponseDTO<AppointmentDTO> obtenerCitasFecha(@PathVariable Long id, @PathVariable String date) {
 		return appointmentServiceImpl.findAllByDate(id, date);
 	}
 	
+	@GetMapping("/appointment/date/branch/employee/{id}/{date}/{employee}")
+	public ResponseDTO<AppointmentDTO> obtenerCitasFechaEmpleado(@PathVariable Long id, @PathVariable String date, @PathVariable Long employee) {
+		return appointmentServiceImpl.findByDateAndEmployee(id, date, employee);
+	}
+	
+	@GetMapping("/appointment/branch/{id}/{branch}")
+	public ResponseDTO<AppointmentDTO> obtenerCitaUsuario(@PathVariable("id") Long id_client, @PathVariable("branch") Long id_branch) {
+		return appointmentServiceImpl.findByIdAndbyBranch(id_client, id_branch);
+	}
+	
+	@GetMapping("/sale/{id}")
+	public ResponseEntity<SaleDTO> obtenerVenta(@PathVariable Long id) {
+		return new ResponseEntity<SaleDTO>(saleServiceImpl.findById(id), HttpStatus.OK);
+	}
+	
+	@GetMapping("/sales/branch/{id}/{branch}")
+	public ResponseDTO<SaleDTO> obtenerVentasUsuario(@PathVariable("id") Long id_client, @PathVariable("branch") Long id_branch) {
+		return saleServiceImpl.findAllByIdAndByBranchId(id_client, id_branch);
+	}
 }
