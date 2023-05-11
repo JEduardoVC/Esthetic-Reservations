@@ -2,10 +2,10 @@ package com.esthetic.reservations.api.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,6 +24,9 @@ public class Employee extends BaseModel<Employee> {
 	@ManyToMany(mappedBy = "employees")
 	@OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Branch> workingBranches;
+
+	@OneToMany(mappedBy = "employee", targetEntity = Comment.class)
+	private Set<Comment> reviews;
 
 	public UserEntity getUser() {
 		return this.user;
