@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/app")
 public class AppLoginController {
 
-    @GetMapping
+    @GetMapping("/")
     public ModelAndView index() {
         ModelAndView inicio = new ModelAndView("index");
         return inicio;

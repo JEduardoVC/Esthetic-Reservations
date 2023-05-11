@@ -24,13 +24,10 @@ async function enviarSimpleCorreo(email) {
 
 async function sendMail(id, created, appointment) {
 	const url = `${BASE_URL}api/mail/${created ? "new" : "update"}/${appointment ? "appointment" : "sale"}`;
-	console.warn(url);
 	const newFormData = new FormData();
 	newFormData.append("mail", sessionStorage.getItem("userId"));
 	newFormData.append("branch", sessionStorage.getItem("branchId"));
 	newFormData.append("id", id);
-	console.warn(newFormData);
-	console.error(created ? "POST" : "PUT");
 	const resultado = await fetch(url, {
 		method: created ? "POST" : "PUT",
 		body: newFormData,
