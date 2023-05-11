@@ -2,7 +2,6 @@
 <html lang=”es” xmlns:th=http://www.thymeleaf.org>
 
 <head th:insert="/generics/header"></head>
-
 <body>
     <main>
         <div class="services">
@@ -10,7 +9,14 @@
                 <h1 class="title-p">Servicios</h1>
                 <img src="/img/Productos-venta.webp">
             </div>
-			<div class="show-service"></div>
+			<div class="show-service">
+                <div class="volver-img">
+                    <button class="btn-volver-img" onclick="volver()">
+                        <img class="filter" src="/img/volver.webp">
+                    </button>
+                </div>
+                <div id="show-service"></div>
+            </div>
             <div class="more-services"></div>
         </div>
     </main>

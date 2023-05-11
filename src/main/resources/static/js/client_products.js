@@ -13,9 +13,6 @@ async function mostrarProducto() {
 	const divProducto = document.createElement("div");
 	divProducto.innerHTML = `
 		<div class="container">
-	        <div>
-                <button class="btn-secundario" onclick="volver()">Volver</button>
-	        </div>
 	        <div class="header-products">
 	            <h1>${producto.inventory_name}</h1>
 	            <span>${producto.capacibility}</span>
@@ -35,8 +32,8 @@ async function mostrarProducto() {
 	        </div>
 	    </div>
 	`;
-	if(document.querySelector(".show-product").childNodes.length == 1) document.querySelector(".show-product").removeChild(document.querySelector(".show-product").lastElementChild)
-	document.querySelector(".show-product").appendChild(divProducto);
+	if(document.querySelector("#show-product").childNodes.length == 1) document.querySelector("#show-product").removeChild(document.querySelector("#show-product").lastElementChild)
+	document.querySelector("#show-product").appendChild(divProducto);
 	document.querySelector("#btn-añadir").addEventListener("click", () => {
 		const cantidad = document.querySelector("#quantity-products").getAttribute("value");
 		const index = carrito.productos.findIndex(prod => prod.id == producto.id);

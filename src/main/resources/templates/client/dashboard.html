@@ -4,43 +4,77 @@
 <head th:insert="/generics/header"></head>
 <body>
     <main>
-        <div class="dashboard">
-            <nav class="nav-selection">
-                <div class="logo-dashboard">
-                    <img src="/img/logo.webp">
+        <nav class="nav-selection">
+            <div class="logo-nav">
+                <img src="/img/logo.webp">
+            </div>
+            <div class="user-interaction-phone">
+                <div class="user-animation-phone">
+                    <button id="btn-editar-usuario">
+                        <img class="login-img filter" src="/img/login.webp">
+                        <p>Editar usuario</p>
+                    </button>
                 </div>
-                <div class="shortcuts"> 
-                    <button id="appointment" class="btn-shortcut">Mis citas</button>
+                <div class="option-menu-phone luna-phone" >
+                    <img class="login-img dark-mode-boton-phone filter" src="/img/luna.webp">
+                    <p>Modo oscuro</p>
                 </div>
-                <div class="user-interaction">
-                    <div class="user-animation">
-                        <button id="btn-editar-usuario">
-                            <img class="login-img" src="/img/login.webp">
-                        </button>
+                <div class="option-menu-phone no-mostrar sol-phone">
+                    <img class="login-img ligth-mode-boton-phone filter" src="/img/soleado.webp">
+                    <p>Modo claro</p>
+                </div>
+                <div class="option-menu-phone">
+                    <button id="btn-cerrar-sesion-phone" class="btn-logout" type="button">
+                        <img src="/img/salir.webp" class="filter">
+                        <p>Cerrar sesion</p>
+                    </button>
+                </div>
+            </div>
+            <div class="menu-phone no-mostrar" id="menuPhone">
+                <img class="img-phone filter" src="/img/barras.webp">
+                <div class="menu-shortCuts no-mostrar" id="menuShortCuts">
+                    <div class="dashboard-Phone">
+                        <div class="shortcuts-menuPhone">
+                            <button id="appointment" class="filter btn-shortcut-menuPhone">Mis citas</button>
+                            <button id="purchases" class="filter btn-shortcut-menuPhone">Mis compras</button>
+                        </div>
                     </div>
-                    <div class="options-animation">
-                        <img src="/img/barras.webp">
-                        <div id="actions" class="actions">
-                            <div class="window-options">
-                                <div class="option-menu luna" >
-                                    <img class="login-img dark-mode-boton" src="/img/luna.webp">
-                                    <p>Modo oscuro</p>
-                                </div>
-                                <div class="option-menu no-mostrar sol">
-                                    <img class="login-img ligth-mode-boton" src="/img/soleado.webp">
-                                    <p>Modo claro</p>
-                                </div>
-                                <div class="option-menu">
-                                    <button id="btn-cerrar-sesion" class="btn-logout" type="button">
-                                        <img src="/img/salir.webp">
-                                        <p>Cerrar sesion</p>
-                                    </button>
-                                </div>
+                </div>
+            </div>
+            <div class="shortcuts"> 
+                <button id="appointment" class="btn-shortcut">Mis citas</button>
+                <button id="purchases" class="btn-shortcut">Mis compras</button>
+            </div>
+            <div class="user-interaction">
+                <div class="user-animation">
+                    <button id="btn-editar-usuario">
+                        <img class="login-img filter" src="/img/login.webp">
+                    </button>
+                </div>
+                <div class="options-animation">
+                    <img src="/img/barras.webp" class="filter barras">
+                    <div id="actions" class="actions">
+                        <div class="window-options">
+                            <div class="option-menu luna" >
+                                <img class="login-img dark-mode-boton" src="/img/luna.webp">
+                                <p class="filter">Modo oscuro</p>
+                            </div>
+                            <div class="option-menu no-mostrar sol">
+                                <img class="login-img ligth-mode-boton" src="/img/soleado.webp">
+                                <p class="filter">Modo claro</p>
+                            </div>
+                            <div class="option-menu">
+                                <button id="btn-cerrar-sesion" class="btn-logout" type="button">
+                                    <img src="/img/salir.webp" class="">
+                                    <p class="filter">Cerrar sesion</p>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </nav>
+            </div>
+        </nav>
+        <div class="dashboard">
             <div class="windows">
                 <div class="option-client" id="products">
                     <h1 class="title-dashboard">Productos</h1>
