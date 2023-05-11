@@ -1,6 +1,7 @@
 (function() {
 	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`;
 	mostrarServicios();
+//	sessionStorage.removeItem("carrito");
 })();
 
 let carrito = JSON.parse(sessionStorage.getItem("carrito")) ?? {servicios: [], productos: []};
@@ -29,6 +30,7 @@ async function mostrarServicios() {
 async function mostrarServicio() {
 	const servicio = await obtenerServicio();
 	if(!servicio) return;
+	console.info(carrito.servicios)
 	const value = carrito.servicios.find(serv => serv.id == servicio.id) ?? {cantidad: 0};
 	const divServicio = document.createElement("div");
 	divServicio.innerHTML = `
@@ -58,7 +60,18 @@ async function mostrarServicio() {
 	mostrarTiempo(parseInt(servicio.duration.split(':')[0]) * 60 + parseInt(servicio.duration.split(':')[1]));
 	document.querySelector("#btn-añadir").addEventListener("click", () => {
 		const cantidad = document.querySelector("#quantity-services").getAttribute("value");
-		
+		const index = carrito.servicios.findIndex(serv => serv.id == servicio.id);	
+		if(index !== -1) {
+			const carritoObj = JSON.parse(sessionStorage.getItem("carrito"));
+			carritoObj.servicios[index] = {id: servicio.id, cantidad: cantidad}
+			carrito = carritoObj;
+			alerta("success", "Servicio actualizado correctamente", "Hecho");	
+		}
+		else {
+			carrito.servicios = [...carrito.servicios, {id: servicio.id, cantidad:cantidad}]
+			alerta("success", "Producto agregado correctamente", "Hecho");
+		}
+		sessionStorage.setItem("carrito", JSON.stringify(carrito));
 	})
 }
 

@@ -7,7 +7,8 @@ myHeaders.append("Authorization", `Bearer ${sessionStorage.getItem("token")}` );
 var map;
 
 document.addEventListener('DOMContentLoaded',  function() {
-	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`
+	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`;
+	if(sessionStorage.getItem("carrito")) sessionStorage.removeItem("carrito");
 	initMap();
 	showBranchs();
 	document.querySelector("#selectionBranch").addEventListener("click", seleccionar);

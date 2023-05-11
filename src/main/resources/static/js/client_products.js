@@ -2,7 +2,6 @@
 	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`;
 	mostrarProductos();
 	mostrarProducto();
-	sessionStorage.removeItem("carrito");
 })();
 
 let carrito = JSON.parse(sessionStorage.getItem("carrito")) ?? {productos: [], servicios: []};
@@ -46,10 +45,9 @@ async function mostrarProducto() {
 		}
 		else {
 			carrito.productos = [...carrito.productos, {id: producto.id, cantidad:cantidad}]
-			console.info(carrito);
 			alerta("success", "Producto agregado correctamente", "Hecho");
 		}
-			sessionStorage.setItem("carrito", JSON.stringify(carrito));
+		sessionStorage.setItem("carrito", JSON.stringify(carrito));
 	});
 }
 

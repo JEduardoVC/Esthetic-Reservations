@@ -61,7 +61,6 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 
 	public InventoryDTO update(MinInventory inventario, MultipartFile file, Long id) {
 		Inventory inventory = getRepository().findById(id).orElse(null);
-		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(inventario.getId_branch()));
 		String rutaAbsoluta = "C://Esthetic-Reservation/Inventario";
 		String nameImage = "";
 		if(file == null) {
@@ -86,6 +85,7 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 		inventory.setPrice(inventario.getPrice());
 		inventory.setStore(inventario.getStore());
 		inventory.setDescription(inventario.getDescription());
+		inventory.setImagen(nameImage + ".jpg");
 		inventory.setCapacibility(inventario.getCapacibility());
 		return mapToDTO(getRepository().save(inventory));
 	}
