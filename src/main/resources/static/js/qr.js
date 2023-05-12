@@ -28,6 +28,6 @@ async function leerCodigo() {
 		}
 	} catch(DOMException) {
 		console.log(DOMException)
-		confirm("Denego acceso a la camara");
+		alert("Denego acceso a la camara");
 	}
 }
