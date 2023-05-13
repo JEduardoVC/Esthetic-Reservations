@@ -1,41 +1,41 @@
 document.addEventListener('DOMContentLoaded', function () {
-    darkMode();
-    darkModePhone();
-    menu();
-    menuPhone();
-    isDarkMode();
-    isDarkModeNew();
+    // darkMode();
+    // darkModePhone();
+    // menu();
+    // menuPhone();
+    // isDarkMode();
+    // isDarkModeNew();
 });
 
-// $(function () {
-//     let darkMode = sessionStorage.getItem('darkMode');
-//     if (darkMode === null) {
-//         sessionStorage.setItem('darkMode', 'false');
-//         darkMode = 'false';
-//     }
-//     if(darkMode === 'false'){
-//         $('.luna').removeClass('d-none no-mostrar');
-//         $('.sol').addClass('d-none no-mostrar');
-//     } else {
-//         $('.sol').removeClass('d-none no-mostrar');
-//         $('.luna').addClass('d-none no-mostrar');
-//     }
-//     if(darkMode === 'false' && $('html').hasClass('dark-mode') === true){
-//         $('html').removeClass('dark-mode');
-//     }
-//     if(darkMode === 'true' && $('html').hasClass('dark-mode') === false){
-//         $('html').addClass('dark-mode');
-//     }
-//     $('.dark-mode-boton').on('click', toggleDarkMode);
-//     $('.ligth-mode-boton').on('click', toggleDarkMode);
-// })
+$(function () {
+    let darkMode = sessionStorage.getItem('darkMode');
+    if (darkMode === null) {
+        sessionStorage.setItem('darkMode', 'false');
+        darkMode = 'false';
+    }
+    if(darkMode === 'false'){
+        $('.luna').removeClass('d-none no-mostrar');
+        $('.sol').addClass('d-none no-mostrar');
+    } else {
+        $('.sol').removeClass('d-none no-mostrar');
+        $('.luna').addClass('d-none no-mostrar');
+    }
+    if(darkMode === 'false' && $('html').hasClass('dark-mode') === true){
+        $('html').removeClass('dark-mode');
+    }
+    if(darkMode === 'true' && $('html').hasClass('dark-mode') === false){
+        $('html').addClass('dark-mode');
+    }
+    $('.dark-mode-boton').on('click', toggleDarkMode);
+    $('.ligth-mode-boton').on('click', toggleDarkMode);
+})
 
-// const toggleDarkMode = function () {
-//     $('html').toggleClass('dark-mode');
-//     sessionStorage.setItem('darkMode', sessionStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
-//     $('.sol').toggleClass('d-none no-mostrar');
-//     $('.luna').toggleClass('d-none no-mostrar');
-// };
+const toggleDarkMode = function () {
+    $('html').toggleClass('dark-mode');
+    sessionStorage.setItem('darkMode', sessionStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
+    $('.sol').toggleClass('d-none no-mostrar');
+    $('.luna').toggleClass('d-none no-mostrar');
+};
 
 function darkMode() {
     const botonDarkMode = document.querySelector(".dark-mode-boton");
@@ -134,6 +134,9 @@ function isDarkModeNew(){
                 }
             }
         }
+    }
+}
+
 function isDarkMode() {
     if (sessionStorage.getItem("darkMode")) {
         var root = document.getElementsByTagName('html')[0]; // '0' to assign the first (and only `HTML` tag)

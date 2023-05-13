@@ -1,7 +1,9 @@
 package com.esthetic.reservations.api.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
@@ -55,7 +57,7 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 		} catch (IOException e) {
 			return null;
 		}
-		Inventory newInventory = new Inventory(inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), nameImage, sucursal, inventario.getDescription(), inventario.getCapacibility());
+		Inventory newInventory = new Inventory(inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), nameImage + ".jpg", sucursal, inventario.getDescription(), inventario.getCapacibility());
 		return mapToDTO(getRepository().save(newInventory));
 	}
 
@@ -76,7 +78,10 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 			nameImage = generateRandomString(20);
 			Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + nameImage + ".jpg");
 			Files.createDirectories(Paths.get(rutaAbsoluta));
-			Files.delete(Paths.get(rutaAbsoluta + "//" + inventory.getImagen() + ".jpg"));
+			File curFile = new File(rutaAbsoluta + "//" + inventory.getImagen() + ".jpg");
+			if(curFile.exists() && curFile.isFile()){
+				Files.delete(Paths.get(rutaAbsoluta + "//" + inventory.getImagen() + ".jpg"));
+			}
 			Files.write(rutaCompleta, imagenBytes);
 		} catch (IOException e) {
 			return null;
