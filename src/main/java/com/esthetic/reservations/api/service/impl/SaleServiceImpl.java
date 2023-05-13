@@ -2,10 +2,13 @@ package com.esthetic.reservations.api.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.esthetic.reservations.api.dto.AppointmentDTO;
 import com.esthetic.reservations.api.dto.NewSaleDTO;
@@ -49,6 +52,7 @@ public class SaleServiceImpl extends GenericServiceImpl<Sale, SaleDTO> implement
      * @param saleDTO The NewSaleDTO of the sale.
      * @return The DTO of the new sale.
      */
+    @Transactional(propagation = Propagation.REQUIRED)
     public SaleDTO save(NewSaleDTO saleDTO) {
         Sale newSale = createSale(saleDTO);
         newSale = saleRepository.save(newSale);
@@ -61,30 +65,48 @@ public class SaleServiceImpl extends GenericServiceImpl<Sale, SaleDTO> implement
      * @param saleDTO
      * @return the Sale entity created.
      */
+    @Transactional(propagation = Propagation.REQUIRED)
     private Sale createSale(NewSaleDTO saleDTO) {
         List<NewSaleItemDTO> saleItemDTOs = saleDTO.getProducts();
         List<SaleItem> productsList = new ArrayList<>();
         Double total = 0d;
         Long quantity = 0l;
+        Boolean enoughStock = true;
+        List<String> stockErrors = new ArrayList<>();
         for (NewSaleItemDTO saleItemDTO : saleItemDTOs) {
             Inventory currentItem = inventoryService.mapToModel(inventoryService.findById(saleItemDTO.getProductId()));
             // Check for stock availability
             if (currentItem.getStore() < saleItemDTO.getQuantity()) {
-                throw new BadRequestException("Producto", currentItem.getInventory_name() + "sin stock. "
-                        + String.valueOf(currentItem.getStore() + " restantes."));
+                enoughStock = false;
+                stockErrors.add(String.format("%d %s disponibles", currentItem.getStore(), currentItem.getInventory_name()));
             }
-            // Modify the inventory
-            currentItem.setStore(currentItem.getStore() - saleItemDTO.getQuantity());
-            currentItem = inventoryService.mapToModel(inventoryService.save(inventoryService.mapToDTO(currentItem)));
-            // Create the sale items
-            SaleItem newSaleItem = new SaleItem(currentItem, saleItemDTO.getQuantity() * currentItem.getPrice(),
-                    saleItemDTO.getQuantity());
-            newSaleItem = saleItemService.mapToModel(saleItemService.save(saleItemService.mapToDTO(newSaleItem)));
-            productsList.add(newSaleItem);
-            total += newSaleItem.getSubtotal();
-            quantity += newSaleItem.getQuantity();
+            if(enoughStock){
+                // Modify the inventory
+                currentItem.setStore(currentItem.getStore() - saleItemDTO.getQuantity());
+                currentItem = inventoryService.mapToModel(inventoryService.save(inventoryService.mapToDTO(currentItem)));
+                // Create the sale items
+                SaleItem newSaleItem = new SaleItem(currentItem, saleItemDTO.getQuantity() * currentItem.getPrice(),
+                        saleItemDTO.getQuantity());
+                newSaleItem = saleItemService.mapToModel(saleItemService.save(saleItemService.mapToDTO(newSaleItem)));
+                productsList.add(newSaleItem);
+                total += newSaleItem.getSubtotal();
+                quantity += newSaleItem.getQuantity();
+            }
         }
-
+        if(!enoughStock){
+            int n = stockErrors.size();
+            String msg = "Sólo hay ";
+            int i = 0;
+            for (String error : stockErrors) {
+                msg += error;
+                if(i == stockErrors.size() - 1){
+                    break;
+                }
+                msg += i + 1 == stockErrors.size() - 1 ? " y " : ", ";
+                i++;
+            }
+            throw new BadRequestException(String.format("Producto%s sin stock: ", n > 1 ? "s" : ""), msg);
+        }
         // Create the sale
         Branch saleBranch = branchService.mapToModel(branchService.findById(saleDTO.getBranchId()));
         UserEntity saleClient = userService.mapToModel(userService.findById(saleDTO.getClientId()));
@@ -99,6 +121,7 @@ public class SaleServiceImpl extends GenericServiceImpl<Sale, SaleDTO> implement
      * @param id the id of the sale to delete.
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void delete(Long id) {
         Sale saleToDelete = saleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Venta", "no encontrada", "id", String.valueOf(id)));
@@ -129,6 +152,7 @@ public class SaleServiceImpl extends GenericServiceImpl<Sale, SaleDTO> implement
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public SaleDTO update(NewSaleDTO editedSaleDTO, Long id) {
         Sale oldSale = saleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Venta", "no encontrada", "id", String.valueOf(id)));
