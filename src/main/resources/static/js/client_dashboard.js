@@ -45,6 +45,14 @@
     purchases_phone.addEventListener("click", function(){
         location.href = "/app/client/purchases"
     });
+	const view_user = document.querySelector("#btn-editar-usuario");
+    view_user.addEventListener("click", function(){
+        location.href = "/app/client/view_user"
+    });
+	const view_user_phone = document.querySelector("#btn-editar-usuario-phone");
+    view_user_phone.addEventListener("click", function(){
+        location.href = "/app/client/view_user"
+    });
 })();
 
 
