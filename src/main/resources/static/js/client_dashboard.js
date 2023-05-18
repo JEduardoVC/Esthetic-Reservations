@@ -24,6 +24,18 @@
     appointment.addEventListener("click", function(){
         location.href = "/app/client/appointment"
     });
+	const purchases = document.querySelector("#purchases");
+    purchases.addEventListener("click", function(){
+        location.href = "/app/client/purchases"
+    });
+	const appointment_phone = document.querySelector("#appointment-phone");
+    appointment_phone.addEventListener("click", function(){
+        location.href = "/app/client/appointment"
+    });
+	const purchases_phone = document.querySelector("#purchases-phone");
+    purchases_phone.addEventListener("click", function(){
+        location.href = "/app/client/purchases"
+    });
 })();
 
 
