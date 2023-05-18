@@ -3,23 +3,24 @@
 
 <head th:insert="/generics/header"></head>
 <body>
-    <div class="owner-services">
-        <div th:insert="owner/title"></div>
-        <div>
-            <div th:insert="owner/navegation"></div>
-            <div class="btn-new-service">
-                <button class="btn-principal">Agregar nuevo servicio</button>
+    <main>
+        <div class="appointment">
+            <div class="title">
+                <h1 class="title-p">Mis citas</h1>
+                <img src="/img/Productos-venta.webp">
             </div>
-            <div class="title-services">
-                <div class="center"><h1>Nombre</h1></div>
-                <div class="center"><h1>Duracion</h1></div>
-                <div class="center"><h1>Precio</h1></div>
-                <div class="center"><h1>Acciones</h1></div>
+            <div class="appointment-aux">
+                <div class="volver-img">
+                    <button class="btn-volver-img" onclick="volver()">
+                        <img class="filter" src="/img/volver.webp">
+                    </button>
+                </div>
+                <div class="scroll-appointment" id="appointment-services"></div>
             </div>
-            <div class="show-services" id="mostrar-servicios"></div>
         </div>
-    </div>
+    </main>
 </body>
-<script src="/js/owner.js"></script>
-<script src="/js/service.js"></script>
+<!-- <script src="/js/logout.js"></script> -->
+<!-- <script src="/js/client_dashboard.min.js"></script> -->
+<script src="/js/client_appointment.js"></script>  
 </html>
