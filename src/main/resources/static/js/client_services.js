@@ -92,9 +92,9 @@ async function obtenerServicios() {
 async function obtenerServicio() {
 	const resultado = await fetch(`${BASE_URL}api/client/service/${sessionStorage.getItem("serviceId")}`, {
 		method: 'GET',
-			headers: {
-				"Authorization": `Bearer ${sessionStorage.getItem("token")}`
-			},
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`
+		},
 			redirect: "follow"
 	})
 	const respuesta = await resultado.json();

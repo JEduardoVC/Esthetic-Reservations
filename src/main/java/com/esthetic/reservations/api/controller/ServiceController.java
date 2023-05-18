@@ -24,7 +24,7 @@ import com.esthetic.reservations.api.service.impl.SeriviceServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
 
 @RestController
-@RequestMapping("/api/owner/servicios")
+@RequestMapping("/api/owner/services")
 public class ServiceController {
 	
 	@Autowired

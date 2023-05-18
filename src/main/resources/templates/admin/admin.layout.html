@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang=”es” xmlns:th=http://www.thymeleaf.org xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
     <title>Esthetic Reservations</title>
@@ -23,6 +23,7 @@
     <script th:src="@{/js/app.js}" type="text/javascript"></script>
     <script th:src="@{/js/util.js}" type="text/javascript"></script>
     <script th:src="@{/js/ApiUtils.js}" type="text/javascript"></script>
+    <script th:src="@{/js/admin.js}" type="text/javascript"></script>
     <script th:src="@{/js/vendor/sweetalert2/sweetalert2.all.min.js}" type="text/javascript"></script>
     
 </head>
@@ -75,13 +76,13 @@
                                 Cerrar Sesión
                             </a>
                         </li>
-                        <li class="nav-item border rounded-4 btn btn-primary text-white m-2 luna dark-mode-boton">
+                        <li class="nav-item border rounded-4 btn btn-primary text-white m-2 moon dark-mode-toggler">
                             <a class="nav-link text-white" aria-current="page">
                                 <i class="bi bi-sun-fill"></i>
                                 Modo Oscuro (OFF)
                             </a>
                         </li>
-                        <li class="nav-item border rounded-4 btn btn-primary text-white m-2 sol d-none ligth-mode-boton">
+                        <li class="nav-item border rounded-4 btn btn-primary text-white m-2 sun d-none dark-mode-toggler">
                             <a class="nav-link text-white" aria-current="page">
                                 <i class="bi bi-moon-stars-fill"></i>
                                 Modo Oscuro (ON)

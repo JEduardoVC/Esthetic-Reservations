@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
+    await isAllowed();
     darkMode();
     darkModePhone();
     menu();
@@ -6,36 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     isDarkMode();
     isDarkModeNew();
 });
-
-// $(function () {
-//     let darkMode = sessionStorage.getItem('darkMode');
-//     if (darkMode === null) {
-//         sessionStorage.setItem('darkMode', 'false');
-//         darkMode = 'false';
-//     }
-//     if(darkMode === 'false'){
-//         $('.luna').removeClass('d-none no-mostrar');
-//         $('.sol').addClass('d-none no-mostrar');
-//     } else {
-//         $('.sol').removeClass('d-none no-mostrar');
-//         $('.luna').addClass('d-none no-mostrar');
-//     }
-//     if(darkMode === 'false' && $('html').hasClass('dark-mode') === true){
-//         $('html').removeClass('dark-mode');
-//     }
-//     if(darkMode === 'true' && $('html').hasClass('dark-mode') === false){
-//         $('html').addClass('dark-mode');
-//     }
-//     $('.dark-mode-boton').on('click', toggleDarkMode);
-//     $('.ligth-mode-boton').on('click', toggleDarkMode);
-// })
-
-// const toggleDarkMode = function () {
-//     $('html').toggleClass('dark-mode');
-//     sessionStorage.setItem('darkMode', sessionStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
-//     $('.sol').toggleClass('d-none no-mostrar');
-//     $('.luna').toggleClass('d-none no-mostrar');
-// };
 
 function darkMode() {
     const botonDarkMode = document.querySelector(".dark-mode-boton");
@@ -134,6 +105,9 @@ function isDarkModeNew(){
                 }
             }
         }
+    }
+}
+
 function isDarkMode() {
     if (sessionStorage.getItem("darkMode")) {
         var root = document.getElementsByTagName('html')[0]; // '0' to assign the first (and only `HTML` tag)
@@ -163,4 +137,34 @@ async function showInfoBranch(branchId) {
     const { branchName } = branch;
     const nameBranch = document.querySelector("#nombre-branch");
     nameBranch.textContent = `${branchName}`;
+}
+
+async function isAllowed() {
+    const response = await allowedRequest();
+}
+
+async function allowedRequest() {
+    const url = BASE_URL + 'api/auth/allowed';
+    const uri = '/' + window.location.href.replace(BASE_URL, '');
+    const response = await fetch(url + new URLSearchParams({
+
+    }), {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+        },
+        body: JSON.stringify({
+            url: uri
+        }),
+        redirect: 'follow'
+    });
+    if(response.redirected){
+        location.href = response.url;
+    } else {
+        const status = response.status;
+        const json = await response.json();
+        return { 'status': status, 'msg': json.message };
+    }
 }
