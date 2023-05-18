@@ -2,7 +2,6 @@ package com.esthetic.reservations.api.dto;
 
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MinAppointmentDTO extends GenericModelDTO{
 
@@ -15,6 +14,8 @@ public class MinAppointmentDTO extends GenericModelDTO{
     private Long id_employee;
 
     private ArrayList<Long> id_service;
+    
+    private ArrayList<Long> cantidad;
 
     private Long id_status;
     
@@ -24,13 +25,14 @@ public class MinAppointmentDTO extends GenericModelDTO{
     }
 
 
-    public MinAppointmentDTO(Long id, String appointment_date, Time appointment_time, Long id_client, Long id_employee, ArrayList<Long> id_service, Long id_status, Long id_branch) {
+    public MinAppointmentDTO(Long id, String appointment_date, Time appointment_time, Long id_client, Long id_employee, ArrayList<Long> id_service, ArrayList<Long> cantidad, Long id_status, Long id_branch) {
         super(id);
         this.appointment_date = appointment_date;
         this.appointment_time = appointment_time;
         this.id_client = id_client;
         this.id_employee = id_employee;
         this.id_service = id_service;
+        this.cantidad = cantidad;
         this.id_status = id_status;
         this.id_branch = id_branch;
     }
@@ -90,4 +92,13 @@ public class MinAppointmentDTO extends GenericModelDTO{
 	public void setAppointment_time(Time appointment_time) {
 		this.appointment_time = appointment_time;
 	}
+
+	public ArrayList<Long> getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(ArrayList<Long> cantidad) {
+		this.cantidad = cantidad;
+	}
+	
 }

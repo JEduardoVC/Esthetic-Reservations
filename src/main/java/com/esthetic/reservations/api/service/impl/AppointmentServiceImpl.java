@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
+import javax.management.StringValueExp;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.esthetic.reservations.api.dto.AppointmentDTO;
+import com.esthetic.reservations.api.dto.GenericModelDTO;
 import com.esthetic.reservations.api.dto.MinAppointmentDTO;
 import com.esthetic.reservations.api.dto.ResponseDTO;
 import com.esthetic.reservations.api.exception.ResourceNotFoundException;
@@ -96,7 +98,7 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		Date date_created = Date.valueOf(LocalDate.now());
 		Date appointment_date = Date.valueOf(cita.getappointment_date());
 		Appointment appointment = new Appointment(date_created, appointment_date, cita.getAppointment_time(), usuario, null, null, sucursal);
-		appointment.setServicios(changeModel(cita.getId_service()));
+		appointment.setServicios(changeModel(cita.getCantidad(), cita.getId_service()));
 		return mapToDTO(appointmentRepository.save(appointment));
 	}
 	
@@ -110,7 +112,7 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		citaActual.setAppointment_Date(Date.valueOf(cita.getappointment_date()));
 		citaActual.setId_branch(sucursal);
 		citaActual.setId_client(usuario);
-		citaActual.setServicios(changeModel(cita.getId_service()));
+		citaActual.setServicios(changeModel(cita.getCantidad(), cita.getId_service()));
 		return mapToDTO(appointmentRepository.save(citaActual));
 	}
 	
@@ -122,31 +124,14 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		return "Cita Eliminada Correctamente";
 	}
 	
-	private List<Service> changeModel(ArrayList<Long> lista) {
+	private List<Service> changeModel(ArrayList<Long> cantidad, ArrayList<Long> lista) {
 		List<Service> listaServicio = new ArrayList<>();
-		for(Long id_service : lista) {
-			listaServicio.add(serviceImpl.mapToModel(serviceImpl.findById(id_service)));
+		for(int i=0; i<cantidad.size(); i++) {
+			for(int j=0; j<cantidad.get(i); j++) {
+				listaServicio.add(serviceImpl.mapToModel(serviceImpl.findById(lista.get(i))));
+			}
 		}
 		return listaServicio;
-	}
-	
-	public Object sendMail(Long id_usuario, Long id_branch, Long id_cita, boolean created) {
-		Appointment cita = appointmentRepository.findById(id_cita).get();
-        UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(id_usuario));
-        Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(id_branch));
-        Map<String, String> map = new HashMap<String, String>();
-        String message = util.typeEmail(created ? 1 : 2, usuario, sucursal, cita);
-        try {
-			mailService.sendMultiMail(usuario.getEmail(), message, id_cita);
-			System.out.println("Correo enviado");
-        	map.put("message", "Correo Enviado Correctamente");
-        	map.put("errorCode", "200");
-            return new ResponseEntity<Object>(map, HttpStatus.OK);
-        } catch (MessagingException | IOException e) {
-        	System.err.println(e.getMessage());
-        	map.put("message", e.getMessage());
-        	return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
-        }
 	}
 	
 	public ResponseDTO<AppointmentDTO> findAllByDate(Long id, String date) {
@@ -160,5 +145,35 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		ResponseDTO<AppointmentDTO> response = new ResponseDTO<>();
 		response.setContent(arregloCitas);
 		return response;
+	}
+	
+	public ResponseDTO<AppointmentDTO> findByIdAndbyBranch(Long id, Long id_branch) {
+		List<Appointment> listaCitas = appointmentRepository.findByIdAndByBranch(String.valueOf(id), String.valueOf(id_branch));
+		ArrayList<AppointmentDTO> arregloCitas = new ArrayList<>();
+		for(Appointment appointment : listaCitas) {
+			AppointmentDTO citaDTO = mapToDTO(appointment);
+			citaDTO.setId_service(appointment.getServicios());
+			arregloCitas.add(citaDTO);
+		}
+		ResponseDTO<AppointmentDTO> response = new ResponseDTO<>();
+		response.setContent(arregloCitas);
+		return response;
+	}
+	
+	public ResponseDTO<AppointmentDTO> findByDateAndEmployee(Long id_branch, String date, Long id_employee) {
+		List<Appointment> listaCitas = appointmentRepository.findByIdEmployeeAndByBranch(date, String.valueOf(id_branch), String.valueOf(id_employee));
+		ResponseDTO<AppointmentDTO> response = new ResponseDTO<>();
+		response.setContent(changeModelToDTO(listaCitas));
+		return response;
+	}
+	
+	private ArrayList<AppointmentDTO> changeModelToDTO(List<Appointment> lista) {
+		ArrayList<AppointmentDTO> arregloCitas = new ArrayList<>();
+		for(Appointment appointment : lista) {
+			AppointmentDTO citaDTO = mapToDTO(appointment);
+			citaDTO.setId_service(appointment.getServicios());
+			arregloCitas.add(citaDTO);
+		}
+		return arregloCitas;
 	}
 }

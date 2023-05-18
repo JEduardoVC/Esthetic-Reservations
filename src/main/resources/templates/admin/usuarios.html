@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/admin.layout.html}">
+
+<body>
+    <div layout:fragment="title">
+        <h1 class="text-primary er-header fw-bold">Usuarios</h1>
+    </div>
+    <div layout:fragment="toolbar-btns">
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <button id="createuser" class="btn btn-primary fw-bold m-3 modal-trigger" data-action="add" data-bs-toggle="modal"
+                data-bs-target="#modalUsersForm" data-target="-1">
+                <i class="bi bi-person-plus-fill"></i>
+                Agregar usuario
+            </button>
+        </div>
+    </div>
+    <section layout:fragment="content">
+        <div class="table-responsive p-2">
+            <table class="table table-striped p-2" id="usersTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                    </tr>
+                </tfoot>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+
+        </div>
+
+        <div id="modalUsersForm" class="modal fade">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <h1 class="text-primary modal-title er-header fw-bold">Usuario</h1>
+                        <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" th:insert="/admin/formulario-usuario.html"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+<div layout:fragment="page-scripts">
+    <script th:src="@{/js/admin.user.js}"></script>
+</div>
+
+</html>

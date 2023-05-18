@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.util.AntPathMatcher;
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
+
 @SpringBootApplication
-@EntityScan( basePackages = {"com.esthetic.reservations.api.model"} )
+@EntityScan(basePackages = { "com.esthetic.reservations.api.model" })
 @EnableJpaRepositories()
 public class EstheticReservationsApplication {
 
@@ -19,8 +21,13 @@ public class EstheticReservationsApplication {
 	}
 
 	@Bean
-	public AntPathMatcher requestMatcher(){
+	public AntPathMatcher requestMatcher() {
 		return new AntPathMatcher();
+	}
+
+	@Bean
+	public LayoutDialect layoutDialect() {
+		return new LayoutDialect();
 	}
 
 	public static void main(String[] args) {

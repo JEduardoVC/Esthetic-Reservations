@@ -47,12 +47,12 @@ async function mostrarProducto() {
 			carrito.productos = [...carrito.productos, {id: producto.id, cantidad:cantidad}]
 			alerta("success", "Producto agregado correctamente", "Hecho");
 		}
+		carrito.productos = carrito.productos.filter(producto => producto.cantidad != "0");
 		sessionStorage.setItem("carrito", JSON.stringify(carrito));
 	});
 }
 
 function isProduct(producto) {
-	console.info(producto);
 	return producto.id == sessionStorage.getItem("productId");
 }
 
@@ -78,7 +78,6 @@ async function mostrarProductos() {
 			sessionStorage.setItem("productId", producto.id);
 			mostrarProducto();
 		});
-		(producto.id != sessionStorage.getItem("productId")) ? prod.classList.remove("selected") : prod.classList.add("selected");
 		div.appendChild(prod);
 	})
 }

@@ -22,6 +22,8 @@ public class AppConstants {
     public static final Long JWT_HOUR = JWT_MINUTE * 60;
     public static final Long JWT_DAY = JWT_HOUR * 24;
     public static final Long JWT_EXPIRATION_TIME = JWT_DAY * 30;
+
+    public static final String INVALID_PASSWORD_MSG = "Contraseña inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)";
     
     public static final String BASE_URL = "http://localhost:5500/";
 

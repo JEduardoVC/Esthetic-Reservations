@@ -1,0 +1,26 @@
+$primary: #7218c6;
+$purple: #811372;
+
+$font-family-sans-serif: 'Ubuntu', sans-serif;
+
+$input-btn-focus-color: transparentize($purple, 0.7);
+
+$input-group-addon-color: #f64960;
+$input-group-addon-bg: #fff;
+
+@import "./bootstrap/bootstrap";
+
+.er-header {
+    font-family: 'Courgette', sans-serif;
+    font-weight: bold;
+}
+
+.form-control {
+    border: 2px inset #C933C7;
+    border-radius: 40px;
+}
+
+.form-select {
+    border: 2px inset #C933C7;
+    border-radius: 40px;
+}

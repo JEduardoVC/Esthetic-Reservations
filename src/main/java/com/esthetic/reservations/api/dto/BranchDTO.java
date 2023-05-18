@@ -1,6 +1,7 @@
 package com.esthetic.reservations.api.dto;
 
 import java.sql.Time;
+import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.esthetic.reservations.api.model.Employee;
 import com.esthetic.reservations.api.model.UserEntity;
 
 public class BranchDTO extends GenericModelDTO {
@@ -33,12 +35,14 @@ public class BranchDTO extends GenericModelDTO {
 
     private String municipality;
 
+    private Set<EmployeeDTO> employees;
+
     public BranchDTO() {
         super();
     }
 
     public BranchDTO(String branchName, String location, UserEntity owner, Time scheduleOpen,
-            Time scheduleClose, String state, String municipality) {
+            Time scheduleClose, String state, String municipality, Set<EmployeeDTO> employees) {
         this.branchName = branchName;
         this.location = location;
         this.owner = owner;
@@ -46,10 +50,11 @@ public class BranchDTO extends GenericModelDTO {
         this.scheduleClose = scheduleClose;
         this.state = state;
         this.municipality = municipality;
+        this.employees = employees;
     }
 
     public BranchDTO(Long id, String branchName, String location, UserEntity owner, Time scheduleOpen,
-            Time scheduleClose, String state, String municipality) {
+            Time scheduleClose, String state, String municipality, Set<EmployeeDTO> employees) {
         super(id);
         this.branchName = branchName;
         this.location = location;
@@ -58,6 +63,15 @@ public class BranchDTO extends GenericModelDTO {
         this.scheduleClose = scheduleClose;
         this.state = state;
         this.municipality = municipality;
+        this.employees = employees;
+    }
+
+    public Set<EmployeeDTO> getEmployees() {
+        return this.employees;
+    }
+
+    public void setEmployees(Set<EmployeeDTO> employees) {
+        this.employees = employees;
     }
 
     public String getBranchName() {

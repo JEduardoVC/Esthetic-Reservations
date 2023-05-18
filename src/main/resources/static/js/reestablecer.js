@@ -15,6 +15,6 @@ async function enviarCorreo() {
 	if(data.errorCode == 404) {
 		alerta("error", "Correo no registrado");
 	} else {
-		alerta("success", data.message)
+		alerta("success", "Se ha enviado un correo con las instrucciones para recuperar su contraseña", "Correo enviado")
 	}
 }

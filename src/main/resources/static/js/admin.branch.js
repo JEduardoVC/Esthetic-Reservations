@@ -1,31 +1,125 @@
 'use strict'
-let branches = [];
-let table = $('#branchesTable').DataTable({
-    paging: true,
-    language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json'
+
+DataTable.Buttons.defaults.dom.button.className = 'btn';
+
+var employeesTable;
+var branchesTable;
+
+$(async function () {
+    const branches = await getBranches();
+    branchesTable = $('#branchesTable').DataTable({
+        paging: true,
+        data: branches,
+        columns: [
+            { "name": "id", "data": "id", "targets": 0 },
+            { "name": "nombre", "data": "branchName", "targets": 1 },
+            { "name": "direccion", "data": "location", "targets": 2 },
+            {
+                "name": "dueño", "render": function (data, type, row) {
+                    return `${data.owner.name} ${data.owner.lastName} (${data.owner.id})`;
+                }, 'data': null, "targets": 3
+            },
+            { "name": "apertura", "data": "scheduleOpen", "targets": 4 },
+            { "name": "cierre", "data": "scheduleClose", "targets": 5 },
+            {
+                "searchable": false, "orderable": false,
+                "name": "acciones", "render": function (data, type, row) {
+                    let rowId = Number(data.id);
+                    return `
+                            <button type="button" class="btn btn-warning rounded-pill modal-trigger" data-bs-toggle="modal" data-bs-target="#modalBranchesForm" data-action="edit" data-target="${rowId}"><span class="bi bi-pencil"></span></button>
+                            <button type="button" class="btn btn-danger rounded-pill" data-target="${rowId}"><span class="bi bi-trash text-white"></span></button>`;
+                }, "data": null, "targets": 6
+            }
+        ],
+        language: languageMX
+    });
+
+    let lang = languageMX;
+    lang.select = {
+        rows: {
+            _: 'Seleccionados %d empleados.',
+            0: 'Selecciona un empleado dando clic.',
+            1: 'Un empleado seleccionado.'
+        },
+        cols: {
+
+        }
     }
-});
+    employeesTable = $('#employeesTable').DataTable({
+        paging: true,
+        data: [],
+        select: {
+            style: 'multi'
+        },
+        dom: 'iBlfprtlp',
+        rowId: 'id',
+        columns: [
+            { "name": "id", "data": "user.id", "targets": 0 },
+            {
+                "name": "nombre", "render": function (data, type, row) {
+                    return `${data.user.name} ${data.user.lastName}`;
+                }, "data": null, "targets": 1
+            },
+            { "name": "username", "data": "user.username", "targets": 2 },
+        ],
+        buttons: [
+            {
+                text: 'Seleccionar filtrados.',
+                action: function () {
+                    this.rows({ search: 'applied' }).select();
+                },
+                className: 'btn-outline-primary m-2 rounded-pill'
+            },
+            {
+                text: 'Deseleccionar filtrados.',
+                action: function () {
+                    this.rows({ search: 'applied' }).deselect();
+                },
+                className: 'btn-outline-secondary m-2 rounded-pill'
+            },
+            {
+                text: 'Deseleccionar todos',
+                action: function () {
+                    this.rows().deselect();
+                },
+                className: 'btn-outline-warning m-2 rounded-pill'
+            },
+            {
+                extend: 'showSelected',
+                text: `Mostrar selección`,
+                className: 'btn-outline-success m-2 rounded-pill'
+            },
+        ],
+        language: lang
+    });
+    employeesTable.on('buttons-action', function (e, buttonApi, dataTable, node, config) {
+        if (buttonApi.text() === 'Mostrar selección' || buttonApi.text() === 'Mostrar todos') {
+            dataTable
+                .search('')
+                .draw()
+            if (buttonApi.text() === 'Mostrar selección') {
+                buttonApi.text('Mostrar todos');
+            } else {
+                buttonApi.text('Mostrar selección');
+            }
 
-window.onload = inflate();
+        }
+    });
 
-$(document).ready(function () {
     $('.timepicker').timepicker({
         'step': 15,
         'timeFormat': 'h:i A',
         'minTime': '0:00am',
         'maxTime': '11:45pm',
-        'scrollDefault': '10:00am'
-    });
-    $('.timepicker').keydown(function (e) {
-        e.preventDefault();
+        'scrollDefault': '10:00am',
+        'disableTextInput': true,
+        'disableTouchKeyboard': true
     });
 });
 
-
 $('#branch-open').on('changeTime', function () {
     $('#branch-close').timepicker('option', 'minTime', $(this).val());
-    if($(this).val() !== '12:00 AM'){
+    if ($(this).val() !== '12:00 AM') {
         $('#branch-close').timepicker('option', 'maxTime', '12:00 AM');
     } else {
         $('#branch-close').timepicker('option', 'maxTime', '11:45 PM');
@@ -34,329 +128,354 @@ $('#branch-open').on('changeTime', function () {
 
 $('#branch-close').on('changeTime', function () {
     $('#branch-open').timepicker('option', 'maxTime', $(this).val());
-    if($(this).val() === '12:00 AM'){
+    if ($(this).val() === '12:00 AM') {
         $('#branch-open').timepicker('option', 'minTime', '12:00 AM');
         $('#branch-open').timepicker('option', 'maxTime', '11:45 PM');
     }
 });
 
-function inflate() {
-    loadBranches();
+$(document).on('click', '.btn-danger', async function (e) {
+    const id = $(this).data('target');
+    await deleteBranch(id);
+});
+
+$(document).on('click', '.modal-trigger', function (e) {
+    const action = $(this).data('action');
+    const id = $(this).data('target');
+    inflateForm(action, id !== undefined ? id : -1);
+    $('#btnModal').data('action', action);
+    $('#btnModal').data('target', id);
+});
+
+function hideFeedback(aria) {
+    let feedback = $(`#${aria}Feedback`);
+    feedback.addClass('d-none');
+    feedback.removeClass('d-block');
+    feedback.html('');
 }
 
-function loadBranches() {
-    table.clear();
-    const url = BASE_URL + 'api/branch/all';
-    fetch(url + new URLSearchParams({
+function showFeedback(aria, errors) {
+    let feedback = $(`#${aria}Feedback`);
+    if (Array.isArray(errors)) {
+        let html = `<ul>`;
+        errors.forEach(error => {
+            html += `<li>${error}</li>`;
+        });
+        html += `</ul>`;
+        feedback.html(html);
+    } else {
+        feedback.html(errors);
+    }
+    feedback.addClass('d-block');
+    feedback.removeClass('d-none');
+}
 
-    }), {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    })
-        .then((response) => response.json())
-        .then(data => {
-            if (typeof data.errorCode !== 'undefined') {
-                if (data.errorCode == 404) {
-                    alerta('warning', 'Sin sucursales.');
-                }
-            } else {
-                branches = data.content;
-                const html = branches.map(branch => {
-                    return `<tr>
-                        <td class="text-dark">${branch.id}</td>
-                        <td class="text-dark">${branch.branchName}</td>
-                        <td class="text-dark">${branch.location + ', ' + branch.municipality + ', ' + branch.state}</td>
-                        <td class="text-dark">${branch.owner.name + ' (' + branch.owner.id + ')'}</td>
-                        <td class="text-dark">${branch.scheduleOpen}</td>
-                        <td class="text-dark">${branch.scheduleClose}</td>
-                        <td>
-                            <button id="deletebranch${branch.id}" class="btn btn-outline-danger fs-4" onclick="deleteBranch(${branch.id});">Eliminar</button>
-                            <button id="editbranch${branch.id}" class="btn btn-warning fs-4" data-bs-toggle="modal" data-bs-target="#modalBranchesForm" onclick="GetInfo('edit',${branch.id});">Editar</button>
-                        </td>
-                    </tr>`
-                }).join('');
-                table.rows.add($(html)).draw();
+function cleanForm() {
+    $('input').each(function () {
+        $(this).val('');
+        $(this).removeClass('is-invalid is-valid');
+        hideFeedback($(this).attr('aria-label'));
+    });
+    $('select').each(function () {
+        $(this).val('');
+        $(this).removeClass('is-invalid is-valid');
+        hideFeedback($(this).attr('aria-label'));
+    });
+    // $('#branchesdiv').addClass('no-mostrar d-none');
+    $('#employeesTable').DataTable().rows().deselect();
+    $('#alertas').addClass('no-mostrar d-none');
+    $('#select-owner option').remove();
+    // hideFeedback('roles');
+    hideFeedback('form');
+}
+
+function refreshTable(table, data) {
+    table.clear();
+    table.rows.add(data).draw(true);
+}
+
+async function inflateForm(action, id = -1) {
+    cleanForm();
+    const owners = await getOwners();
+    const select = $('#select-owner');
+    if (id == -1) {
+        select.append($('<option>', {
+            value: '',
+            text: 'Selecciona un dueño.'
+        }))
+    }
+    $(owners).each(function () {
+        let owner = this;
+        select.append($('<option>', {
+            value: owner.id,
+            text: owner.username
+        }))
+    });
+    refreshTable(employeesTable, await getAllEmployees());
+    if (action === 'add') {
+    }
+    if (action === 'edit') {
+        const branch = await getBranch(id);
+        const employees = await getBranchEmployees(branch.id);
+        let employeesIds = [];
+        $(employees).each(function () {
+            employeesIds.push('#' + this.id);
+        });
+        employeesTable.rows(employeesIds).select();
+        const ownerId = branch.owner.id;
+        document.getElementById("branch-name").value = branch.branchName;
+        document.getElementById("branch-location").value = branch.location;
+        document.getElementById("branch-state").value = branch.state;
+        document.getElementById("branch-municipality").value = branch.municipality;
+        $('#select-owner option').each(function () {
+            if (Number($(this).val()) === ownerId) {
+                select.val($(this).val());
+                return;
             }
-        })
+        });
+        setTpDate(branch.scheduleOpen, 'branch-open');
+        setTpDate(branch.scheduleClose, 'branch-close');
+    }
+}
+
+function validate() {
+
+}
+
+async function extraValidation(valid = true) {
+    const selectedEmployees = employeesTable.rows({ selected: true });
+    let employeesIds = [];
+    selectedEmployees.every(function (rowIdx, tableLoop, rowLoop) {
+        const employee = this.data();
+        employeesIds.push(employee.id);
+    });
+    let cont = 0;
+    if (!valid) {
+        $('#formFeedback').html('Revisa el formulario.');
+        showFeedback('form', ['Revisa el formulario']);
+        return cont;
+    } else {
+        hideFeedback('form');
+        const branchId = $('#btnModal').data('target');
+        const action = $('#btnModal').data('action');
+        const done = await actionBranch(action, branchId, employeesIds);
+        if (done) {
+            refreshTable(branchesTable, await getBranches());
+            alerta('success', action === 'add' ? 'Se creó la sucursal.' : 'Se editó la sucursal.');
+            $('#modalBranchesForm').modal('hide');
+        }
+    }
+}
+
+$(document).on('click', '#btnModal', function (e) {
+    $('#branchesForm').validate().destroy();
+    $('#branchesForm').validate({
+        invalidHandler: async function (event, validator) {
+            // 'this' refers to the form
+            const extra = await extraValidation(false);
+            var errors = validator.numberOfInvalids() + extra;
+            if (errors) {
+                var message = errors == 1
+                    ? 'Error en 1 campo. Revisa lo resaltado en rojo.'
+                    : 'Error en ' + errors + ' campos. Han sido resaltados en rojo.';
+                showFeedback('form', [message]);
+            } else {
+                hideFeedback('form');
+            }
+        },
+        submitHandler: async function (form) {
+            await extraValidation(true);
+        },
+        rules: {
+            'branch-name': 'required',
+            'select-owner': 'required',
+            'branch-location': 'required',
+            'branch-municipality': 'required',
+            'branch-state': 'required',
+            'branch-open': 'required',
+            'branch-close': 'required'
+        },
+        messages: {
+            'branch-name': 'Ingresa el nombre de la sucursal',
+            'select-owner': 'Selecciona el dueño de la sucursal',
+            'branch-location': 'Ingresa la ubicación de la sucursal',
+            'branch-municipality': 'Ingresa el municipio',
+            'branch-state': 'Ingresa el estado',
+            'branch-open': 'Selecciona la hora de apertura',
+            'branch-close': 'Selecciona la hora de cierre'
+
+        },
+        errorClass: 'is-invalid',
+        validClass: 'is-valid',
+        errorElement: 'li',
+        wrapper: 'ul',
+        errorPlacement: function (error, element) {
+            const aria = element.attr('aria-label');
+            error.appendTo($(`#${aria}Feedback`));
+            showFeedback(aria, error);
+        }
+    });
+});
+
+async function getBranches() {
+    const branches = await request({
+        method: 'GET',
+        endpoint: 'api/branch/all',
+        alertOnError: true,
+    });
+    return branches;
+}
+
+async function getBranch(id) {
+    const branches = await request({
+        method: 'GET',
+        endpoint: `api/branch/${id}`,
+        alertOnError: true,
+        fetch: 'data'
+    });
+    return branches;
+}
+
+async function getOwners() {
+    const owners = await request({
+        method: 'GET',
+        endpoint: 'api/user/all',
+        urlParams: {
+            by: 'role',
+            filterTo: 'OWNER'
+        },
+        alertOnError: true,
+    });
+    if (owners.length === 0) {
+        alert('no hay dueños');
+    }
+    return owners;
+}
+
+async function getAllEmployees() {
+    const employees = await request({
+        method: 'GET',
+        endpoint: 'api/employee/all',
+        alertOnError: true
+    });
+    return employees;
+}
+
+async function getBranchEmployees(id) {
+    const employees = await request({
+        method: 'GET',
+        endpoint: 'api/employee/all',
+        urlParams: {
+            by: 'branch',
+            filterTo: id
+        }
+    });
+    return employees;
+}
+
+async function actionBranch(action, id, selectedEmployees) {
+    let data = {};
+    $('form#branchesForm :input').each(function () {
+        const aria = $(this).attr('aria-label');
+        data[aria] = $(this).val();
+    });
+    data['scheduleOpen'] = $('#branch-open').timepicker('getTime', new Date()).toString().slice(16, 24);
+    data['scheduleClose'] = $('#branch-close').timepicker('getTime', new Date()).toString().slice(16, 24);
+    data['ownerId'] = $('#select-owner').val();
+    data['employees'] = selectedEmployees;
+    if (action === 'add') {
+        return addBranch(data);
+    } else {
+        return updateBranch(id, data);
+    }
+}
+
+async function addBranch(data) {
+    let body = {
+        branchName: data.branchName,
+        location: data.location,
+        state: data.state,
+        ownerId: data.ownerId,
+        municipality: data.municipality,
+        scheduleOpen: data.scheduleOpen,
+        scheduleClose: data.scheduleClose
+    }
+    if (data.employees.length > 0) {
+        body['employeesIds'] = data.employees;
+    }
+    const addResponse = await request({
+        method: 'POST',
+        endpoint: 'api/branch',
+        body: body,
+        alertOnError: false,
+        fetch: 'response'
+    });
+    if (addResponse.isValid === true) {
+        return true;
+    } else {
+        if (addResponse.status === 400) {
+            showObjectAlerts(addResponse.data.message, 'error');
+        } else if (addResponse.status === 500 || addResponse.status === 409) {
+            let errors = [];
+            errors.push(addResponse.data.message);
+            showAlerts(errors, 'error');
+        } else {
+            alerta('error', addResponse.status + '\n' + JSON.stringify(addResponse.data.message));
+        }
+    }
+    return false;
+}
+
+async function updateBranch(id, data) {
+    let body = {
+        branchName: data.branchName,
+        location: data.location,
+        state: data.state,
+        ownerId: data.ownerId,
+        municipality: data.municipality,
+        scheduleOpen: data.scheduleOpen,
+        scheduleClose: data.scheduleClose,
+        employeesIds: data.employees
+    }
+    const addResponse = await request({
+        method: 'PUT',
+        endpoint: 'api/branch/' + id,
+        body: body,
+        alertOnError: false,
+        fetch: 'response'
+    });
+    if (addResponse.isValid === true) {
+        return true;
+    } else {
+        if (addResponse.status === 400) {
+            showObjectAlerts(addResponse.data.message, 'error');
+        } else if (addResponse.status === 500 || addResponse.status === 409) {
+            let errors = [];
+            errors.push(addResponse.data.message);
+            showAlerts(errors, 'error');
+        } else {
+            alerta('error', addResponse.status + '\n' + JSON.stringify(addResponse.data.message));
+        }
+    }
+    return false;
 }
 
 async function deleteBranch(id) {
     const confirmed = await confirmAlert('warning', 'Eliminar sucursal', '¿Estás seguro de eliminar la sucursal? No se puede deshacer.', 'Sí, eliminar.');
     if (confirmed) {
-        actionDeleteBranch(id);
-    }
-}
-
-async function actionDeleteBranch(id) {
-    const response = await deleteBranchRequest(id);
-    if (!isValidResponse(response)) {
-        alerta('error', response.message);
-    }
-    alerta('success', 'Sucursal eliminada.');
-    loadBranches();
-}
-
-
-async function deleteBranchRequest(id) {
-    const url = BASE_URL + `api/branch/${id}`;
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
-        method: 'DELETE',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+        const response = await request({
+            method: 'DELETE',
+            endpoint: `api/branch/${id}`,
+            fetch: 'response'
+        });
+        if(!response.isValid){
+            alerta('error', response.data.message);
+            return;
         }
-    });
-    const json = await response.json();
-    return json;
-}
-
-function GetInfo(action, id) {
-    let ownerId = 0;
-    let branchId = 0;
-    document.getElementById('alertas').innerHTML = '';
-    if (action == 'add') {
-        document.getElementById("branch-name").value = '';
-        document.getElementById("branch-address").value = '';
-        document.getElementById("branch-state").value = '';
-        document.getElementById("branch-municipality").value = '';
-        document.getElementById("branch-open").value = '';
-        document.getElementById("branch-close").value = '';
-        getUsers();
-    } else {
-        const url = BASE_URL + `api/branch/${id}`;
-        fetch(url + new URLSearchParams({
-
-        }), {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-            }
-        })
-            .then((response) => response.json())
-            .then(async branch => {
-                if (typeof branch.errorCode !== 'undefined') {
-                    if (branch.errorCode == 404) {
-                        alerta('error', 'No existe esa sucursal.');
-                    }
-                } else {
-                    ownerId = branch.owner.id;
-                    branchId = branch.id;
-                    document.getElementById("branch-name").value = branch.branchName;
-                    document.getElementById("branch-address").value = branch.location;
-                    document.getElementById("branch-state").value = branch.state;
-                    document.getElementById("branch-municipality").value = branch.municipality;
-                    await getUsers(branch.owner.id);
-                    setTpDate(branch.scheduleOpen, 'branch-open');
-                    setTpDate(branch.scheduleClose, 'branch-close');
-                    // document.getElementById("branch-open").value = $('#branch-open').timepicker('getTime', new Date()).toString().slice(16, 24);
-                    // document.getElementById("branch-close").value = $('#branch-close').timepicker('getTime', new Date()).toString().slice(16, 24);
-                }
-            })
+        refreshTable(branchesTable, await getBranches());
+        alerta('success', 'Sucursal eliminada.');
+        return true;
     }
-    document.getElementById("btnModal").onclick = function () {
-        actionBranch(action, branchId, ownerId);
-    };
-}
-
-async function getUsers(ownerId = -1) {
-    $("#select-owner").empty();
-    const response = await getUsersRequest();
-    if (!isValidResponse(response)) {
-        alerta('error', 'No hay ningún dueño.');
-        $('#modalBranchesForm').modal('hide');
-        return;
-    }
-
-    const users = response.content;
-    const select = document.getElementById('select-owner');
-
-    if (ownerId == -1) {
-        let opt = document.createElement('option');
-        opt.selected = true;
-        opt.value = -1;
-        opt.innerHTML = 'Selecciona un usuario';
-        opt.classList.add('fs-4')
-        select.appendChild(opt);
-    }
-
-    users.forEach(user => {
-        let opt = document.createElement('option');
-        opt.selected = user.id == ownerId;
-        opt.value = user.id;
-        opt.innerHTML = user.username;
-        opt.classList.add('fs-4')
-        select.appendChild(opt);
-    });
-
-}
-
-async function getUsersRequest() {
-    const url = BASE_URL + 'api/user/all?';
-    const response = await fetch(url + new URLSearchParams({
-        'by': 'role',
-        'filterTo': 'OWNER'
-    }), {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    });
-    const json = await response.json();
-    return json;
-}
-
-function actionBranch(action, id, ownerId = -1) {
-    let errors = [];
-    let error = false;
-    const name = document.getElementById("branch-name").value;
-    const address = document.getElementById("branch-address").value;
-    const estate = document.getElementById("branch-state").value;
-    const municipality = document.getElementById("branch-municipality").value;
-    ownerId = document.getElementById("select-owner").value;
-    if (name == '') {
-        errors.push('Debes introducir el nombre de la sucursal');
-        error = true;
-    }
-    if (address == 0) {
-        errors.push('Debes introducir la dirección');
-        error = true;
-    }
-    if (estate == '') {
-        errors.push('Debes introducir el estado');
-        error = true;
-    }
-    if (municipality == '') {
-        errors.push('Debes introducir la ciudad');
-        error = true;
-    }
-    if (ownerId == -1) {
-        errors.push('Debes seleccionar el dueño');
-        error = true;
-    }
-    let open = '';
-    let close = '';
-    if ($('#branch-open').val() == '') {
-        errors.push('Debes introducir la hora de apertura');
-        error = true;
-    } else {
-        open = $('#branch-open').timepicker('getTime', new Date()).toString().slice(16, 24);
-    }
-    if ($('#branch-close').val() == '') {
-        errors.push('Debes introducir la hora de cierre');
-        error = true;
-    } else {
-        close = $('#branch-close').timepicker('getTime', new Date()).toString().slice(16, 24);
-    }
-    if (error) {
-        showAlerts(errors);
-    } else if (action == 'add') {
-        AddBranch(name, address, estate, municipality, open, close, ownerId);
-    } else {
-        UpdateBranch(name, address, estate, municipality, open, close, id, ownerId);
-    }
-}
-
-async function AddBranch(name, address, branchEstate, branchMunicipality, branchOpen, branchClose, ownerId) {
-    const addResponse = await addBranchRequest(name, address, branchEstate, branchMunicipality, branchOpen, branchClose, ownerId);
-    if (isValidResponse(addResponse)) {
-        alerta('success', 'Se creó la sucursal');
-        $('#modalBranchesForm').modal('hide');
-        loadBranches();
-    } else {
-        if (addResponse.errorCode === 400) {
-            showObjectAlerts(addResponse.message, 'error');
-        } else if (addResponse.errorCode === 500 || addResponse.errorCode === 409) {
-            let errors = [];
-            errors.push(addResponse.message);
-            showAlerts(errors, 'error');
-        } else {
-            alerta('error', addResponse.errorCode + '\n' + JSON.stringify(addResponse.message));
-        }
-    }
-}
-
-async function addBranchRequest(name, address, branchEstate, branchMunicipality, branchOpen, branchClose, ownerId) {
-    const url = BASE_URL + `api/branch`;
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        },
-        body: JSON.stringify({
-            branchName: name,
-            location: address,
-            state: branchEstate,
-            ownerId: ownerId,
-            municipality: branchMunicipality,
-            scheduleOpen: branchOpen,
-            scheduleClose: branchClose
-        })
-    });
-    const json = await response.json();
-    return json;
-}
-
-async function UpdateBranch(name, address, branchEstate, branchMunicipality, branchOpen, branchClose, id, curOwnerId) {
-    const updateResponse = await updateBranchRequest(name, address, branchEstate, branchMunicipality, branchOpen, branchClose, id, curOwnerId);
-    if (isValidResponse(updateResponse)) {
-        alerta('success', 'Se modificó la sucursal');
-        $('#modalBranchesForm').modal('hide');
-        loadBranches();
-    } else {
-        if (updateResponse.errorCode === 400) {
-            showObjectAlerts(updateResponse.message, 'error');
-        } else if (updateResponse.errorCode === 500 || updateResponse.errorCode === 409) {
-            let errors = [];
-            errors.push(updateResponse.message);
-            showAlerts(errors, 'error');
-        } else {
-            alerta('error', updateResponse.errorCode + '\n' + JSON.stringify(updateResponse.message));
-        }
-    }
-}
-
-async function updateBranchRequest(name, address, branchEstate, branchMunicipality, branchOpen, branchClose, id, curOwnerId) {
-    const url = BASE_URL + `api/branch/${id}`;
-    const response = await fetch(url + new URLSearchParams({
-
-    }), {
-        method: 'PUT',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        },
-        body: JSON.stringify({
-            branchName: name,
-            location: address,
-            state: branchEstate,
-            ownerId: curOwnerId,
-            municipality: branchMunicipality,
-            scheduleOpen: branchOpen,
-            scheduleClose: branchClose
-        })
-    });
-    const json = await response.json();
-    return json;
-}
-
-function isValidResponse(response) {
-    return typeof response.errorCode === 'undefined';
 }
 
 function showAlerts(alerts, type = 'error') {
@@ -391,10 +510,10 @@ function strToDate(str) {
 async function setTpDate(str, tpId) {
     strToDate(str).then(date => {
         $('#' + tpId).timepicker('setTime', date);
-        if(tpId == 'branch-close'){
+        if (tpId == 'branch-close') {
             $('#branch-close').timepicker('option', 'minTime', $('#branch-open').val());
         } else {
-            if($('#' + tpId).val() !== '12:00 AM'){
+            if ($('#' + tpId).val() !== '12:00 AM') {
                 $('#branch-close').timepicker('option', 'maxTime', '12:00 AM');
             }
         }

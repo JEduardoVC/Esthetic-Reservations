@@ -1,7 +1,6 @@
 (function() {
 	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`;
 	mostrarServicios();
-//	sessionStorage.removeItem("carrito");
 })();
 
 let carrito = JSON.parse(sessionStorage.getItem("carrito")) ?? {servicios: [], productos: []};
@@ -22,7 +21,6 @@ async function mostrarServicios() {
 			sessionStorage.setItem("serviceId", servicio.id);
 			mostrarServicio();
 		});
-		(servicio.id != sessionStorage.getItem("serviceId")) ? divServicio.classList.remove("selected") : divServicio.classList.add("selected");
 		div.appendChild(divServicio);
 	});
 }
@@ -30,7 +28,6 @@ async function mostrarServicios() {
 async function mostrarServicio() {
 	const servicio = await obtenerServicio();
 	if(!servicio) return;
-	console.info(carrito.servicios)
 	const value = carrito.servicios.find(serv => serv.id == servicio.id) ?? {cantidad: 0};
 	const divServicio = document.createElement("div");
 	divServicio.innerHTML = `
@@ -65,12 +62,13 @@ async function mostrarServicio() {
 			const carritoObj = JSON.parse(sessionStorage.getItem("carrito"));
 			carritoObj.servicios[index] = {id: servicio.id, cantidad: cantidad}
 			carrito = carritoObj;
-			alerta("success", "Servicio actualizado correctamente", "Hecho");	
+			alerta("success", "Servicio actualizado correctamente", "Hecho");
 		}
 		else {
 			carrito.servicios = [...carrito.servicios, {id: servicio.id, cantidad:cantidad}]
 			alerta("success", "Producto agregado correctamente", "Hecho");
 		}
+		carrito.servicios = carrito.servicios.filter(servicio => servicio.cantidad != "0");
 		sessionStorage.setItem("carrito", JSON.stringify(carrito));
 	})
 }

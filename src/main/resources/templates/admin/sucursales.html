@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/admin.layout.html}">
+
+<div layout:fragment="page-styles">
+    <link rel="stylesheet" th:href="@{/css/vendor/jquery-timepicker/jquery.timepicker.min.css}">
+</div>
+
+<body>
+    <div layout:fragment="title">
+        <h1 class="text-primary er-header fw-bold">Sucursales</h1>
+    </div>
+    <div layout:fragment="toolbar-btns">
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <button id="createbranch" class="btn btn-primary modal-trigger m-3 fw-bold" data-action="add" data-target="-1" data-bs-toggle="modal"
+                data-bs-target="#modalBranchesForm">
+                <i class="bi bi-plus-circle"></i>
+                Agregar sucursal
+            </button>
+        </div>
+    </div>
+    <section layout:fragment="content">
+        <div class="table-responsive p-2">
+            <table class="table table-striped p-2" id="branchesTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Dueño</th>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Dueño</th>
+                        <th>Apertura</th>
+                        <th>Cierre</th>
+                        <th>Acciones</th>
+                    </tr>
+                </tfoot>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+        <div id="modalBranchesForm" class="modal fade">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <h1 class="text-primary modal-title fw-bold er-header">Sucursal</h1>
+                        <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" th:insert="/admin/formulario-sucursal.html">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+<div layout:fragment="page-scripts">
+    <script th:src="@{/js/vendor/jquery-timepicker/jquery.timepicker.min.js}"></script>
+    <script th:src="@{/js/admin.branch.js}"></script>
+</div>
+
+</html>

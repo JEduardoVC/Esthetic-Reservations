@@ -15,17 +15,23 @@ public class AppAdminController {
 	
 	@GetMapping
 	public ModelAndView viewAdmin() {
-		return new ModelAndView("admin/user/usuarios");
+		ModelAndView model = new ModelAndView("admin/usuarios");
+		model.addObject("route", "/app/admin/usuarios");
+		return model;
 	}
 	
 	@GetMapping("/sucursales")
 	public ModelAndView viewSucursales() {
-		return new ModelAndView("admin/branch/sucursales");
+		ModelAndView model = new ModelAndView("admin/sucursales");
+		model.addObject("route", "/app/admin/sucursales");
+		return model;
 	}
 
 	@GetMapping("/usuarios")
 	public ModelAndView viewUsuarios() {
-		return new ModelAndView("admin/user/usuarios");
+		ModelAndView model = new ModelAndView("admin/usuarios");
+		model.addObject("route", "/app/admin/usuarios");
+		return model;
 	}
 
 }
