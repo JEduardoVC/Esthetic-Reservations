@@ -4,6 +4,8 @@ DataTable.Buttons.defaults.dom.button.className = 'btn';
 
 var employeesTable;
 var branchesTable;
+var map;
+var marker;
 
 $(async function () {
     const branches = await getBranches();
@@ -115,7 +117,125 @@ $(async function () {
         'disableTextInput': true,
         'disableTouchKeyboard': true
     });
+
+
+    map = L.map('branch-map').setView([20.587313, -100.394397], 8);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var myIcon = L.icon({
+        iconUrl: BASE_URL + 'img/barber_pole.svg',
+        iconSize: [49.4, 123.5],
+        iconAnchor: [22, 94],
+        popupAnchor: [-3, -76],
+    });
+
+
+    const mLat = $('#branch-location').data('lat') === 'x' ? 20.587313 : $('#branch-location').data('lat', e.latlng.lat);
+    const mLon = $('#branch-location').data('lon') === 'x' ? -100.394397 : $('#branch-location').data('lat', e.latlng.lng);
+    marker = L.marker([mLat, mLon], {
+        icon: myIcon
+    }).addTo(map);
+
+    marker.on('move', function (e) {
+        $('#branch-location').data('lat', e.latlng.lat);
+        $('#branch-location').data('lon', e.latlng.lng);
+        $('#branch-location').attr('data-lat', e.latlng.lat);
+        $('#branch-location').attr('data-lon', e.latlng.lng);
+    });
+
+    map.on('click', onMapClick);
 });
+
+async function onMapClick(e) {
+
+    marker.setLatLng(e.latlng);
+
+    const params = {
+        lat: e.latlng.lat,
+        lon: e.latlng.lng,
+        format: 'json',
+        'accept-language': 'es-ES'
+    };
+    const u = await nominatimRequest('reverse', params);
+    console.log(u);
+    $('#search-branch-location').val(u.display_name);
+    $('#branch-location').val(u.display_name);
+    $('#search-results').html('');
+}
+
+async function nominatimRequest(endpoint, params) {
+    const NOMINATIM_BASE_URL = `https://nominatim.openstreetmap.org/${endpoint}?`;
+    const qryString = new URLSearchParams(params).toString();
+    const initRequest = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+    const url = `${NOMINATIM_BASE_URL}${qryString}`;
+    const response = await fetch(url, initRequest);
+    return await response.json();
+}
+
+$('#do-search-location').on('click', async function (e) {
+    const searchText = $('#search-branch-location').val();
+    const params = {
+        q: searchText,
+        format: 'json',
+        'accept-language': 'es-ES',
+        polygon_geojson: 0,
+        addressdetails: 1
+    };
+    const results = await nominatimRequest('search', params);
+    if (results.length === 0) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+        Toast.fire({
+            icon: 'error',
+            title: 'No se encontraron coincidencias.'
+        })
+    }
+
+    const searchResults = $('#search-results');
+    let html = '';
+    console.log(results);
+    for (const u of results) {
+        html += `<li class="list-group-item d-flex justify-content-between align-items-start search-result" data-lat="${u.lat}" data-lon="${u.lon}" data-name="${u.display_name}">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold"><i class="bi bi-geo-alt-fill text-danger"></i> ${u.address.country}</div>
+                        ${u.display_name}
+                    </div>
+                </li>`;
+    }
+    searchResults.html(html);
+})
+
+$(document).on('click', '.search-result', function (e) {
+    const resultSelected = $(this);
+    $('.search-result').each(function () {
+        $(this).removeClass('bg-primary text-white selected');
+    });
+    const latlng = L.latLng($(this).data('lat'), $(this).data('lon'));
+    marker.setLatLng(latlng);
+    $('#search-branch-location').val($(this).data('name'));
+    $('#branch-location').val($(this).data('name'));
+    resultSelected.addClass('bg-primary text-white selected');
+});
+
+$('#btnModalSearch').on('click', function (e) {
+    $('#modalBranchesForm').modal('show');
+    $('#searchLocationForm').modal('hide');
+})
 
 $('#branch-open').on('changeTime', function () {
     $('#branch-close').timepicker('option', 'minTime', $(this).val());
@@ -181,6 +301,11 @@ function cleanForm() {
         $(this).removeClass('is-invalid is-valid');
         hideFeedback($(this).attr('aria-label'));
     });
+    $('#search-results').html('');
+    $('#branch-location').data('lat', 'x');
+    $('#branch-location').data('lon', 'x');
+    $('#branch-location').attr('data-lat', 'x');
+    $('#branch-location').attr('data-lon', 'x');
     // $('#branchesdiv').addClass('no-mostrar d-none');
     $('#employeesTable').DataTable().rows().deselect();
     $('#alertas').addClass('no-mostrar d-none');
@@ -211,6 +336,11 @@ async function inflateForm(action, id = -1) {
             text: owner.username
         }))
     });
+
+    $('#branch-location').data('lat', 'x');
+    $('#branch-location').data('lon', 'x');
+    $('#branch-location').attr('data-lat', 'x');
+    $('#branch-location').attr('data-lon', 'x');
     refreshTable(employeesTable, await getAllEmployees());
     if (action === 'add') {
     }
@@ -225,8 +355,10 @@ async function inflateForm(action, id = -1) {
         const ownerId = branch.owner.id;
         document.getElementById("branch-name").value = branch.branchName;
         document.getElementById("branch-location").value = branch.location;
-        document.getElementById("branch-state").value = branch.state;
-        document.getElementById("branch-municipality").value = branch.municipality;
+        $('#branch-location').data('lat', branch.latitude);
+        $('#branch-location').data('lon', branch.longitude);
+        $('#branch-location').attr('data-lat', branch.latitude);
+        $('#branch-location').attr('data-lon', branch.longitude);
         $('#select-owner option').each(function () {
             if (Number($(this).val()) === ownerId) {
                 select.val($(this).val());
@@ -250,6 +382,11 @@ async function extraValidation(valid = true) {
         employeesIds.push(employee.id);
     });
     let cont = 0;
+    if ($('#branch-location').data('lat') === 'x' || $('#branch-location').data('lon') === 'x') {
+        valid = false;
+        $('#locationFeedback').html('Debes buscar y seleccionar la ubicación de la sucursal.');
+        showFeedback('location', ['Debes buscar y seleccionar la ubicación de la sucursal.']);
+    }
     if (!valid) {
         $('#formFeedback').html('Revisa el formulario.');
         showFeedback('form', ['Revisa el formulario']);
@@ -290,8 +427,6 @@ $(document).on('click', '#btnModal', function (e) {
             'branch-name': 'required',
             'select-owner': 'required',
             'branch-location': 'required',
-            'branch-municipality': 'required',
-            'branch-state': 'required',
             'branch-open': 'required',
             'branch-close': 'required'
         },
@@ -299,8 +434,6 @@ $(document).on('click', '#btnModal', function (e) {
             'branch-name': 'Ingresa el nombre de la sucursal',
             'select-owner': 'Selecciona el dueño de la sucursal',
             'branch-location': 'Ingresa la ubicación de la sucursal',
-            'branch-municipality': 'Ingresa el municipio',
-            'branch-state': 'Ingresa el estado',
             'branch-open': 'Selecciona la hora de apertura',
             'branch-close': 'Selecciona la hora de cierre'
 
@@ -378,7 +511,12 @@ async function actionBranch(action, id, selectedEmployees) {
     $('form#branchesForm :input').each(function () {
         const aria = $(this).attr('aria-label');
         data[aria] = $(this).val();
+        if ($(this).prop('id') === 'branch-location') {
+            data['latitude'] = $(this).data('lat');
+            data['longitude'] = $(this).data('lon');
+        }
     });
+
     data['scheduleOpen'] = $('#branch-open').timepicker('getTime', new Date()).toString().slice(16, 24);
     data['scheduleClose'] = $('#branch-close').timepicker('getTime', new Date()).toString().slice(16, 24);
     data['ownerId'] = $('#select-owner').val();
@@ -394,9 +532,9 @@ async function addBranch(data) {
     let body = {
         branchName: data.branchName,
         location: data.location,
-        state: data.state,
+        latitude: data.latitude,
+        longitude: data.longitude,
         ownerId: data.ownerId,
-        municipality: data.municipality,
         scheduleOpen: data.scheduleOpen,
         scheduleClose: data.scheduleClose
     }
@@ -430,9 +568,9 @@ async function updateBranch(id, data) {
     let body = {
         branchName: data.branchName,
         location: data.location,
-        state: data.state,
+        latitude: data.latitude,
+        longitude: data.longitude,
         ownerId: data.ownerId,
-        municipality: data.municipality,
         scheduleOpen: data.scheduleOpen,
         scheduleClose: data.scheduleClose,
         employeesIds: data.employees
@@ -468,7 +606,7 @@ async function deleteBranch(id) {
             endpoint: `api/branch/${id}`,
             fetch: 'response'
         });
-        if(!response.isValid){
+        if (!response.isValid) {
             alerta('error', response.data.message);
             return;
         }

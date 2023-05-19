@@ -48,9 +48,8 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 	public BranchDTO save(MinBranchDTO branchDTO) {
 		UserEntityDTO ownerDTO = userService.findById(branchDTO.getOwnerId());
 		UserEntity owner = userService.mapToModel(ownerDTO);
-		Branch newBranch = new Branch(branchDTO.getBranchName(), branchDTO.getLocation(), owner,
-				branchDTO.getScheduleOpen(), branchDTO.getScheduleClose(), branchDTO.getState(),
-				branchDTO.getMunicipality(), null);
+		Branch newBranch = new Branch(branchDTO.getBranchName(), branchDTO.getLocation(), branchDTO.getLatitude(), branchDTO.getLongitude(), owner,
+				branchDTO.getScheduleOpen(), branchDTO.getScheduleClose(), null);
 		Set<Employee> employees = new HashSet<>();
 		newBranch.setEmployees(employees);
 		newBranch = this.branchRepository.save(newBranch);
@@ -78,9 +77,9 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 				() -> new ResourceNotFoundException("Sucursal", "no encontrada", "id", String.valueOf(id)));
 		UserEntityDTO ownerDTO = userService.findById(editedBranchDTO.getOwnerId());
 		UserEntity owner = userService.mapToModel(ownerDTO);
-		Branch editedBranch = new Branch(editedBranchDTO.getBranchName(), editedBranchDTO.getLocation(), owner,
-				editedBranchDTO.getScheduleOpen(), editedBranchDTO.getScheduleClose(), editedBranchDTO.getState(),
-				editedBranchDTO.getMunicipality(), null);
+		Branch editedBranch = new Branch(editedBranchDTO.getBranchName(), editedBranchDTO.getLocation(),
+				editedBranchDTO.getLatitude(), editedBranchDTO.getLongitude(), owner, editedBranchDTO.getScheduleOpen(),
+				editedBranchDTO.getScheduleClose(), null);
 		Set<Employee> formerEmployees = branch.getEmployees();
 		branch.copy(editedBranch);
 		Set<Employee> currentEmployees = new HashSet<>();
@@ -88,10 +87,12 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 		if (editedBranchDTO.getEmployeesIds() != null) {
 			Set<Employee> newEmployees = new HashSet<>();
 			for (Long employeeId : editedBranchDTO.getEmployeesIds()) {
-				Employee employee = this.employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Empleado", "no encontrado", "id", String.valueOf(employeeId)));
+				Employee employee = this.employeeRepository.findById(employeeId)
+						.orElseThrow(() -> new ResourceNotFoundException("Empleado", "no encontrado", "id",
+								String.valueOf(employeeId)));
 				newEmployees.add(employee);
 			}
-			if(currentEmployees.size() >= newEmployees.size()){
+			if (currentEmployees.size() >= newEmployees.size()) {
 				currentEmployees.retainAll(newEmployees); // Intersection
 			} else {
 				currentEmployees.addAll(newEmployees);
@@ -99,7 +100,7 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 		}
 		branch.setEmployees(currentEmployees);
 		Branch savedBranch = getRepository().save(branch);
-		for(Employee employee : savedBranch.getEmployees()){
+		for (Employee employee : savedBranch.getEmployees()) {
 			employee.getWorkingBranches().add(editedBranch);
 			this.employeeRepository.save(employee);
 		}
@@ -122,8 +123,7 @@ public class BranchServiceImpl extends GenericServiceImpl<Branch, BranchDTO>
 		// To JSON list
 		ArrayList<MinBranchDTO> content = entitiesList.stream()
 				.map(entity -> new MinBranchDTO(entity.getId(), entity.getBranchName(), entity.getLocation(),
-						entity.getOwner().getId(), entity.getScheduleOpen(), entity.getScheduleClose(),
-						entity.getState(), entity.getMunicipality(),
+						entity.getOwner().getId(), entity.getScheduleOpen(), entity.getScheduleClose(), entity.getLatitude(), entity.getLongitude(),
 						entity.getEmployees().stream().map(emp -> emp.getId()).collect(Collectors.toSet())))
 				.collect(Collectors.toCollection(ArrayList::new));
 		ResponseDTO<MinBranchDTO> userResponseDTO = new ResponseDTO<>();
