@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/admin.layout.html}">
 
+<head>
+    <title id="pageTitle">Admin - Usuarios</title>
+</head>
+
+<th:block layout:fragment="page-styles">
+
+</th:block>
+
+<th:block layout:fragment="page-scripts">
+    <script th:src="@{/js/admin.user.js}"></script>
+</th:block>
+
 <body>
     <div layout:fragment="title">
         <h1 class="text-primary er-header fw-bold">Usuarios</h1>
@@ -58,9 +70,5 @@
         </div>
     </section>
 </body>
-
-<div layout:fragment="page-scripts">
-    <script th:src="@{/js/admin.user.js}"></script>
-</div>
 
 </html>

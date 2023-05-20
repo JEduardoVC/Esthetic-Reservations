@@ -26,39 +26,39 @@ public class MinBranchDTO extends GenericModelDTO {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Time scheduleClose;
 
-    @NotBlank(message = "El estado es requerido.")
-    private String state;
+    @NotNull(message = "La latitud de la sucursal es requerida.")
+    private Double latitude;
 
-    @NotBlank(message = "El municipio es requerido.")
-    private String municipality;
+    @NotNull(message = "La longitud de la sucursal es requerida.")
+    private Double longitude;
 
     private Set<Long> employeesIds;
 
     public MinBranchDTO() {
     }
 
-    public MinBranchDTO(String branchName, String location, Long ownerId, Time scheduleOpen, Time scheduleClose,
-            String state, String municipality, Set<Long> employeesIds) {
-        this.branchName = branchName;
-        this.location = location;
-        this.ownerId = ownerId;
-        this.scheduleOpen = scheduleOpen;
-        this.scheduleClose = scheduleClose;
-        this.state = state;
-        this.municipality = municipality;
-        this.employeesIds = employeesIds;
-    }
-
     public MinBranchDTO(Long id, String branchName, String location, Long ownerId, Time scheduleOpen,
-            Time scheduleClose, String state, String municipality, Set<Long> employeesIds) {
+            Time scheduleClose, Double latitude, Double longitude, Set<Long> employeesIds) {
         super(id);
         this.branchName = branchName;
         this.location = location;
         this.ownerId = ownerId;
         this.scheduleOpen = scheduleOpen;
         this.scheduleClose = scheduleClose;
-        this.state = state;
-        this.municipality = municipality;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.employeesIds = employeesIds;
+    }
+
+    public MinBranchDTO(String branchName, String location, Long ownerId, Time scheduleOpen, Time scheduleClose,
+            Double latitude, Double longitude, Set<Long> employeesIds) {
+        this.branchName = branchName;
+        this.location = location;
+        this.ownerId = ownerId;
+        this.scheduleOpen = scheduleOpen;
+        this.scheduleClose = scheduleClose;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.employeesIds = employeesIds;
     }
 
@@ -110,20 +110,20 @@ public class MinBranchDTO extends GenericModelDTO {
         this.scheduleClose = scheduleClose;
     }
 
-    public String getState() {
-        return this.state;
+    public Double getLatitude() {
+        return this.latitude;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public String getMunicipality() {
-        return this.municipality;
+    public Double getLongitude() {
+        return this.longitude;
     }
 
-    public void setMunicipality(String municipality) {
-        this.municipality = municipality;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
 }
