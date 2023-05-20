@@ -54,7 +54,7 @@ public class Util {
 						+ "La sucursal " + sucursal.getBranchName() + " le ofrece una sincera disculpa al incoveniente sucedido "
 						+ "pero por motivos personales y de fuerza mayor, se ve obligado a cancelar la cita programada para el " + cita.getAppointment_Date()
 						+ " a las " + cita.getAppointmnet_time() + "\n\n"
-						+ "Sé lo importante que es respetar el tiempo de los demás, por lo que lamento cualquier inconveniente que esta cancelación pueda causarle"
+						+ "Sé lo importante que es respetar el tiempo de los demás, por lo que lamento cualquier inconveniente que esta cancelación pueda causarle\n\n"
 						+ "Aprecio su comprensión en este asunto y espero poder programar otra cita en el futuro\n\n\n";
 			case 5:
 				return "Correo enviado por Esthetic Reservation con el motivo de mostrar la compra de productos\n\n"
@@ -64,7 +64,13 @@ public class Util {
 			            + "Con un total de $" + venta.getTotal() + " \n\n"
 			            + "Podra hacer entrega de sus productos en el horario establecido \n\n\n"
 			            + "Favor de mostrar el código QR en la sucursal";
-				
+			case 6:
+				return "Correo enviado para Esthetic Reservation con el motivo de cancelación de cita reservada\n\n"
+						+ "El usuario " + usuario.getName() + " " + usuario.getLastName() + " le ofrece una sincera disculpa al incoveniente sucedido "
+						+ "pero por motivos personales y de fuerza mayor, se ve obligado a cancelar la cita programada para el " + cita.getAppointment_Date()
+						+ " a las " + cita.getAppointmnet_time() + "\n\n"
+						+ "Sé lo importante que es respetar el tiempo de los demás, por lo que lamento cualquier inconveniente que esta cancelación pueda causarle\n\n"
+						+ "Aprecio su comprensión en este asunto y espero poder programar otra cita en el futuro\n\n\n";
 			default:
 				return "";
 		}

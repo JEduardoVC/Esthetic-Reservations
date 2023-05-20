@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 function darkMode() {
     const botonDarkMode = document.querySelector(".dark-mode-boton");
     const botonLigthMode = document.querySelector(".ligth-mode-boton");
+    if(!botonDarkMode) return;
+    if(!botonLigthMode) return;
     botonDarkMode.addEventListener("click", function () {
         if (!document.querySelector(".dark-mode")) {
             document.body.classList.add("dark-mode");

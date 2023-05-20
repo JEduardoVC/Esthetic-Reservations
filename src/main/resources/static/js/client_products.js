@@ -1,5 +1,6 @@
 (function() {
 	if(!sessionStorage.getItem("token")) location = `${BASE_URL}app/login`;
+//	validarRol();
 	mostrarProductos();
 	mostrarProducto();
 })();

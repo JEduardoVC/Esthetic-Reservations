@@ -2,8 +2,11 @@ package com.esthetic.reservations.api.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -67,7 +70,16 @@ public class AppointmentController {
 	}
 	
 	@DeleteMapping("/eliminar/{id}")
-	public ResponseEntity<String> eliminarCita(@PathVariable("id") Long id) {
-		return new ResponseEntity<String>(appointmentServiceImpl.eliminar(id), HttpStatus.ACCEPTED);
+	public ResponseEntity<?> eliminarCita(@PathVariable("id") Long id) {
+		Map<String, String> response = new HashMap<String, String>();
+		try {
+			appointmentServiceImpl.eliminar(id);
+		} catch(DataIntegrityViolationException e) {
+			response.put("error", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+		}
+		response.put("success", "Cita Eliminadar");
+		response.put("code", "200");
+		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}
 }
