@@ -23,14 +23,14 @@
     if(sessionStorage.getItem("appointmentId")) appointment.textContent = "Cancelar Editar Cita";
     if(sessionStorage.getItem("saleId")) appointment.textContent = "Cancelar Editar Compra";
     appointment.addEventListener("click", function(){
-//		if(sessionStorage.getItem("appointmentId")) {
-//			sessionStorage.removeItem("appointmentId");
-//			sessionStorage.removeItem("carrito");
-//		}
-//		if(sessionStorage.getItem("saleId")) {
-//			sessionStorage.removeItem("saleId");
-//			sessionStorage.removeItem("carrito");
-//		}
+		if(sessionStorage.getItem("appointmentId")) {
+			sessionStorage.removeItem("appointmentId");
+			sessionStorage.removeItem("carrito");
+		}
+		if(sessionStorage.getItem("saleId")) {
+			sessionStorage.removeItem("saleId");
+			sessionStorage.removeItem("carrito");
+		}
 		console.info("clic");
 		location.href = "/app/client/appointment";
     });
