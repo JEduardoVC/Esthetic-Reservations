@@ -118,12 +118,39 @@ $(async function () {
         'disableTouchKeyboard': true
     });
 
-
     map = L.map('branch-map').setView([20.587313, -100.394397], 8);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+
+    const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    });
+    osm.addTo(map);
+    const rapid = L.tileLayer('https://maptiles.p.rapidapi.com/es/map/v1/{z}/{x}/{y}.png?rapidapi-key=d81a9ea065msh70497032f58f18cp1fc7c8jsnc883ebaa4eb0', {
+        attribution: '&copy: <a href="https://www.maptilesapi.com/">MapTiles API</a>, Datos de Mapa &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    });
+
+    rapid.addTo(map);
+
+    const googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
+    googleStreets.addTo(map);
+
+    const googleSatellite = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    });
+    googleSatellite.addTo(map);
+
+    const baseLayers = {
+        'Satelite': googleSatellite,
+        'OpenStreetMap': osm,
+        'Map Tiles': rapid,
+        'Google Maps': googleStreets
+    };
+
+    L.control.layers(baseLayers).addTo(map);
 
     var myIcon = L.icon({
         iconUrl: BASE_URL + 'img/barber_pole.svg',
@@ -133,20 +160,37 @@ $(async function () {
     });
 
 
-    const mLat = $('#branch-location').data('lat') === 'x' ? 20.587313 : $('#branch-location').data('lat', e.latlng.lat);
-    const mLon = $('#branch-location').data('lon') === 'x' ? -100.394397 : $('#branch-location').data('lat', e.latlng.lng);
+    const mLat = $('#branch-location').data('lat') === 'x' ? 20.587313 : $('#branch-location').data('lat');
+    const mLon = $('#branch-location').data('lon') === 'x' ? -100.394397 : $('#branch-location').data('lon');
     marker = L.marker([mLat, mLon], {
         icon: myIcon
     }).addTo(map);
 
     marker.on('move', function (e) {
+        console.log('SOURCE TARGET');
+        console.log(e.sourceTarget);
+
         $('#branch-location').data('lat', e.latlng.lat);
         $('#branch-location').data('lon', e.latlng.lng);
         $('#branch-location').attr('data-lat', e.latlng.lat);
         $('#branch-location').attr('data-lon', e.latlng.lng);
+
     });
 
     map.on('click', onMapClick);
+
+});
+
+$('#searchLocationForm').on('shown.bs.modal', function (e) {
+    const mLat = $('#branch-location').data('lat') === 'x' ? 20.587313 : $('#branch-location').data('lat');
+    const mLon = $('#branch-location').data('lon') === 'x' ? -100.394397 : $('#branch-location').data('lon');
+    const latlng = L.latLng(mLat, mLon);
+    let zoom = mLat === 20.587313 && mLon === -100.394397 ? 13 : 16;
+    map.flyTo(latlng, zoom);
+    marker.setLatLng(latlng);
+    setTimeout(function () {
+        map.invalidateSize(true);
+    }, 10);
 });
 
 async function onMapClick(e) {
@@ -227,6 +271,7 @@ $(document).on('click', '.search-result', function (e) {
     });
     const latlng = L.latLng($(this).data('lat'), $(this).data('lon'));
     marker.setLatLng(latlng);
+    map.flyTo(latlng, 16);
     $('#search-branch-location').val($(this).data('name'));
     $('#branch-location').val($(this).data('name'));
     resultSelected.addClass('bg-primary text-white selected');
@@ -355,6 +400,7 @@ async function inflateForm(action, id = -1) {
         const ownerId = branch.owner.id;
         document.getElementById("branch-name").value = branch.branchName;
         document.getElementById("branch-location").value = branch.location;
+        document.getElementById("search-branch-location").value = branch.location;
         $('#branch-location').data('lat', branch.latitude);
         $('#branch-location').data('lon', branch.longitude);
         $('#branch-location').attr('data-lat', branch.latitude);
