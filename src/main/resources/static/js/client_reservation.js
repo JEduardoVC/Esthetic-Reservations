@@ -152,6 +152,10 @@ async function saveSale() {
 		}
 	})
 	const resultado = await respuesta.json();
+	if(resultado.errorCode) {
+		alerta("error", resultado.message, "Error al comprar un producto");
+		return {"id": null};
+	}
 	return resultado;
 }
 
@@ -171,6 +175,10 @@ async function updateSale() {
 		}
 	})
 	const resultado = await respuesta.json();
+	if(resultado.errorCode) {
+		alerta("error", resultado.message, "Error al comprar un producto");
+		return {"id": null};
+	}
 	return resultado;
 }
 
@@ -183,7 +191,8 @@ async function saveAppointment() {
 			appointment_time: `${appointment.time}`,
 			id_service: carrito.servicios.flatMap(servicio => servicio.id),
 			cantidad: carrito.servicios.flatMap(servicio => parseInt(servicio.cantidad)),
-			id_client: sessionStorage.getItem("userId")
+			id_client: sessionStorage.getItem("userId"),
+			id_employee: sessionStorage.getItem("employeeId")
 		}),
 		headers: {
 			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
@@ -384,7 +393,8 @@ function validarHora(citas, hora) {
 }
 
 async function obtenerCitas() {
-	const resultado = await	fetch(`${BASE_URL}api/client/appointment/date/branch/employee/${sessionStorage.getItem("branchId")}/${appointment.date}/1`, {
+	console.info(`${BASE_URL}api/client/appointment/date/branch/employee/${sessionStorage.getItem("branchId")}/${appointment.date}/${sessionStorage.getItem("employeeId")}`)
+	const resultado = await	fetch(`${BASE_URL}api/client/appointment/date/branch/employee/${sessionStorage.getItem("branchId")}/${appointment.date}/${sessionStorage.getItem("employeeId")}`, {
 		method: "GET",
 		headers: {
 				"Authorization": `Bearer ${sessionStorage.getItem("token")}`
@@ -392,6 +402,7 @@ async function obtenerCitas() {
 		redirect: "follow"
 	});
 	const citas = await resultado.json();
+	console.info(citas);
 	return (citas == undefined) ? [] : citas.content
 }
 

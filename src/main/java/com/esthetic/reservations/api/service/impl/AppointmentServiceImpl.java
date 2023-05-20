@@ -95,9 +95,11 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 	public AppointmentDTO save(MinAppointmentDTO cita) {
 		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_client()));
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(cita.getId_branch()));
+		UserEntity empleado = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_employee()));
 		Date date_created = Date.valueOf(LocalDate.now());
 		Date appointment_date = Date.valueOf(cita.getappointment_date());
-		Appointment appointment = new Appointment(date_created, appointment_date, cita.getAppointment_time(), usuario, null, null, sucursal);
+		new Appointment();
+		Appointment appointment = new Appointment(date_created, appointment_date, cita.getAppointment_time(), usuario, empleado, null, sucursal);
 		appointment.setServicios(changeModel(cita.getCantidad(), cita.getId_service()));
 		return mapToDTO(appointmentRepository.save(appointment));
 	}

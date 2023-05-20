@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,5 +49,15 @@ public class MailController {
     @PostMapping("/reestablecer")
     public ResponseEntity<Object> sendsimpleMail(@RequestParam("mail") String mail) {
         return new ResponseEntity<Object>(mailServiceImpl.sendMailReestablecer(mail), HttpStatus.ACCEPTED);
+    }
+    
+    @PostMapping("/delete/appointment/branch/{id}")
+    public ResponseEntity<Object> sendCancelMail(@PathVariable Long id) {
+    	return new ResponseEntity<Object>(mailServiceImpl.sendCancelAppointment(id, false), HttpStatus.ACCEPTED);
+    }
+    
+    @PostMapping("/delete/appointment/client/{id}")
+    public ResponseEntity<Object> sendCancelMailclient(@PathVariable Long id) {
+    	return new ResponseEntity<Object>(mailServiceImpl.sendCancelAppointment(id, true), HttpStatus.ACCEPTED);
     }
 }

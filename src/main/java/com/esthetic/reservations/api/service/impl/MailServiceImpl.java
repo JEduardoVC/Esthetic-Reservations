@@ -92,4 +92,20 @@ public class MailServiceImpl {
             return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
         }
 	}
+	
+	public Object sendCancelAppointment(Long id, boolean isClient) {
+		Appointment appointment = appointmentServiceImpl.mapToModel(appointmentServiceImpl.findById(id));
+		Map<String, String> map = new HashMap<String, String>();
+		if(appointment.getId() == null) new ResourceNotFoundException("Cita", "No existe la cita"); 
+		String message = util.typeEmail(isClient ? 6 : 4, appointment.getId_client(), appointment.getId_branch(), appointment, null);
+		try {
+			mailService.sendMail(isClient ? appointment.getId_branch().getOwner().getEmail() : appointment.getId_client().getEmail(), message);
+			map.put("Message", "Correo Enviado Correctamente");
+			map.put("code", "200");
+			return new ResponseEntity<>(map, HttpStatus.ACCEPTED);
+		} catch (MailException e) {
+			map.put("message", e.getMessage());
+            return new ResponseEntity<Object>(map, HttpStatus.CONFLICT);
+		}
+	}
 }

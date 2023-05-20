@@ -1,34 +1,41 @@
 (function() {
-	showSale();
-	showAppointment();
-	sessionStorage.removeItem("carrito");
+//	validarRol();
+	showItems();
+//	sessionStorage.removeItem("carrito");
 	sessionStorage.removeItem("appointmentId");
 })();
 
+let citasObj = [];
+let comprasObj = [];
+
+function showItems() {
+	$("#appointment-services").empty();
+	showSale();
+	showAppointment();	
+}
+
 async function showAppointment() {
-	const citas = await getAppointments();
-	const divPadre = document.querySelector("#appointment-services");
-	citas.forEach(cita => {
-		const div = document.createElement("div");
-		div.classList.add("appointment-container")
-		div.innerHTML = `
-			<div class="info-appointment">
-			    <p>Sucursal: <span>${cita.id_branch.name}</span></p>
-			    <p>Encargada: <span>AQUÍ VA EL EMPLEADO</span></p>
-			    <p>Ubicacion del local: <span>${cita.id_branch.location}</span></p>
-			    <p>Fecha y hora de la cita: <span>${cita.appointment_date} a las ${cita.appointmnet_time} horas</span></p>
-			    <div class="products-services-appointment">
-			        <p>Servicios: </p>
-			        <div class="services-appointment">${getItems(cita.id_service)}</div>
-			    </div>
+	await getAppointments();
+	citasObj.forEach(cita => {
+		$("#appointment-services").append(`
+			<div class="appointment-container">
+				<div class="info-appointment">
+				    <p>Sucursal: <span>${cita.id_branch.name}</span></p>
+				    <p>Encargada: <span>AQUÍ VA EL EMPLEADO</span></p>
+				    <p>Ubicacion del local: <span>${cita.id_branch.location}</span></p>
+				    <p>Fecha y hora de la cita: <span>${cita.appointment_date} a las ${cita.appointmnet_time} horas</span></p>
+				    <div class="products-services-appointment">
+				        <p>Servicios: </p>
+				        <div class="services-appointment">${getItems(cita.id_service)}</div>
+				    </div>
+				</div>
+				<div class="actions-appointment">
+				    <h4>Acciones</h4>
+				    <button class="btn-update" onclick="updateAppointment(${cita.id})">Editar reservación</button>
+				    <button class="btn-remove" onclick="deleteAppointment(${cita.id})">Cancelar reservación</button>
+				</div>
 			</div>
-			<div class="actions-appointment">
-			    <h4>Acciones</h4>
-			    <button class="btn-update" onclick="updateAppointment(${cita.id})">Editar reservación</button>
-			    <button class="btn-remove" onclick="deleteAppointment(${cita.id})">Cancelar reservación</button>
-			</div>
-		`;
-		divPadre.appendChild(div);
+		`);
 	});
 }
 
@@ -40,6 +47,9 @@ function updateAppointment(id) {
 async function deleteAppointment(id) {
 	const accion = await confirmAlert("warning", "Cancelar Reservación", "¿Esta seguro de cancelar su reservación?", "Aceptar");
 	if(accion) {
+		showLoading("Enviando correo...")
+		const respuestaMail = await sendMailCancelAppointment(id, true);
+		if(respuestaMail.statusCodeValue == 202) alerta("success", "Se le envio un correo al cliente para informarle la cancelación de su cita", "Cita Cancelada")
 		const resultado = await fetch(`${BASE_URL}api/appointment/eliminar/${id}`, {
 			method: "DELETE",
 			headers: {
@@ -47,39 +57,38 @@ async function deleteAppointment(id) {
 				Authorization: `Bearer ${sessionStorage.getItem("token")}`
 			}
 		})
-		const respuesta = await resultado.text();
-		if(respuesta) {
-			alerta("success", "Su reservación fue cancelada exitosamete!", "Reservación cancelada")
+		const respuesta = await resultado.json();
+		if(respuesta.code == 200) {
+			citasObj = citasObj.find(cita => cita.id != id);
 			setTimeout(() => {
-				location.reload();
+				alerta("success", "Su reservación fue cancelada exitosamete!", "Reservación cancelada")
+				showItems();
 			},1500);
 		}
 	}
 }
 
 async function showSale() {
-	const sales = await getSales();
-	const divPadre = document.querySelector("#appointment-services");
-	sales.forEach(sale => {
-		const div = document.createElement("div");
-		div.classList.add("appointment-container")
-		div.innerHTML = `
-			<div class="info-appointment">
-			    <p>Sucursal: <span>${sale.branch.branchName}</span></p>
-			    <p></p>
-			    <p>Ubicacion del local: <span>${sale.branch.location}</span></p>
-			    <div class="products-services-appointment">
-			        <p>Productos: </p>
-			        <div class="services-appointment">${getItems(sale.productsList, false)}</div>
-			    </div>
+	await getSales();
+	comprasObj.forEach(sale => {
+		$("#appointment-services").append(`
+			<div class="appointment-container">
+				<div class="info-appointment">
+				    <p>Sucursal: <span>${sale.branch.branchName}</span></p>
+				    <p></p>
+				    <p>Ubicacion del local: <span>${sale.branch.location}</span></p>
+				    <div class="products-services-appointment">
+				        <p>Productos: </p>
+				        <div class="services-appointment">${getItems(sale.productsList, false)}</div>
+				    </div>
+				</div>
+				<div class="actions-appointment">
+				    <h4>Acciones</h4>
+				    <button class="btn-update" onclick="updateSale(${sale.id})">Editar compra</button>
+				    <button class="btn-remove" onclick="deleteSale(${sale.id})">Cancelar compra</button>
+				</div>
 			</div>
-			<div class="actions-appointment">
-			    <h4>Acciones</h4>
-			    <button class="btn-update" onclick="updateSale(${sale.id})">Editar compra</button>
-			    <button class="btn-remove" onclick="deleteSale(${sale.id})">Cancelar compra</button>
-			</div>
-		`;
-		divPadre.appendChild(div);
+		`);
 	});
 }
 
@@ -95,9 +104,10 @@ async function deleteSale(id) {
 		});
 		const respuesta = await resultado.json();
 		if(respuesta) {
-			alerta("success", "Su compra fue cancelada exitosamete!", "Compra cancelada")
+			comprasObj = comprasObj.find(compra => compra.id != id);
 			setTimeout(() => {
-				location.reload();
+				alerta("success", "Su compra fue cancelada exitosamete!", "Compra cancelada")
+				showItems();
 			}, 1500);
 		}
 	}
@@ -127,9 +137,8 @@ async function getAppointments() {
 		}
 	});
 	const resultado = await respuesta.json();
-	const citasObj = resultado.content;
-	if(citasObj == undefined) citasObj = [];
-	return citasObj;
+	console.info(resultado.content);
+	citasObj = resultado.content ?? [];
 }
 
 async function getSales() {
@@ -141,7 +150,10 @@ async function getSales() {
 		}
 	});
 	const respuesta = await resultado.json();
-	const saleObj = respuesta.content;
-	if(saleObj == undefined) saleObj = [];
-	return saleObj;
+	console.info(respuesta.content);
+	comprasObj = respuesta.content ?? [];
+}
+
+function volver() {
+	location = `${BASE_URL}app/client/dashboard`;
 }
