@@ -4,6 +4,23 @@ const BASE_URL = 'http://localhost:5500/';
 //const BASE_URL = 'http://192.168.1.70:5500/';
 //const BASE_URL = 'http://172.15.41.174:5500/';
 
+function validarRol() {
+	switch(location.pathname.split("/")[2]) {
+		case "client":
+			if(sessionStorage.getItem("userId") != 4) location.href = `${BASE_URL}app/login`;
+			break;
+		case "owner":
+			if(sessionStorage.getItem("userId") != 2) location.href = `${BASE_URL}app/login`;
+			break;
+		case "admin":
+			if(sessionStorage.getItem("userId") != 1) location.href = `${BASE_URL}app/login`;
+			break;
+		case "employee":
+			if(sessionStorage.getItem("userId") != 3) location.href = `${BASE_URL}app/login`;
+			break;
+	}
+}
+
 async function enviarSimpleCorreo(email) {
 	var formdata = new FormData();
 	formdata.append("mail", email);
@@ -37,6 +54,19 @@ async function sendMail(id, created, appointment) {
 		}
 	});
 	const respuesta = await resultado.json();
+	return respuesta;
+}
+
+async function sendMailCancelAppointment(id, isClient = false) {
+	const resultado = await fetch(`${BASE_URL}api/mail/delete/appointment/${isClient ? "client" : "branch"}/${id}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			Authorization: `Bearer ${sessionStorage.getItem("token")}`
+		}
+	});
+	const respuesta = await resultado.json();
+	console.info(respuesta);
 	return respuesta;
 }
 

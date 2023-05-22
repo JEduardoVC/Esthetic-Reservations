@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.esthetic.reservations.api.model.Employee;
 import com.esthetic.reservations.api.model.UserEntity;
 
 public class BranchDTO extends GenericModelDTO {
@@ -31,9 +30,9 @@ public class BranchDTO extends GenericModelDTO {
     @DateTimeFormat(pattern = "HH:mm:ss")
     private Time scheduleClose;
 
-    private String state;
+    private Double latitude;
 
-    private String municipality;
+    private Double longitude;
 
     private Set<EmployeeDTO> employees;
 
@@ -41,28 +40,28 @@ public class BranchDTO extends GenericModelDTO {
         super();
     }
 
-    public BranchDTO(String branchName, String location, UserEntity owner, Time scheduleOpen,
-            Time scheduleClose, String state, String municipality, Set<EmployeeDTO> employees) {
-        this.branchName = branchName;
-        this.location = location;
-        this.owner = owner;
-        this.scheduleOpen = scheduleOpen;
-        this.scheduleClose = scheduleClose;
-        this.state = state;
-        this.municipality = municipality;
-        this.employees = employees;
-    }
-
     public BranchDTO(Long id, String branchName, String location, UserEntity owner, Time scheduleOpen,
-            Time scheduleClose, String state, String municipality, Set<EmployeeDTO> employees) {
+            Time scheduleClose, Double latitude, Double longitude, Set<EmployeeDTO> employees) {
         super(id);
         this.branchName = branchName;
         this.location = location;
         this.owner = owner;
         this.scheduleOpen = scheduleOpen;
         this.scheduleClose = scheduleClose;
-        this.state = state;
-        this.municipality = municipality;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.employees = employees;
+    }
+
+    public BranchDTO(String branchName, String location, UserEntity owner, Time scheduleOpen, Time scheduleClose,
+            Double latitude, Double longitude, Set<EmployeeDTO> employees) {
+        this.branchName = branchName;
+        this.location = location;
+        this.owner = owner;
+        this.scheduleOpen = scheduleOpen;
+        this.scheduleClose = scheduleClose;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.employees = employees;
     }
 
@@ -114,20 +113,20 @@ public class BranchDTO extends GenericModelDTO {
         this.scheduleClose = scheduleClose;
     }
 
-    public String getState() {
-        return this.state;
+    public Double getLatitude() {
+        return this.latitude;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public String getMunicipality() {
-        return this.municipality;
+    public Double getLongitude() {
+        return this.longitude;
     }
 
-    public void setMunicipality(String municipality) {
-        this.municipality = municipality;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
 }

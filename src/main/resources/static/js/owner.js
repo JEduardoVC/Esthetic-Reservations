@@ -1,9 +1,12 @@
-(() => {
-	obtenerCitas();
+(function(){
+	if(!sessionStorage.getItem("token")) location.href = `${BASE_URL}app/login`;
+	showAppointment();
 })();
 
-async function obtenerCitas() {
-	const resultado = await	fetch(`http://localhost:5500/api/appointment/sucursal/${sessionStorage.getItem("branchId")}`, {
+let citasObj = [];
+
+async function getAppointments() {
+	const resultado = await	fetch(`${BASE_URL}api/appointment/sucursal/${sessionStorage.getItem("branchId")}`, {
 		method: "GET",
 		headers: {
 				"Authorization": `Bearer ${sessionStorage.getItem("token")}`
@@ -11,66 +14,62 @@ async function obtenerCitas() {
 		redirect: "follow"
 	});
 	const citas = await resultado.json();
-	mostrarCitas(citas == undefined ? [] : citas.content)
+	citasObj = citas.content ?? [];
 }
 
-function mostrarCitas(citas) {
-	const padre = document.querySelector("#show-appointment");
-	const divTitulos = document.createElement("div");
-	divTitulos.innerHTML = `
-		<div class="center">
-			<p>Usuario</p>
-		</div>
-		<div class="center">
-			<p>Servicios</p>
-		</div>
-		<div class="center">
-			<p>Fecha</p>
-		</div>
-		<div class="center">
-			<p>Hora</p>
-		</div>
-		<div class="center">
-			<p>Acciones</p>
-		</div>
-	`;
-	divTitulos.style = "display: grid;grid-template-columns: repeat(5, 1fr);font-weight: bold;";
-	// padre.appendChild(divTitulos);
-	citas.forEach(cita => {
-		const divContenido = document.createElement("div");
-		divContenido.classList.add("appointment-container");
-		divContenido.innerHTML = `
-			<div class="cont">
-				<p>${cita.id_client.name} ${cita.id_client.lastName}</p>
-			</div>
-			<div class="cont">
-				${obtenerServicios(cita.id_service)}
-			</div>
-			<div class="cont">
-				<p>${cita.appointment_date}</p>
-			</div>
-			<div class="cont">
-				<p>${cita.appointmnet_time}</p>
-			</div>
-			<div class="cont">
-				<button id="btn_eliminar">Cancelar</button>
-			</div>
-		`;
-		// padre.appendChild(divContenido)
+async function showAppointment() {
+	await getAppointments();
+	console.info(citasObj);
+	$("#show-appointment").empty();
+	citasObj.forEach(appointment => {
+		$("#show-appointment").append(`
+			<div class="appointment-confirmed">
+		        <p>${appointment.id_client.name} ${appointment.id_client.lastName}</p>
+		        ${showService(appointment.id_service)}
+		        <div class="date-time-appointment">
+		            <p>${appointment.appointment_date}</p>
+		            <p>${appointment.appointmnet_time}</p>
+		        </div>
+		        <div class="cancel-appointment">
+		            <button class="btn-remove" onclick="deleteAppointment(${appointment.id})">Cancelar</button>
+		        </div>
+		    </div>
+		`);
 	})
-	
-	function obtenerServicios(servicios) {
-		const services = document.createElement("div");
-		servicios.forEach(servicio => {
-			const divContenido = document.createElement("div");
-			divContenido.style = `display: grid;grid-template-row: repeat(${servicios.length}, 1fr`;
-			divContenido.innerHTML = `
-				<div style="text-align: center;">
-					<p>${servicio.service_name}</p>
-				</div>
-			`;
-			services.appendChild(divContenido);
+}
+
+async function deleteAppointment(id) {
+	const accion = await confirmAlert("warning", "Cancelar la cita", "¿Esta seguro de cancelar la cita?", "Aceptar");
+	if(accion) {
+		showLoading("Enviando correo...")
+		const respuestaMail = await sendMailCancelAppointment(id);
+		if(respuestaMail.statusCodeValue == 202) alerta("success", "Se le envio un correo al cliente para informarle la cancelación de su cita", "Cita Cancelada")
+		const resultado = await fetch(`${BASE_URL}api/appointment/eliminar/${id}`, {
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				Authorization: `Bearer ${sessionStorage.getItem("token")}`
+			},
+			redirect: "follow"
 		})
-		return services.outerHTML;
+		const respuesta = await resultado.json();
+		if(respuesta.code == 200) {
+			setTimeout(() => {
+				alerta("success", "La cita fue cancelada exitosamente!", "Cita Cancelada")
+				servicesObj = citasObj.find(cita => cita.id != id);
+				showAppointment();
+			}, 1500)()
+		}
 	}
+}
+
+function showService(listServices) {
+	const div = document.createElement("div");
+	div.classList.add("services-appointment");
+	listServices.forEach(service => {
+		div.innerHTML = `
+        	<p>${service.service_name}</p>
+		`
+	})
+	return div.outerHTML;
 }

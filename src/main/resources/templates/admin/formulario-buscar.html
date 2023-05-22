@@ -1,0 +1,34 @@
+<div id="alertas"></div>
+<form id="searchForm" class="row g-3" action="#" onsubmit="return false" method="POST">
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text">
+                    <i class="bi bi-pin-map-fill"></i>
+                </span>
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="search-branch-location" name="search-branch-location"
+                        placeholder="Dirección de la sucursal" aria-label="location">
+                    <label for="search-branch-location" class="form-label">Dirección</label>
+                </div>
+                <button class="btn btn-outline-primary" type="button" id="do-search-location">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+            <ol class="list-group" id="search-results">
+                
+            </ol>
+
+            <div id="locationFeedback" class="invalid-feedback d-block">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="map d-block" style="height: 400px;" id="branch-map"></div>
+
+    <div class="col-12">
+        <button type="button" id="btnModalSearch" class="btn btn-primary fw-bold">Confirmar</button>
+        <div id="formFeedback" class="col-md-10 invalid-feedback d-none fw-bold">Revisa el formulario.</div>
+    </div>
+</form>

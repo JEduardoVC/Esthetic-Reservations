@@ -31,29 +31,7 @@
 			sessionStorage.removeItem("saleId");
 			sessionStorage.removeItem("carrito");
 		}
-		location.href = "/app/client/appointment"
-    });
-	const purchases = document.querySelector("#purchases");
-    purchases.addEventListener("click", function(){
-        location.href = "/app/client/purchases"
-    });
-	const appointment_phone = document.querySelector("#appointment-phone");
-    appointment_phone.addEventListener("click", function(){
-        location.href = "/app/client/appointment"
-    });
-	const purchases_phone = document.querySelector("#purchases-phone");
-    purchases_phone.addEventListener("click", function(){
-        location.href = "/app/client/purchases"
-    });
-	const view_user = document.querySelector("#btn-editar-usuario");
-    view_user.addEventListener("click", function(){
-        location.href = "/app/client/view_user"
-    });
-	const view_user_phone = document.querySelector("#btn-editar-usuario-phone");
-    view_user_phone.addEventListener("click", function(){
-        location.href = "/app/client/view_user"
+		console.info("clic");
+		location.href = "/app/client/appointment";
     });
 })();
-
-
-
