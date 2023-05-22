@@ -1,5 +1,6 @@
 const BASE_URL = 'http://localhost:5500/';
-// const BASE_URL = 'http://192.168.100.5:5500/';
+//validarRol();
+//const BASE_URL = 'http://192.168.100.5:5500/';
 //const BASE_URL = 'http://192.168.1.76:5500/';
 //const BASE_URL = 'http://192.168.1.70:5500/';
 //const BASE_URL = 'http://172.15.41.174:5500/';
@@ -7,16 +8,28 @@ const BASE_URL = 'http://localhost:5500/';
 function validarRol() {
 	switch(location.pathname.split("/")[2]) {
 		case "client":
-			if(sessionStorage.getItem("userId") != 4) location.href = `${BASE_URL}app/login`;
+			if(sessionStorage.getItem("userId") != 4){
+				sessionStorage.clear();
+				location.href = `${BASE_URL}app/login`;
+			}
 			break;
 		case "owner":
-			if(sessionStorage.getItem("userId") != 2) location.href = `${BASE_URL}app/login`;
+			if(sessionStorage.getItem("userId") != 2){
+				sessionStorage.clear();
+				location.href = `${BASE_URL}app/login`;
+			}
 			break;
 		case "admin":
-			if(sessionStorage.getItem("userId") != 1) location.href = `${BASE_URL}app/login`;
+			if(sessionStorage.getItem("userId") != 1) {
+				sessionStorage.clear();
+				location.href = `${BASE_URL}app/login`;
+			}
 			break;
 		case "employee":
-			if(sessionStorage.getItem("userId") != 3) location.href = `${BASE_URL}app/login`;
+			if(sessionStorage.getItem("userId") != 3){
+				sessionStorage.clear();
+				location.href = `${BASE_URL}app/login`;
+			}
 			break;
 	}
 }
