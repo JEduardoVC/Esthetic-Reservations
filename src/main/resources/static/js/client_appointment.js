@@ -1,17 +1,27 @@
 (function() {
-//	validarRol();
 	showItems();
-//	sessionStorage.removeItem("carrito");
+	$("#filterTodo").on("change", () => {
+		showItems();
+	})
+	$("#filterAppointment").on("change", () => {
+		$("#appointment-services").empty();
+		showAppointment();
+	})
+	$("#filterSale").on("change", () => {
+		$("#appointment-services").empty();
+		showSale();
+	})
+	sessionStorage.removeItem("carrito");
 	sessionStorage.removeItem("appointmentId");
 })();
 
 let citasObj = [];
-let comprasObj = [];
+let saleObj = [];
 
 function showItems() {
 	$("#appointment-services").empty();
+	showAppointment();
 	showSale();
-	showAppointment();	
 }
 
 async function showAppointment() {
@@ -26,7 +36,7 @@ async function showAppointment() {
 				    <p>Fecha y hora de la cita: <span>${cita.appointment_date} a las ${cita.appointmnet_time} horas</span></p>
 				    <div class="products-services-appointment">
 				        <p>Servicios: </p>
-				        <div class="services-appointment">${getItems(cita.id_service)}</div>
+				        <div class="services-appointment">${getItems(cita.id_service, true)}</div>
 				    </div>
 				</div>
 				<div class="actions-appointment">
@@ -66,6 +76,28 @@ async function deleteAppointment(id) {
 			},1500);
 		}
 	}
+}
+
+function getItems(items, isService = false) {
+	let div = "";
+	items.forEach(item => {
+		const span = document.createElement("span");
+		span.textContent = isService ? item.service_name : item.product.inventory_name;
+		div += span.outerHTML;
+	})
+	return div;
+}
+
+async function getAppointments() {
+	const respuesta = await fetch(`${BASE_URL}api/client/appointment/branch/${sessionStorage.getItem("userId")}/${sessionStorage.getItem("branchId")}`, {
+		method: "GET",
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		}
+	});
+	const resultado = await respuesta.json();
+	citasObj = resultado.content ?? [];
 }
 
 async function showSale() {
@@ -118,29 +150,6 @@ function updateSale(id) {
 	location.href = `${BASE_URL}app/client/reservation`
 }
 
-function getItems(items, isServices = true) {
-	let div = "";
-	items.forEach(item => {
-		const span = document.createElement("span");
-		span.textContent = isServices ? item.service_name : item.product.inventory_name;
-		div += span.outerHTML;
-	})
-	return div;
-}
-
-async function getAppointments() {
-	const respuesta = await fetch(`${BASE_URL}api/client/appointment/branch/${sessionStorage.getItem("userId")}/${sessionStorage.getItem("branchId")}`, {
-		method: "GET",
-		headers: {
-			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
-			"Content-Type": "application/json"
-		}
-	});
-	const resultado = await respuesta.json();
-	console.info(resultado.content);
-	citasObj = resultado.content ?? [];
-}
-
 async function getSales() {
 	const resultado = await fetch(`${BASE_URL}api/client/sales/branch/${sessionStorage.getItem("userId")}/${sessionStorage.getItem("branchId")}`, {
 		method: "GET",
@@ -150,7 +159,6 @@ async function getSales() {
 		}
 	});
 	const respuesta = await resultado.json();
-	console.info(respuesta.content);
 	comprasObj = respuesta.content ?? [];
 }
 
