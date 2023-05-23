@@ -4,7 +4,7 @@
     </div>
     <div class="user-interaction-phone">
         <div class="user-animation-phone">
-            <button id="btn-editar-usuario">
+            <button id="btn-editar-usuario-phone">
                 <img class="login-img filter" src="/img/login.webp">
                 <p>Editar usuario</p>
             </button>
@@ -28,20 +28,21 @@
         <img class="img-phone filter" src="/img/barras.webp">
         <div class="menu-shortCuts no-mostrar" id="menuShortCuts">
             <div class="shortcuts-menuPhone">
-                <button id="appointment" class="filter btn-shortcut-menuPhone">Citas</button>
-                <button id="services" class="filter btn-shortcut-menuPhone">Servicios</button>
-                <button id="inventory" class="filter btn-shortcut-menuPhone">Inventario</button>
-                <button id="employees" class="filter btn-shortcut-menuPhone">Empleados</button>
-                <button id="validate_appointment" class="filter btn-shortcut-menuPhone">Verificar cita</button>
+                <a></a>
+                <button id="appointment-phone" class="filter btn-shortcut-menuPhone">Citas</button>
+                <button id="services-phone" class="filter btn-shortcut-menuPhone">Servicios</button>
+                <button id="inventory-phone" class="filter btn-shortcut-menuPhone">Inventario</button>
+                <button id="employees-phone" class="filter btn-shortcut-menuPhone">Empleados</button>
+                <button id="validate_appointment-phone" class="filter btn-shortcut-menuPhone">Verificar cita</button>
             </div>
         </div>
     </div>
     <div class="shortcuts"> 
-        <a th:href="@{/app/owner/validar/citas}"><button id="appointment" class="btn-shortcut">Citas</button></a> 
-        <a th:href="@{/app/owner/servicios}"><button id="services" class="btn-shortcut">Servicios</button></a>
-        <a th:href="@{/app/owner/inventario}"><button id="inventory" class="btn-shortcut">Inventario</button></a>
-        <a th:href="@{/app/owner/personal}"><button id="employees" class="btn-shortcut">Empleados</button></a>
-        <a th:href="@{/app/owner/validar/citas}"><button id="validate_appointment" class="btn-shortcut">Verificar cita</button></a>
+        <button id="appointment" class="btn-shortcut">Citas</button>
+        <button id="services" class="btn-shortcut">Servicios</button>
+        <button id="inventory" class="btn-shortcut">Inventario</button>
+        <button id="employees" class="btn-shortcut">Empleados</button>
+        <button id="validate_appointment" class="btn-shortcut">Verificar cita</button>
     </div>
     <div class="user-interaction">
         <div class="user-animation">

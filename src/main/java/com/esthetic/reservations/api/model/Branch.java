@@ -28,8 +28,14 @@ public class Branch extends BaseModel<Branch> {
 	@Column(name = "name", length = 30)
 	private String name;
 
-	@Column(name = "location", length = 200)
+	@Column(name = "location", length = 255)
 	private String location;
+
+	@Column(name = "latitude")
+	private Double latitude;
+
+	@Column(name = "longitude")
+	private Double longitude;
 
 	@ManyToOne
 	@OnDelete(action = OnDeleteAction.CASCADE)
@@ -42,67 +48,63 @@ public class Branch extends BaseModel<Branch> {
 	@Column(name = "schedule_close")
 	private Time scheduleClose;
 
-	@Column(name = "state", length = 20)
-	private String state;
-
-	@Column(name = "municipality", length = 20)
-	private String municipality;
-
-	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Employee.class, cascade = {CascadeType.REMOVE, CascadeType.DETACH})
+	@ManyToMany(fetch = FetchType.EAGER, targetEntity = Employee.class, cascade = { CascadeType.REMOVE,
+			CascadeType.DETACH })
 	@JoinTable(name = "branch_employee", joinColumns = @JoinColumn(name = "id_branch", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "id_employee", referencedColumnName = "id"))
 	@JsonBackReference
 	private Set<Employee> employees = new HashSet<>();
 
 	@PreRemove
-    public void removeEmployees() {
-        this.getEmployees().forEach(employee->{
-            employee.getWorkingBranches().removeIf(e->e.equals(this));
-        });
-        
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Branch)) return false;
-        Branch branch = (Branch) o;
-        return this.getId() != null && this.getId().equals(branch.getId());
-    }
+	public void removeEmployees() {
+		this.getEmployees().forEach(employee -> {
+			employee.getWorkingBranches().removeIf(e -> e.equals(this));
+		});
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(Branch.class);
-    }
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof Branch))
+			return false;
+		Branch branch = (Branch) o;
+		return this.getId() != null && this.getId().equals(branch.getId());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(Branch.class);
+	}
 
 	public Branch() {
 		super();
 	}
 
-	public Branch(String name, String location, UserEntity owner, Time scheduleOpen, Time scheduleClose, String state,
-			String municipality, Set<Employee> employees) {
-		this.name = name;
-		this.location = location;
-		this.owner = owner;
-		this.scheduleOpen = scheduleOpen;
-		this.scheduleClose = scheduleClose;
-		this.state = state;
-		this.municipality = municipality;
-		this.employees = employees;
-	}
-
-	public Branch(Long id, String name, String location, UserEntity owner, Time scheduleOpen, Time scheduleClose,
-			String state, String municipality, Set<Employee> employees) {
+	public Branch(Long id, String name, String location, Double latitude, Double longitude, UserEntity owner, Time scheduleOpen, Time scheduleClose, Set<Employee> employees) {
 		super(id);
 		this.name = name;
 		this.location = location;
+		this.latitude = latitude;
+		this.longitude = longitude;
 		this.owner = owner;
 		this.scheduleOpen = scheduleOpen;
 		this.scheduleClose = scheduleClose;
-		this.state = state;
-		this.municipality = municipality;
 		this.employees = employees;
 	}
 
+	public Branch(String name, String location, Double latitude, Double longitude, UserEntity owner, Time scheduleOpen, Time scheduleClose, Set<Employee> employees) {
+		this.name = name;
+		this.location = location;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.owner = owner;
+		this.scheduleOpen = scheduleOpen;
+		this.scheduleClose = scheduleClose;
+		this.employees = employees;
+	}
+
+	
 	public Set<Employee> getEmployees() {
 		return this.employees;
 	}
@@ -159,28 +161,28 @@ public class Branch extends BaseModel<Branch> {
 		this.scheduleClose = scheduleClose;
 	}
 
-	public String getState() {
-		return this.state;
+	public Double getLatitude() {
+		return this.latitude;
 	}
 
-	public void setState(String state) {
-		this.state = state;
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
 	}
 
-	public String getMunicipality() {
-		return this.municipality;
+	public Double getLongitude() {
+		return this.longitude;
 	}
 
-	public void setMunicipality(String municipality) {
-		this.municipality = municipality;
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
 	@Override
 	public void copy(Branch branch) {
 		this.name = branch.name;
 		this.location = branch.location;
-		this.state = branch.state;
-		this.municipality = branch.municipality;
+		this.latitude = branch.latitude;
+		this.longitude = branch.longitude;
 		this.owner = branch.owner;
 		this.scheduleOpen = branch.scheduleOpen;
 		this.scheduleClose = branch.scheduleClose;

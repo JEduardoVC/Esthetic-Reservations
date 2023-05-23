@@ -163,7 +163,7 @@ $input-group-addon-bg: #fff;
     border-left: 5px solid #329f00
 }
 
-.dark-mode *:not(.navbar, .navbar-brand, .btn, .nav-link, .bi, .modal, .form-label, .form-check-input) {
+.dark-mode *:not(.navbar, .navbar-brand, .btn, .nav-link, .bi, .modal, .form-label, .form-check-input, .leaflet-marker-icon) {
     background-color: #1a1a1a !important;
 }
 
