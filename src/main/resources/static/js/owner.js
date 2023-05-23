@@ -30,6 +30,10 @@ async function showAppointment() {
 		            <p>${appointment.appointment_date}</p>
 		            <p>${appointment.appointmnet_time}</p>
 		        </div>
+				<div class="status-appointment">
+					<button class="btn-status-success">Atendido</button>
+					<button class="btn-status-pending">Por atender</button>
+				</div>
 		        <div class="cancel-appointment">
 		            <button class="btn-remove" onclick="deleteAppointment(${appointment.id})">Cancelar</button>
 		        </div>
