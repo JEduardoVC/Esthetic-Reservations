@@ -26,7 +26,7 @@
             <div th:insert="owner/navegation"></div>
             <div class="header-employee">
                 <div class="btn-new-service">
-                    <button class="btn-principal" id="add-employee">Agregar empleado</button>
+                    <button class="btn-principal trigger-modal" data-action="add" data-target="-1" id="add-employee">Agregar empleado</button>
                 </div>
                 <div class="select-branch-admin">
                     <p>Sucursal: </p>
@@ -44,17 +44,15 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal-overlay" id="modal-new-service">
+    <div class="modal-overlay no-mostrar" id="modal-new-employee">
         <div class="modal-form">
             <div class="volver-img">
                 <button class="btn-volver-img">
-                    <img class="filter" src="/img/volver.webp">
+                    <img class="filter" src="/img/volver.webp" onclick="removeModal()">
                 </button>
             </div>
-            <div id="modal-header">
-                <h1>Empleado</h1>
-            </div>
-            <div id="alertas"></div>
+            <h1 id="modal-header">Empleado</h1>
+            
             <div id="modal-content" th:insert="/owner/employees/formulario-usuario">
 
             </div>

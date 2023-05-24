@@ -27,7 +27,7 @@ async function inflateModal(action, target) {
                                     <input class="inventory-field" type="text" name="name" id="name" aria-label="inventory_name" placeholder="Nombre del producto" value="${product.inventory_name}">
                                 </div>
                                 <div class="field">
-                                    <label class="filter" for="img">Actualizar imagen</label>
+                                    <label class="filter" for="img">${action === 'edit' ? 'Actualizar ' : ''} Imagen</label>
                                     <input class="filter inventory-field" type="file" name="img" id="img" aria-label="imagen" placeholder="Imagen del producto" accept="image/*">
                                 </div>
                                 <div class="field">
@@ -150,7 +150,7 @@ async function getAllProducts() {
     }
 }
 
-$(document).on('click', '.btn-remove', async function(e){
+$(document).on('click', '.btn-remove', async function (e) {
     const target = $(this).data('target');
     deleteProduct(target);
 });
@@ -209,8 +209,8 @@ async function actualizarInventory(target) {
         })
 }
 
-$(window).on('click', function(e){
-    if(e.target === document.getElementById('modal-new-service')){
+$(window).on('click', function (e) {
+    if (e.target === document.getElementById('modal-new-service')) {
         removeModal();
     }
 });
