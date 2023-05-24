@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5500/';
+const BASE_URL = 'https://187.191.8.30:5500/';
 //const BASE_URL = 'http://192.168.100.6:5500/';
 //const BASE_URL = 'http://192.168.1.76:5500/';
 //const BASE_URL = 'http://192.168.1.70:5500/';

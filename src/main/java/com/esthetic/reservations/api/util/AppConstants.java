@@ -25,6 +25,6 @@ public class AppConstants {
 
     public static final String INVALID_PASSWORD_MSG = "Contraseña inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)";
     
-    public static final String BASE_URL = "http://localhost:5500/";
+    public static final String BASE_URL = "http://187.191.8.30:5500/";
 
 }
