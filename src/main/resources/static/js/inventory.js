@@ -130,7 +130,7 @@ async function getAllProducts() {
             html += `<div class="product-registered">
                         <p>${product.inventory_name}</p>
                         <div class="img-product-inventory">
-                            <img src="/Inventario/${product.imagen}">
+                            <img src="/Inventario/${product.imagen}.jpg">
                         </div>
                         <p><span>$</span>${product.price}</p>
                         <p>${product.store}</p>

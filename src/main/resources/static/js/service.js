@@ -16,7 +16,7 @@ async function showModal(id = null) {
 	                    <img class="filter" src="/img/volver.webp" onclick="removeModal()">
 	                </button>
 	            </div>
-	            <h1>Nuevo servicio</h1>
+	            <h1>${service ? "Actualizar Servicio" : "Nuevo servicio"}</h1>
 	            <form>
 	                <div class="field">
 	                    <label class="filter" for="name">Nombre</label>
@@ -30,7 +30,7 @@ async function showModal(id = null) {
 	                    <label class="filter" for="price">Precio</label>
 	                    <input type="number" name="price" id="price" min="0" value="${service ? service.price : ""}">
 	                </div>
-	                <button id="${service ? service.id : ""}" class="btn-principal" type="button" onclick="${service ? "updateService(id)" : "addService()"}">${service ? "Actualizar" : "Añadir"}</button>
+	                <button id="btn-action" data-target="${service ? service.id : ""}" class="btn-principal" type="button" onclick="${service ? "updateService()" : "addService()"}">${service ? "Actualizar" : "Añadir"}</button>
 	            </form>
 	        </div>
 	    </div>
@@ -83,7 +83,8 @@ async function addService() {
 	}
 }
 
-async function updateService(id) {
+async function updateService() {
+	const id = $("#btn-action")[0].dataset.target;
 	if(validate()) {
 		const resultado = await fetch(`${BASE_URL}api/owner/services/actualizar/${id}`, {
 			method: "PUT",
@@ -173,4 +174,8 @@ function validate() {
 
 function removeModal() {	
 	$("body").children().last().remove();
+}
+
+function volver() {
+	location.href = `${BASE_URL}app/owner`
 }

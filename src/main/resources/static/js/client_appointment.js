@@ -31,9 +31,9 @@ async function showAppointment() {
 			<div class="appointment-container">
 				<div class="info-appointment">
 				    <p>Sucursal: <span>${cita.id_branch.name}</span></p>
-				    <p>Encargada: <span>AQUÍ VA EL EMPLEADO</span></p>
+				    <p>Encargada: <span>${cita.id_employee.name} ${cita.id_employee.lastName}</span></p>
 				    <p>Ubicacion del local: <span>${cita.id_branch.location}</span></p>
-				    <p>Fecha y hora de la cita: <span>${cita.appointment_date} a las ${cita.appointmnet_time} horas</span></p>
+				    <p>Fecha y hora de la cita: <span>${cita.appointment_date} a las ${changeFormatTime(cita.appointmnet_time)}</span></p>
 				    <div class="products-services-appointment">
 				        <p>Servicios: </p>
 				        <div class="services-appointment">${getItems(cita.id_service, true)}</div>

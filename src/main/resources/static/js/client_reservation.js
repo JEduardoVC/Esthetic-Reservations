@@ -192,7 +192,8 @@ async function saveAppointment() {
 			id_service: carrito.servicios.flatMap(servicio => servicio.id),
 			cantidad: carrito.servicios.flatMap(servicio => parseInt(servicio.cantidad)),
 			id_client: sessionStorage.getItem("userId"),
-			id_employee: sessionStorage.getItem("employeeId")
+			id_employee: sessionStorage.getItem("employeeId"),
+			id_status: 2
 		}),
 		headers: {
 			"Authorization": `Bearer ${sessionStorage.getItem("token")}`,
@@ -242,7 +243,7 @@ async function showReview() {
 	                    <p>${servicio.service_name}</p>
 	                    <div class="description-service">
 	                        <span>${appointment.date}</span>
-	                        <span>${appointment.time}</span>
+	                        <span>${appointment.time ? changeFormatTime(appointment.time) : "00:00"}</span>
 	                    </div>
 	                </div>
 	            </div>
@@ -329,6 +330,10 @@ async function newAppointment() {
 	const time = `00:${document.querySelector("#time-appointment").value}`;
 	if(document.querySelector("#time-appointment").value == "") {
 		alerta("error", "Seleccionar una hora");
+		return;
+	}
+	if(!sessionStorage.getItem("employeeId")) {
+		alerta("error", "Selecciona un empleado")
 		return;
 	}
 	const citas = await obtenerCitas();
@@ -496,7 +501,7 @@ function selectDay(div){
 	});
     div.classList.toggle("selected");
 	const index = months.findIndex(month => month == document.querySelector("#month").textContent);
-    appointment.date = `${document.querySelector("#year").textContent}-${index}-${div.textContent}`;
+    appointment.date = `${document.querySelector("#year").textContent}-${index+1}-${div.textContent}`;
 }
 
 function showSeccion(){
