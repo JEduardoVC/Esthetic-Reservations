@@ -80,7 +80,7 @@ public class AuthController {
         Boolean isPublicPath = this.antPathMatcher.match("/app", uri)
                 || this.antPathMatcher.match("/app/", uri)
                 || this.antPathMatcher.match("/app/login", uri)
-                || this.antPathMatcher.match("/app/register", uri)
+                || this.antPathMatcher.match("/app/registro", uri)
                 || this.antPathMatcher.match("/app/restablecer/password", uri)
                 || this.antPathMatcher.match("/app/forbidden", uri)
                 || this.antPathMatcher.match("/app/unauthorized", uri);
@@ -131,6 +131,20 @@ public class AuthController {
             return new RedirectView("/app/forbidden");
         }
 
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserEntityDTO> registerApp(@Valid @RequestBody UserEntityDTO userEntityDTO) {
+        if (userService.existsByUsername(userEntityDTO.getUsername())) {
+            throw new ConflictException("Usuario", "ya está siendo usado", "nombre de usuario",
+                    userEntityDTO.getUsername());
+        }
+        if (userService.existsByEmail(userEntityDTO.getEmail())) {
+            throw new ConflictException("Usuario", "ya está siendo usado", "correo electrónico",
+                    userEntityDTO.getEmail());
+        }
+        userEntityDTO.setPassword(this.passwordEncoder.encode(userEntityDTO.getPassword()));
+        return new ResponseEntity<>(userService.register(userEntityDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("/{role}/register")

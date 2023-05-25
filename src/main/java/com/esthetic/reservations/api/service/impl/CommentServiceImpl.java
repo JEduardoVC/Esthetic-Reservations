@@ -1,5 +1,8 @@
 package com.esthetic.reservations.api.service.impl;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -122,7 +125,7 @@ public class CommentServiceImpl extends GenericServiceImpl<Comment, CommentDTO>
         Appointment appointment = this.appointmentServiceImpl.mapToModel(this.appointmentServiceImpl.findById(dto.getAppointmentId()));
         UserEntity client = this.userServiceImpl.mapToModel(this.userServiceImpl.findById(dto.getClientId()));
         Employee employee = this.employeeServiceImpl.mapToModel(this.employeeServiceImpl.findById(dto.getEmployeeId()));
-        Comment comment = new Comment(dto.getRating(), dto.getComment(), dto.getDate(), appointment, client, employee);
+        Comment comment = new Comment(dto.getRating(), dto.getComment(), Date.valueOf(LocalDate.now(ZoneId.systemDefault())), appointment, client, employee);
         return mapToDTO(this.commentRepository.save(comment));
     }
 
@@ -131,7 +134,7 @@ public class CommentServiceImpl extends GenericServiceImpl<Comment, CommentDTO>
         Appointment appointment = this.appointmentServiceImpl.mapToModel(this.appointmentServiceImpl.findById(dto.getAppointmentId()));
         UserEntity client = this.userServiceImpl.mapToModel(this.userServiceImpl.findById(dto.getClientId()));
         Employee employee = this.employeeServiceImpl.mapToModel(this.employeeServiceImpl.findById(dto.getEmployeeId()));
-        Comment newComment = new Comment(dto.getRating(), dto.getComment(), dto.getDate(), appointment, client, employee);
+        Comment newComment = new Comment(dto.getRating(), dto.getComment(), Date.valueOf(LocalDate.now(ZoneId.systemDefault())), appointment, client, employee);
         oldComment.copy(newComment);
         return mapToDTO(this.commentRepository.save(oldComment));
     }
