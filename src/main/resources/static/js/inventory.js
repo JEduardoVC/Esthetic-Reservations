@@ -148,6 +148,8 @@ async function getAllProducts() {
                         </div>
                         <p><span>$</span>${product.price}</p>
                         <p>${product.store}</p>
+                        <p>${product.capacibility}</p>
+                        <p>${product.description}</p>
                         <div class="actions-product">
                             <button type="button" class="btn-update trigger-modal" data-action="edit" data-target="${product.id}">Actualizar</button>
                             <button type="button" class="btn-remove" data-target="${product.id}">Eliminar</button>
