@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwtRoles = jwtRoles.replace("[", "").replace("]", "");
         String[] roles = jwtRoles.split(",");
         for (String roleName : roles) {
-            userDetails.addRole(this.roleRepository.findByName(roleName.strip()).get());
+            userDetails.addRole(this.roleRepository.findByName(roleName.trim()).get());
         }
 
         if (!this.jwtUtil.validateToken(jwtToken, userDetails)) {

@@ -145,6 +145,28 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
     }
 
     @Override
+    public UserEntityDTO register(UserEntityDTO userEntityDTO) {
+        // Convert DTO to Model
+        UserEntity user = mapToModel(userEntityDTO);
+
+        // Exists admin ?
+        Role adminRole = roleRepository.findByName(AppConstants.ADMIN_ROLE_NAME).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.ADMIN_ROLE_NAME));
+        Role roleToBe = adminRole;
+        if(userRepository.existsByRolesIn(Arrays.asList(adminRole))){
+            Role clientRole = roleRepository.findByName(AppConstants.CLIENT_ROLE_NAME).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.CLIENT_ROLE_NAME));
+            roleToBe = clientRole;
+        }
+        // Default role
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleToBe);
+        user.setRoles(roles);
+        UserEntity newUser = userRepository.save(user); // Database
+        // Convert Model to DTO
+        UserEntityDTO userResponse = mapToDTO(newUser);
+        return userResponse;
+    }
+
+    @Override
     @Transactional
     public UserEntityDTO register(UserEntityRolesDTO userEntityRolesDTO) {
         Role employeeRole = this.roleRepository.findByName(AppConstants.EMPLOYEE_ROLE_NAME).orElseThrow(

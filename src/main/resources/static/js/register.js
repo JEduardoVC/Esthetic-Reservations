@@ -49,7 +49,7 @@ function register() {
         showAlerts(alertas, 'error');
         return;
     }
-    fetch(BASE_URL + 'api/auth/admin/register', {
+    fetch(BASE_URL + 'api/auth/register', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -73,6 +73,9 @@ function register() {
                         alertas.push(`${data.message[message]}`);
                     }
                     showAlerts(alertas, 'error');
+                    return;
+                } else {
+                    alerta('error', data.message, 'Error al registrarse.');
                     return;
                 }
             }
