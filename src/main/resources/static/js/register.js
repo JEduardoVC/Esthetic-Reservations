@@ -46,7 +46,8 @@ function validForm() {
 
 function register() {
     if (!validForm()) {
-        showAlerts(alertas, 'error');
+        // showAlerts(, 'error');
+        alerta('error', alertas.join(', '), 'Verifica el formulario.');
         return;
     }
     fetch(BASE_URL + 'api/auth/register', {
@@ -69,18 +70,14 @@ function register() {
         .then(data => {
             if (typeof data.errorCode !== 'undefined') {
                 if (data.errorCode == 400) {
-                    for (const message in data.message) {
-                        alertas.push(`${data.message[message]}`);
-                    }
-                    showAlerts(alertas, 'error');
+                    alerta('error', JSON.stringify(data.message), 'Error al registrarse.');
                     return;
                 } else {
                     alerta('error', data.message, 'Error al registrarse.');
                     return;
                 }
             }
-            alertas.push('Registro exitoso.');
-            showAlerts(alertas, 'successful');
+            alerta('success', 'Registro exitoso', 'Registrado');
         })
 }
 
