@@ -1,74 +1,370 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/admin.layout.html}">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head>
-    <title id="pageTitle">Admin - Usuarios</title>
+    <title>Admin - Usuarios</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/img/Logo.webp" />
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Ubuntu&display=swap" rel="stylesheet">
+    <!-- END GOOGLE FONTS -->
+
+    <!-- GLOBAL STYLES -->
+    <link rel="stylesheet" href="/css/bootstrap/admin.css">
+    <link rel="stylesheet" href="/css/vendor/datatables/datatables.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/vendor/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- END GLOBAL STYLES -->
+
+    <!-- PAGE SPECIFIC STYLES -->
+
+    <!-- END PAGE SPECIFIC STYLES -->
+
+    <!-- GLOBAL SCRIPTS -->
+    <script src="/js/vendor/jquery/jquery-3.6.1.min.js" type="text/javascript"></script>
+    <script src="/js/vendor/jquery/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="/js/vendor/jquery/additional-methods.min.js" type="text/javascript"></script>
+    <!-- <script src="/js/app.js" type="text/javascript"></script> -->
+    <script src="/js/util.js" type="text/javascript"></script>
+    <script src="/js/ApiUtils.js" type="text/javascript"></script>
+    <script src="/js/admin.js" type="text/javascript"></script>
+    <script src="/js/vendor/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
+
+    <script src="/js/vendor/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>
+    <script src="/js/vendor/datatables/languageMX.js" type="text/javascript"></script>
+    <script src="/js/vendor/datatables/datatables.min.js" type="text/javascript"></script>
+    <script src="/js/logout.js"></script>
+    <!-- END GLOBAL SCRIPTS -->
+
+    <!-- PAGE SPECIFIC SCRIPTS -->
+    <script src="/js/admin.user.js"></script>
+    <!-- END PAGE SPECIFIC SCRIPTS -->
+
 </head>
 
-<th:block layout:fragment="page-styles">
-
-</th:block>
-
-<th:block layout:fragment="page-scripts">
-    <script th:src="@{/js/admin.user.js}"></script>
-</th:block>
-
 <body>
-    <div layout:fragment="title">
-        <h1 class="text-primary er-header fw-bold">Usuarios</h1>
-    </div>
-    <div layout:fragment="toolbar-btns">
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <button id="createuser" class="btn btn-primary fw-bold m-3 modal-trigger" data-action="add" data-bs-toggle="modal"
-                data-bs-target="#modalUsersForm" data-target="-1">
-                <i class="bi bi-person-plus-fill"></i>
-                Agregar usuario
-            </button>
-        </div>
-    </div>
-    <section layout:fragment="content">
-        <div class="table-responsive p-2">
-            <table class="table table-striped p-2" id="usersTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Nombre</th>
-                        <th>Dirección</th>
-                        <th>Correo</th>
-                        <th>Teléfono</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Nombre</th>
-                        <th>Dirección</th>
-                        <th>Correo</th>
-                        <th>Teléfono</th>
-                        <th>Acciones</th>
-                    </tr>
-                </tfoot>
-                <tbody id="tableBody">
-                </tbody>
-            </table>
 
-        </div>
+    <header class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Esthetic Reservations</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </header>
 
-        <div id="modalUsersForm" class="modal fade">
-            <div class="modal-dialog modal-xl" role="document">
-                <div class="modal-content ">
-                    <div class="modal-header">
-                        <h1 class="text-primary modal-title er-header fw-bold">Usuario</h1>
-                        <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" th:insert="/admin/formulario-usuario.html"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column flex-shrink-0 p-3">
+                    <h6
+                        class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                        <span>ADMINISTRACIÓN</span>
+                        <a class="link-secondary" href="#" aria-label="Add a new report">
+                            <span data-feather="plus-circle" class="align-text-bottom"></span>
+                        </a>
+                    </h6>
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item mb-2 border rounded-4">
+                            <a href="/app/admin" class="nav-link active rounded-4" aria-current="page">
+                                <i class="bi bi-people-fill"></i>
+                                Usuarios
+                            </a>
+                        </li>
+                        <li class="nav-item border rounded-4">
+                            <a href="/app/admin/sucursales" class="nav-link" aria-current="page">
+                                <i class="bi bi-shop"></i>
+                                Sucursales
+                            </a>
+                        </li>
+                        <hr class="bg-primary border-2 border-top border-primary">
+                        <h6
+                            class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                            <span>ACCIONES</span>
+                            <a class="link-secondary" href="#" aria-label="Add a new report">
+                                <span data-feather="plus-circle" class="align-text-bottom"></span>
+                            </a>
+                        </h6>
+                        <li id="btn-cerrar-sesion" class="nav-item border rounded-4 btn btn-primary text-white m-2">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-box-arrow-left"></i>
+                                Cerrar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item border rounded-4 btn btn-primary text-white m-2 moon dark-mode-toggler">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-sun-fill"></i>
+                                Modo Oscuro (OFF)
+                            </a>
+                        </li>
+                        <li
+                            class="nav-item border rounded-4 btn btn-primary text-white m-2 sun d-none dark-mode-toggler">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-moon-stars-fill"></i>
+                                Modo Oscuro (ON)
+                            </a>
+                        </li>
+
+                    </ul>
                 </div>
-            </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="text-primary er-header fw-bold">Usuarios</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button id="createuser" class="btn btn-primary fw-bold m-3 modal-trigger" data-action="add"
+                            data-bs-toggle="modal" data-bs-target="#modalUsersForm" data-target="-1">
+                            <i class="bi bi-person-plus-fill"></i>
+                            Agregar usuario
+                        </button>
+                    </div>
+                </div>
+
+                <div class="body-admin">
+                    <div class="container-admin">
+
+                        <div class="table-responsive p-2">
+                            <table class="table table-striped p-2" id="usersTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Nombre</th>
+                                        <th>Dirección</th>
+                                        <th>Correo</th>
+                                        <th>Teléfono</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Nombre</th>
+                                        <th>Dirección</th>
+                                        <th>Correo</th>
+                                        <th>Teléfono</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody id="tableBody">
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                        <div id="modalUsersForm" class="modal fade">
+                            <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content ">
+                                    <div class="modal-header">
+                                        <h1 class="text-primary modal-title er-header fw-bold">Usuario</h1>
+                                        <button type="button" class="btn-close m-2" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="alertas"></div>
+                                        <form id="usersForm" action="#" onsubmit="return false" method="POST"
+                                            class="row g-3 my-2">
+                                            <div class="col-md-12">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-person-bounding-box"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control form-control-sm"
+                                                            id="user-username" name="user-username"
+                                                            placeholder="Nombre de usario" aria-label="username">
+                                                        <label for="user-username" class="form-label">Username</label>
+                                                    </div>
+                                                </div>
+                                                <div id="usernameFeedback" class="invalid-feedback d-block">
+
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-person-lines-fill"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control form-control-sm"
+                                                            id="user-name" name="user-name" placeholder="Nombre"
+                                                            aria-label="name">
+                                                        <label for="user-name" class="form-label">Nombre</label>
+                                                    </div>
+                                                </div>
+                                                <div id="nameFeedback" class="invalid-feedback d-block">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-person-lines-fill"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control form-control-sm "
+                                                            id="user-lastname" name="user-lastname"
+                                                            aria-label="lastName" placeholder="Apellidos">
+                                                        <label for="user-lastname" class="form-label">Apellidos</label>
+
+                                                    </div>
+                                                </div>
+                                                <div id="lastNameFeedback" class="invalid-feedback d-block">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-pin-map-fill"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="text" class="form-control form-control-sm "
+                                                            id="user-address" name="user-address" aria-label="address"
+                                                            placeholder="Dirección">
+
+                                                        <label for="user-address" class="form-label">Dirección</label>
+                                                    </div>
+                                                </div>
+                                                <div id="addressFeedback" class="invalid-feedback d-block">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-envelope-at-fill"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="email"
+                                                            class="form-control form-control-sm secondary-border-subtle-lg"
+                                                            id="user-email" name="user-email" aria-label="email"
+                                                            placeholder="Correo">
+                                                        <label for="user-email" class="form-label">Correo</label>
+
+                                                    </div>
+                                                </div>
+                                                <div id="emailFeedback" class="invalid-feedback d-block">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-phone-fill"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="phone" class="form-control form-control-sm"
+                                                            id="user-phone" name="user-phone" placeholder="Teléfono"
+                                                            aria-label="phoneNumber">
+                                                        <label for="user-phone" class="form-label">Teléfono</label>
+                                                    </div>
+                                                </div>
+                                                <div id="phoneNumberFeedback" class="invalid-feedback d-block">
+
+                                                </div>
+                                            </div>
+                                            <div id="passworddiv" class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-shield-lock-fill"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="password" class="form-control form-control-sm"
+                                                            id="user-password" name="user-password"
+                                                            aria-label="password" placeholder="Contraseña">
+
+                                                        <label for="user-password" class="form-label">Contraseña</label>
+                                                    </div>
+                                                    <span
+                                                        class="input-group-text border border-primary password-toggler"
+                                                        id="togglePassword" style="cursor: pointer">
+                                                        <i class="bi bi-eye bi-eye-slash" id="togglePasswordIcon"></i>
+                                                    </span>
+                                                </div>
+                                                <div id="passwordFeedback" class="invalid-feedback d-block">
+
+                                                </div>
+                                            </div>
+
+                                            <div id="cpassworddiv" class="col-md-6">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text">
+                                                        <i class="bi bi-shield-lock"></i>
+                                                    </span>
+                                                    <div class="form-floating">
+                                                        <input type="password" class="form-control form-control-sm"
+                                                            id="user-cpassword" name="user-cpassword"
+                                                            aria-label="cpassword"
+                                                            placeholder="Confirmar la contraseña">
+                                                        <label for="user-cpassword" class="form-label">Confirmar
+                                                            Contraseña</label>
+                                                    </div>
+                                                    <span
+                                                        class="input-group-text border border-primary password-toggler"
+                                                        id="toggleCPassword" style="cursor: pointer">
+                                                        <i class="bi bi-eye bi-eye-slash" id="toggleCPasswordIcon"></i>
+                                                    </span>
+                                                </div>
+                                                <div id="cpasswordFeedback" class="invalid-feedback d-block">
+
+                                                </div>
+                                            </div>
+
+                                            <label for="" class="form-label fw-bold fs-4">Roles</label>
+                                            <div id="rolesFeedback" class="invalid-feedback d-none"></div>
+                                            <div id="roles-sw" class="col-md-3 form-group"></div>
+                                            <div id="branchesdiv" class="col-md-9 d-none no-mostrar">
+                                                <label for="branchesTable" class="fw-bold fs-5">Sucursales de
+                                                    trabajo...</label>
+                                                <div id="branchesFeedback" class="invalid-feedback d-none"></div>
+                                                <table class="table" id="branchesTable" width="100%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Sucursal</th>
+                                                            <th>Nombre</th>
+                                                            <th>Dueño</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>Sucursal</th>
+                                                            <th>Nombre</th>
+                                                            <th>Dueño</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                    <tbody id="tableBody">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-1">
+                                                    <button type="submit" id="btnModal"
+                                                        class="btn btn-primary fw-bold">Confirmar</button>
+                                                </div>
+                                                <div id="formFeedback"
+                                                    class="col-md-10 invalid-feedback d-none fw-bold">Revisa el
+                                                    formulario.</div>
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </main>
         </div>
-    </section>
+    </div>
+
 </body>
 
 </html>

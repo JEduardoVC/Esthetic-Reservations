@@ -1,97 +1,390 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{admin/admin.layout.html}">
+<html lang="es">
 
 <head>
-    <title id="pageTitle">Admin - Sucursales</title>
-</head>
+    <title>Admin - Sucursales</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/img/Logo.webp" />
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&family=Ubuntu&display=swap" rel="stylesheet">
+    <!-- END GOOGLE FONTS -->
 
-<th:block layout:fragment="page-styles">
-    <link rel="stylesheet" th:href="@{/css/vendor/leaflet/leaflet.min.css}">
-    <link rel="stylesheet" th:href="@{/css/vendor/jquery-timepicker/jquery.timepicker.min.css}">
+    <!-- GLOBAL STYLES -->
+    <link rel="stylesheet" href="/css/bootstrap/admin.css">
+    <link rel="stylesheet" href="/css/vendor/datatables/datatables.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/vendor/bootstrap-icons/font/bootstrap-icons.css">
+    <!-- END GLOBAL STYLES -->
+
+    <!-- PAGE SPECIFIC STYLES -->
+    <link rel="stylesheet" href="/css/vendor/leaflet/leaflet.min.css">
+    <link rel="stylesheet" href="/css/vendor/jquery-timepicker/jquery.timepicker.min.css">
     <style>
-        .leaflet-control-layers-toggle{
+        .leaflet-control-layers-toggle {
             background-image: url(/img/layers.svg);
             background-repeat: no-repeat;
             background-size: contain;
         }
     </style>
-</th:block>
+    <!-- END PAGE SPECIFIC STYLES -->
 
-<th:block layout:fragment="page-scripts">
-    <script th:src="@{/js/vendor/leaflet/leaflet.js}"></script>
-    <script th:src="@{/js/vendor/jquery-timepicker/jquery.timepicker.min.js}"></script>
-    <script th:src="@{/js/admin.branch.js}" defer></script>
-</th:block>
+    <!-- GLOBAL SCRIPTS -->
+    <script src="/js/vendor/jquery/jquery-3.6.1.min.js" type="text/javascript"></script>
+    <script src="/js/vendor/jquery/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="/js/vendor/jquery/additional-methods.min.js" type="text/javascript"></script>
+    <!-- <script src="/js/app.js" type="text/javascript"></script> -->
+    <script src="/js/util.js" type="text/javascript"></script>
+    <script src="/js/ApiUtils.js" type="text/javascript"></script>
+    <script src="/js/admin.js" type="text/javascript"></script>
+    <script src="/js/vendor/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
+
+    <script src="/js/vendor/bootstrap/bootstrap.bundle.js" type="text/javascript"></script>
+    <script src="/js/vendor/datatables/languageMX.js" type="text/javascript"></script>
+    <script src="/js/vendor/datatables/datatables.min.js" type="text/javascript"></script>
+    <script src="/js/logout.js"></script>
+    <!-- END GLOBAL SCRIPTS -->
+
+    <!-- PAGE SPECIFIC SCRIPTS -->
+    <script src="/js/vendor/leaflet/leaflet.js"></script>
+    <script src="/js/vendor/jquery-timepicker/jquery.timepicker.min.js"></script>
+    <script src="/js/admin.branch.js" defer></script>
+    <!-- END PAGE SPECIFIC SCRIPTS -->
+
+</head>
 
 <body>
-    <div layout:fragment="title">
-        <h1 class="text-primary er-header fw-bold">Sucursales</h1>
-    </div>
-    <div layout:fragment="toolbar-btns">
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <button id="createbranch" class="btn btn-primary modal-trigger m-3 fw-bold" data-action="add"
-                data-target="-1" data-bs-toggle="modal" data-bs-target="#modalBranchesForm">
-                <i class="bi bi-plus-circle"></i>
-                Agregar sucursal
-            </button>
-        </div>
-    </div>
-    <section layout:fragment="content">
-        <div class="table-responsive p-2">
-            <table class="table table-striped p-2" id="branchesTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Dirección</th>
-                        <th>Dueño</th>
-                        <th>Apertura</th>
-                        <th>Cierre</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Dirección</th>
-                        <th>Dueño</th>
-                        <th>Apertura</th>
-                        <th>Cierre</th>
-                        <th>Acciones</th>
-                    </tr>
-                </tfoot>
-                <tbody id="tableBody">
-                </tbody>
-            </table>
-        </div>
-        <div id="modalBranchesForm" class="modal fade">
-            <div class="modal-dialog modal-xl" role="document">
-                <div class="modal-content ">
-                    <div class="modal-header">
-                        <h1 class="text-primary modal-title fw-bold er-header">Sucursal</h1>
-                        <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+
+    <header class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Esthetic Reservations</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3 sidebar-sticky d-flex flex-column flex-shrink-0 p-3">
+                    <h6
+                        class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                        <span>ADMINISTRACIÓN</span>
+                        <a class="link-secondary" href="#" aria-label="Add a new report">
+                            <span data-feather="plus-circle" class="align-text-bottom"></span>
+                        </a>
+                    </h6>
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item mb-2 border rounded-4">
+                            <a href="/app/admin" class="nav-link" aria-current="page">
+                                <i class="bi bi-people-fill"></i>
+                                Usuarios
+                            </a>
+                        </li>
+                        <li class="nav-item border rounded-4">
+                            <a href="/app/admin/sucursales" class="nav-link active rounded-4" aria-current="page">
+                                <i class="bi bi-shop"></i>
+                                Sucursales
+                            </a>
+                        </li>
+                        <hr class="bg-primary border-2 border-top border-primary">
+                        <h6
+                            class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
+                            <span>ACCIONES</span>
+                            <a class="link-secondary" href="#" aria-label="Add a new report">
+                                <span data-feather="plus-circle" class="align-text-bottom"></span>
+                            </a>
+                        </h6>
+                        <li id="btn-cerrar-sesion" class="nav-item border rounded-4 btn btn-primary text-white m-2">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-box-arrow-left"></i>
+                                Cerrar Sesión
+                            </a>
+                        </li>
+                        <li class="nav-item border rounded-4 btn btn-primary text-white m-2 moon dark-mode-toggler">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-sun-fill"></i>
+                                Modo Oscuro (OFF)
+                            </a>
+                        </li>
+                        <li
+                            class="nav-item border rounded-4 btn btn-primary text-white m-2 sun d-none dark-mode-toggler">
+                            <a class="nav-link text-white" aria-current="page">
+                                <i class="bi bi-moon-stars-fill"></i>
+                                Modo Oscuro (ON)
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="text-primary er-header fw-bold">Sucursales</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button id="createbranch" class="btn btn-primary modal-trigger m-3 fw-bold" data-action="add"
+                            data-target="-1" data-bs-toggle="modal" data-bs-target="#modalBranchesForm">
+                            <i class="bi bi-plus-circle"></i>
+                            Agregar sucursal
+                        </button>
                     </div>
-                    <div class="modal-body" th:insert="/admin/formulario-sucursal.html">
+                </div>
+
+                <div class="body-admin">
+                    <div class="container-admin">
+
+                        <div class="table-responsive p-2">
+                            <table class="table table-striped p-2" id="branchesTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Dirección</th>
+                                        <th>Dueño</th>
+                                        <th>Apertura</th>
+                                        <th>Cierre</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tfoot>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Dirección</th>
+                                        <th>Dueño</th>
+                                        <th>Apertura</th>
+                                        <th>Cierre</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </tfoot>
+                                <tbody id="tableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="modalBranchesForm" class="modal fade">
+                            <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content ">
+                                    <div class="modal-header">
+                                        <h1 class="text-primary modal-title fw-bold er-header">Sucursal</h1>
+                                        <button type="button" class="btn-close m-2" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="alertas"></div>
+                                        <form id="branchesForm" class="row g-3" action="#" onsubmit="return false"
+                                            method="POST">
+                                            <div class="col-md-6">
+
+                                                <div class="col-md-12">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text">
+                                                            <i class="bi bi-text-left"></i>
+                                                        </span>
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control" id="branch-name"
+                                                                name="branch-name" placeholder="Nombre de la sucursal"
+                                                                aria-label="branchName">
+                                                            <label for="branch-name" class="form-label">Nombre</label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="branchNameFeedback" class="invalid-feedback d-block">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="col-md-12">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text">
+                                                            <i class="bi bi-person-gear"></i>
+                                                        </span>
+                                                        <div class="form-floating">
+                                                            <select id="select-owner" name="select-owner"
+                                                                class="form-select" aria-label="owner">
+                                                            </select>
+                                                            <label for="select-owner" class="form-label">Dueño</label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="ownerFeedback" class="invalid-feedback d-block">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="col-md-12">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text">
+                                                            <i class="bi bi-pin-map-fill"></i>
+                                                        </span>
+                                                        <button class="btn btn-outline-primary" type="button"
+                                                            id="search-location" data-bs-toggle="modal"
+                                                            data-bs-target="#searchLocationForm">
+                                                            <i class="bi bi-search"></i> Buscar ubicación
+                                                        </button>
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control" id="branch-location"
+                                                                name="branch-location"
+                                                                placeholder="Dirección de la sucursal"
+                                                                aria-label="location" data-lat="x" data-lon="x"
+                                                                readonly>
+                                                            <label for="branch-location"
+                                                                class="form-label">Dirección</label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="locationFeedback" class="invalid-feedback d-block">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="col-md-12">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text">
+                                                            <i class="bi bi-brightness-high-fill"></i>
+                                                        </span>
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control timepicker"
+                                                                id="branch-open" name="branch-open"
+                                                                placeholder="Hora de apertura"
+                                                                aria-label="scheduleOpen">
+                                                            <label for="branch-open" class="form-label">Hora de
+                                                                Apertura</label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="scheduleOpenFeedback" class="invalid-feedback d-block">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="col-md-12">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text">
+                                                            <i class="bi bi-moon-fill"></i>
+                                                        </span>
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control timepicker"
+                                                                id="branch-close" name="branch-close"
+                                                                placeholder="Hora de cierre" aria-label="scheduleClose">
+                                                            <label for="branch-close" class="form-label">Hora de
+                                                                Cierre</label>
+                                                        </div>
+                                                    </div>
+                                                    <div id="scheduleCloseFeedback" class="invalid-feedback d-block">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+
+                                                <div id="employeesdiv" class="col-md-9 container">
+                                                    <label for="employeesTable"
+                                                        class="fw-bold fs-5">Empleados...</label>
+                                                    <div id="employeesFeedback" class="invalid-feedback d-none"></div>
+                                                    <table class="table" id="employeesTable" width="100%"
+                                                        cellspacing="0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Empleado</th>
+                                                                <th>Nombre</th>
+                                                                <th>Username</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th>Empleado</th>
+                                                                <th>Nombre</th>
+                                                                <th>Username</th>
+                                                            </tr>
+                                                        </tfoot>
+                                                        <tbody id="employeeTableBody">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-12">
+                                                <button type="submit" id="btnModal"
+                                                    class="btn btn-primary fw-bold">Confirmar</button>
+                                                <div id="formFeedback"
+                                                    class="col-md-10 invalid-feedback d-none fw-bold">Revisa el
+                                                    formulario.</div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="searchLocationForm" class="modal fade">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content ">
+                                    <div class="modal-header">
+                                        <h1 class="text-primary modal-title fw-bold er-header">Buscar dirección</h1>
+                                        <button type="button" class="btn-close m-2" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="alertas"></div>
+                                        <form id="searchForm" class="row g-3" action="#" onsubmit="return false"
+                                            method="POST">
+                                            <div class="col-md-12">
+                                                <div class="col-md-12">
+                                                    <div class="input-group mb-3">
+                                                        <span class="input-group-text">
+                                                            <i class="bi bi-pin-map-fill"></i>
+                                                        </span>
+                                                        <div class="form-floating">
+                                                            <input type="text" class="form-control"
+                                                                id="search-branch-location"
+                                                                name="search-branch-location"
+                                                                placeholder="Dirección de la sucursal"
+                                                                aria-label="location">
+                                                            <label for="search-branch-location"
+                                                                class="form-label">Dirección</label>
+                                                        </div>
+                                                        <button class="btn btn-outline-primary" type="button"
+                                                            id="do-search-location">
+                                                            <i class="bi bi-search"></i>
+                                                        </button>
+                                                    </div>
+                                                    <ol class="list-group" id="search-results">
+
+                                                    </ol>
+
+                                                    <div id="locationFeedback" class="invalid-feedback d-block">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="map d-block" style="height: 400px;" id="branch-map"></div>
+
+                                            <div class="col-12">
+                                                <button type="button" id="btnModalSearch"
+                                                    class="btn btn-primary fw-bold">Confirmar</button>
+                                                <div id="formFeedback"
+                                                    class="col-md-10 invalid-feedback d-none fw-bold">Revisa el
+                                                    formulario.</div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
-            </div>
-        </div>
-        <div id="searchLocationForm" class="modal fade">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content ">
-                    <div class="modal-header">
-                        <h1 class="text-primary modal-title fw-bold er-header">Buscar dirección</h1>
-                        <button type="button" class="btn-close m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" th:insert="/admin/formulario-buscar.html">
 
-                    </div>
-                </div>
-            </div>
+            </main>
         </div>
-    </section>
+    </div>
+
 </body>
 
 </html>
