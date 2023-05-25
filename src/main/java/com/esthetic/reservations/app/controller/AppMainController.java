@@ -13,7 +13,7 @@ public class AppMainController {
 
     @GetMapping
     public void index(HttpServletResponse httpServletResponse) {
-        httpServletResponse.setHeader("Location", "/app/");
+        httpServletResponse.setHeader("Location", "app/");
         httpServletResponse.setStatus(302);
     }
 
