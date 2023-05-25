@@ -14,6 +14,8 @@ async function inflateModal(action, target) {
         id: -1,
         inventory_name: '',
         imagen: '',
+        description: '',
+        capacibility: 0,
         price: 0,
         store: 0
     };
@@ -27,7 +29,7 @@ async function inflateModal(action, target) {
                                     <input class="inventory-field" type="text" name="name" id="name" aria-label="inventory_name" placeholder="Nombre del producto" value="${product.inventory_name}">
                                 </div>
                                 <div class="field">
-                                    <label class="filter" for="img">Actualizar imagen</label>
+                                    <label class="filter" for="img">${action === 'edit' ? 'Actualizar ' : ''} Imagen</label>
                                     <input class="filter inventory-field" type="file" name="img" id="img" aria-label="imagen" placeholder="Imagen del producto" accept="image/*">
                                 </div>
                                 <div class="field">
@@ -37,6 +39,14 @@ async function inflateModal(action, target) {
                                 <div class="field">
                                     <label class="filter" for="units">Unidades</label>
                                     <input class="inventory-field" type="number" name="units" id="store" min="0" aria-label="store" placeholder="Cantidad del producto" value="${product.store}">
+                                </div>
+                                <div class="field">
+                                    <label class="filter" for="description">Descripción</label>
+                                    <input class="inventory-field" type="textarea" name="description" id="description" aria-label="description" placeholder="Descripción del producto" value="${product.description}">
+                                </div>
+                                <div class="field">
+                                    <label class="filter" for="capacibility">Capacidad</label>
+                                    <input class="inventory-field" type="text" name="capacibility" id="capacibility" aria-label="capacibility" placeholder="Capacidad del producto" value="${product.capacibility}">
                                 </div>
                                 <button id="btn-action" class="btn-principal" data-action="${action}" data-target="${product.id}" type="button">${action === 'edit' ? 'Actualizar' : 'Añadir'}</button>
                             </form>`);
@@ -58,11 +68,15 @@ async function agregarInventory() {
     const nombre = document.querySelector("#name").value;
     const precio = document.querySelector("#price").value;
     const store = document.querySelector("#store").value;
+    const description = document.querySelector("#description").value;
+    const capacibility = document.querySelector("#capacibility").value;
     const imagen = document.querySelector("#img");
     var formdata = new FormData();
     formdata.append("inventory_name", nombre);
     formdata.append("price", precio);
     formdata.append("store", store);
+    formdata.append("description", description);
+    formdata.append("capacibility", capacibility);
     formdata.append("imagen", null);
     formdata.append("file", imagen.files[0]);
     formdata.append("id_branch", sessionStorage.getItem("branchId"));
@@ -130,7 +144,7 @@ async function getAllProducts() {
             html += `<div class="product-registered">
                         <p>${product.inventory_name}</p>
                         <div class="img-product-inventory">
-                            <img src="/Inventario/${product.imagen}.jpg">
+                            <img src="/Inventario/${product.imagen}">
                         </div>
                         <p><span>$</span>${product.price}</p>
                         <p>${product.store}</p>
@@ -150,7 +164,7 @@ async function getAllProducts() {
     }
 }
 
-$(document).on('click', '.btn-remove', async function(e){
+$(document).on('click', '.btn-remove', async function (e) {
     const target = $(this).data('target');
     deleteProduct(target);
 });
@@ -185,12 +199,16 @@ async function getProduct(id) {
 async function actualizarInventory(target) {
     const nombre = document.querySelector("#name").value;
     const precio = document.querySelector("#price").value;
+    const description = document.querySelector("#description").value;
+    const capacibility = document.querySelector("#capacibility").value;
     const store = document.querySelector("#store").value;
     const imagen = document.querySelector("#img");
     var formdata = new FormData();
     formdata.append("inventory_name", nombre);
     formdata.append("price", precio);
     formdata.append("store", store);
+    formdata.append("description", description);
+    formdata.append("capacibility", capacibility);
     formdata.append("imagen", null);
     formdata.append("file", imagen.files[0]);
     formdata.append("id_branch", sessionStorage.getItem("branchId"));
@@ -209,11 +227,11 @@ async function actualizarInventory(target) {
         })
 }
 
-$(window).on('click', function(e){
-    if(e.target === document.getElementById('modal-new-service')){
-        removeModal();
-    }
-});
+// $(window).on('click', function (e) {
+//     if (e.target === document.getElementById('modal-new-service')) {
+//         removeModal();
+//     }
+// });
 
 async function showModal(action, target) {
     await inflateModal(action, target);

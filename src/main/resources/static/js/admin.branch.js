@@ -669,6 +669,7 @@ function showAlerts(alerts, type = 'error') {
     })
     html += '</div>';
     document.getElementById('alertas').innerHTML = html;
+    $('#alertas').removeClass('d-none');
     document.getElementById('alertas').scrollIntoView();
 }
 
@@ -679,6 +680,7 @@ function showObjectAlerts(alerts, type) {
     }
     html += '</div>';
     document.getElementById('alertas').innerHTML = html;
+    $('#alertas').removeClass('d-none');
     document.getElementById('alertas').scrollIntoView();
 }
 

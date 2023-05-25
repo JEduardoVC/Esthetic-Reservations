@@ -28,6 +28,7 @@ import com.esthetic.reservations.api.dto.UserEntityEditRolesDTO;
 import com.esthetic.reservations.api.dto.UserEntityRolesDTO;
 import com.esthetic.reservations.api.dto.WorkingBranchesDTO;
 import com.esthetic.reservations.api.exception.BadRequestException;
+import com.esthetic.reservations.api.exception.ConflictException;
 import com.esthetic.reservations.api.exception.EstheticAppException;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 import com.esthetic.reservations.api.util.AppConstants;
@@ -46,7 +47,9 @@ public class UserController {
     }
 
     // @GetMapping("/owner/{ownerId}/employees")
-    // public ResponseEntity<UserEntityDTO> findEmployeesByOwnerId(@PathVariable(name = "ownerId", required = true) Integer ownerId) {
+    // public ResponseEntity<UserEntityDTO>
+    // findEmployeesByOwnerId(@PathVariable(name = "ownerId", required = true)
+    // Integer ownerId) {
 
     // }
 
@@ -104,18 +107,21 @@ public class UserController {
     }
 
     // @PutMapping("/{id}/roles")
-    // public ResponseEntity<UserEntityDTO> updateWithRoles(@Valid @RequestBody UserEntityEditRolesDTO userDTO,
-    //         @PathVariable(name = "id") Long id) {
-    //     if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
-    //         UserEntityDTO userReponse = userService.updateNoPassword(userDTO, id);
-    //         return new ResponseEntity<>(userReponse, HttpStatus.OK);
-    //     } else {
-    //         @Valid
-    //         UserEntityRolesDTO editUserDTO = new @Valid UserEntityRolesDTO(0l, userDTO.getUsername(), userDTO.getName(),
-    //                 userDTO.getLastName(), userDTO.getPhoneNumber(), userDTO.getAddress(),
-    //                 userDTO.getEmail(), userDTO.getPassword(), null, userDTO.getRolesIds(), userDTO.getWorkingBranchesIds());
-    //         return updatePasswordWithRoles(editUserDTO, id);
-    //     }
+    // public ResponseEntity<UserEntityDTO> updateWithRoles(@Valid @RequestBody
+    // UserEntityEditRolesDTO userDTO,
+    // @PathVariable(name = "id") Long id) {
+    // if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
+    // UserEntityDTO userReponse = userService.updateNoPassword(userDTO, id);
+    // return new ResponseEntity<>(userReponse, HttpStatus.OK);
+    // } else {
+    // @Valid
+    // UserEntityRolesDTO editUserDTO = new @Valid UserEntityRolesDTO(0l,
+    // userDTO.getUsername(), userDTO.getName(),
+    // userDTO.getLastName(), userDTO.getPhoneNumber(), userDTO.getAddress(),
+    // userDTO.getEmail(), userDTO.getPassword(), null, userDTO.getRolesIds(),
+    // userDTO.getWorkingBranchesIds());
+    // return updatePasswordWithRoles(editUserDTO, id);
+    // }
     // }
 
     private ResponseEntity<UserEntityDTO> updatePassword(@Valid UserEntityDTO userDTO, Long id) {
@@ -128,14 +134,16 @@ public class UserController {
         return new ResponseEntity<>(userReponse, HttpStatus.OK);
     }
 
-    // private ResponseEntity<UserEntityDTO> updatePasswordWithRoles(@Valid UserEntityRolesDTO userDTO, Long id) {
-    //     if (!isValidPassword(userDTO.getPassword())) {
-    //         throw new BadRequestException("Contraseña",
-    //                 "inválida. La contraseña debe contener al menos 8 caracteres, un número, una mayúsucula y un símbolo especial (@#$%^&+=!)");
-    //     }
-    //     userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-    //     UserEntityDTO userReponse = userService.updateN(userDTO, id);
-    //     return new ResponseEntity<>(userReponse, HttpStatus.OK);
+    // private ResponseEntity<UserEntityDTO> updatePasswordWithRoles(@Valid
+    // UserEntityRolesDTO userDTO, Long id) {
+    // if (!isValidPassword(userDTO.getPassword())) {
+    // throw new BadRequestException("Contraseña",
+    // "inválida. La contraseña debe contener al menos 8 caracteres, un número, una
+    // mayúsucula y un símbolo especial (@#$%^&+=!)");
+    // }
+    // userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+    // UserEntityDTO userReponse = userService.updateN(userDTO, id);
+    // return new ResponseEntity<>(userReponse, HttpStatus.OK);
     // }
 
     @DeleteMapping("/{id}")
