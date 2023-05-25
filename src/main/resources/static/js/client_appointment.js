@@ -24,9 +24,19 @@ function showItems() {
 	showSale();
 }
 
+var infos = {};
+
 async function showAppointment() {
 	await getAppointments();
 	citasObj.forEach(cita => {
+		const data = {
+			appointment: cita.id,
+			client: sessionStorage.getItem('userId'),
+			service: cita.id_service[0].service_name,
+			employee: cita.id_employee.id,
+			employeeName: cita.id_employee.name + ' ' + cita.id_employee.lastName
+		}
+		infos[cita.id] = data;
 		$("#appointment-services").append(`
 			<div class="appointment-container">
 				<div class="info-appointment">
@@ -43,19 +53,126 @@ async function showAppointment() {
 					<h4>Acciones</h4>
 					<button class="btn-update" onclick="updateAppointment(${cita.id})">Editar reservación</button>
 					<button class="btn-remove" onclick="deleteAppointment(${cita.id})">Cancelar reservación</button>
-					${cita.id_status.id==1 ? '<button class="btn-review" onclick="viewModal('+cita.id+')">Reseña</button>' : ''}
+					${cita.id_status.id==1 ? '<button class="btn-review trigger-modal" data-target="'+cita.id+'">Reseña</button>' : ''}
 				</div>
 			</div>
 		`);
 	});
 }
 
+$('.star-comment').on('click', function(e){
+	const rating = $(this).data('value');
+	$('#rating').val(rating);
+	$('.star-comment').each(function(){
+		const value = $(this).data('value');
+		if(Number(value) <= Number(rating)){
+			$(this).removeClass('bi-star');
+			$(this).addClass('bi-star-fill');
+		} else {
+			$(this).addClass('bi-star');
+			$(this).removeClass('bi-star-fill');
+		}
+	});
+});
+
 function removeModal(){
-	
+	$('#modal-new-comment').addClass('no-mostrar');
 }
 
-function viewModal(id){
-	console.log(id)
+$(document).on('click', '.trigger-modal', async function(e){
+	$('#btn-action').data('action','add');
+	const data = infos[$(this).data('target')]
+	$('#btn-action').data('target', $(this).data('target'));
+	$('#modal-new-comment').removeClass('no-mostrar');
+	$('#emp-name').html(data.employeeName);
+	$('#service-name').html(data.service);
+	const review = await getReview($(this).data('target'));
+	if(review.errorCode === undefined){
+		$('#review').val(review.comment);
+		$('.star-comment').each(function(){
+			const value = $(this).data('value');
+			if(Number(value) <= Number(review.rating)){
+				$(this).removeClass('bi-star');
+				$(this).addClass('bi-star-fill');
+			} else {
+				$(this).addClass('bi-star');
+				$(this).removeClass('bi-star-fill');
+			}
+		});
+		$('#rating').val(review.rating);
+		$('#btn-action').data('action','edit');
+		$('#btn-action').data('review', review.id);
+	}
+});
+
+async function getReview(appointmentId){
+	const review = await request({
+		method: 'GET',
+		endpoint: 'api/comment',
+		urlParams: {
+			by: 'appointment',
+			filterTo: appointmentId
+		},
+		fetch: 'data'
+	});
+	return review;
+}
+
+$('#btn-action').on('click', async function(e){
+	const data = infos[$(this).data('target')];
+	if($('#review').val() === ''){
+		alerta('warning', 'Escribe tu reseña', 'Cuéntanos tu experiencia');
+		return;
+	}
+	const body = {
+		rating: $('#rating').val(),
+		comment: $('#review').val(),
+		clientId: data.client,
+		employeeId: data.employee,
+		appointmentId: data.appointment
+	}
+	if($('#rating').val() === '0'){
+		const confirmed = await confirmAlert('warning', '¿Dejar en Cero estrellas el servicio?', '¿Estás seguro de dar esta calificación?', 'Sí, confirmar.');
+		if(!confirmed){
+			return;
+		}
+	}
+	let done = false;
+	if($(this).data('action') === 'add'){
+		done = await saveComment(body);
+	} else {
+		done = await updateComment(body, $(this).data('review'));
+	}
+	if(done)
+	alerta('success', 'Comentario enviado. Gracias.')
+	removeModal();
+});
+
+async function saveComment(body){
+	const response = await request({
+		method: 'POST',
+		endpoint: 'api/comment',
+		body: body,
+		fetch: 'response'
+	});
+	if (response.isValid) {
+        return true;
+    } else {
+		alerta('error', 'Ocurrió un error al guardar la reseña.');
+    }
+}
+async function updateComment(body, id){
+	const response = await request({
+		method: 'PUT',
+		endpoint: 'api/comment/' + id,
+		body: body,
+		fetch: 'response'
+	});
+	if (response.isValid) {
+        return true;
+    } else {
+		alerta('error', 'Ocurrió un error al actualizar la reseña.');
+    }
 }
 
 function updateAppointment(id) {

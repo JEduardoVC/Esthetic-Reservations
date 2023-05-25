@@ -8,12 +8,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "comment", uniqueConstraints = { @UniqueConstraint(columnNames = { "appointment_id" }) })
 public class Comment extends BaseModel<Comment> {
 
     @Column(name = "rating")

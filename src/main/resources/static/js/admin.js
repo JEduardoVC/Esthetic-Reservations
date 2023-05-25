@@ -1,7 +1,7 @@
 $(function () {
-    let darkMode = sessionStorage.getItem('darkMode');
+    let darkMode = sessionStorage.getItem('darkModeAdmin');
     if (darkMode === null) {
-        sessionStorage.setItem('darkMode', 'false');
+        sessionStorage.setItem('darkModeAdmin', 'false');
         darkMode = 'false';
     }
     if(darkMode === 'false'){
@@ -22,7 +22,7 @@ $(function () {
 
 const toggleDarkMode = function () {
     $('html').toggleClass('dark-mode');
-    sessionStorage.setItem('darkMode', sessionStorage.getItem('darkMode') === 'true' ? 'false' : 'true');
+    sessionStorage.setItem('darkMode', sessionStorage.getItem('darkModeAdmin') === 'true' ? 'false' : 'true');
     $('.sun').toggleClass('d-none no-mostrar');
     $('.moon').toggleClass('d-none no-mostrar');
 };

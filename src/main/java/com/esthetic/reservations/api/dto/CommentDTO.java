@@ -19,7 +19,6 @@ public class CommentDTO extends GenericModelDTO {
     public CommentDTO() {
     }
 
-
     public CommentDTO(Integer rating, String comment, Date date, UserEntityDTO client, EmployeeDTO employee) {
         this.rating = rating;
         this.comment = comment;
@@ -67,5 +66,5 @@ public class CommentDTO extends GenericModelDTO {
     public void setEmployee(EmployeeDTO employee) {
         this.employee = employee;
     }
-    
+
 }

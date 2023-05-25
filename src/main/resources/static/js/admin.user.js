@@ -516,6 +516,7 @@ async function updateUser(data, id, selectedRoles, branchesIds) {
             let errors = [];
             errors.push(updateResponse.data.message);
             showAlerts(errors, 'error');
+            showFeedback('form', ['Revisa los datos.']);
         } else {
             alerta('error', updateResponse.status + '\n' + JSON.stringify(updateResponse.data.message));
         }
@@ -557,6 +558,7 @@ function showAlerts(alerts, type = 'error') {
     })
     html += '</div>';
     document.getElementById('alertas').innerHTML = html;
+    $('#alertas').removeClass('d-none');
     document.getElementById('alertas').scrollIntoView();
 }
 
@@ -567,5 +569,6 @@ function showObjectAlerts(alerts, type) {
     }
     html += '</div>';
     document.getElementById('alertas').innerHTML = html;
+    $('#alertas').removeClass('d-none');
     document.getElementById('alertas').scrollIntoView();
 }
