@@ -150,10 +150,13 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         UserEntity user = mapToModel(userEntityDTO);
 
         // Exists admin ?
-        Role adminRole = roleRepository.findByName(AppConstants.ADMIN_ROLE_NAME).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.ADMIN_ROLE_NAME));
+        Role adminRole = roleRepository.findByName(AppConstants.ADMIN_ROLE_NAME).orElseThrow(
+                () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.ADMIN_ROLE_NAME));
         Role roleToBe = adminRole;
-        if(userRepository.existsByRolesIn(Arrays.asList(adminRole))){
-            Role clientRole = roleRepository.findByName(AppConstants.CLIENT_ROLE_NAME).orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.CLIENT_ROLE_NAME));
+        if (userRepository.existsByRolesIn(Arrays.asList(adminRole))) {
+            Role clientRole = roleRepository.findByName(AppConstants.CLIENT_ROLE_NAME)
+                    .orElseThrow(() -> new ResourceNotFoundException("Rol", "no encontrado", "nombre",
+                            AppConstants.CLIENT_ROLE_NAME));
             roleToBe = clientRole;
         }
         // Default role
@@ -330,6 +333,15 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
         // The current entity
         UserEntity currentEntity = this.userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario", "no encontrado", "id", String.valueOf(id)));
+
+        if (!dto.getUsername().equals(currentEntity.getUsername()) && userRepository.existsByUsername(dto.getUsername())) {
+            throw new ConflictException("Usuario", "ya está siendo usado", "nombre de usuario",
+                    dto.getUsername());
+        }
+        if (!dto.getEmail().equals(currentEntity.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
+            throw new ConflictException("Usuario", "ya está siendo usado", "correo electrónico",
+                    dto.getEmail());
+        }
         Role employeeRole = this.roleRepository.findByName(AppConstants.EMPLOYEE_ROLE_NAME).orElseThrow(
                 () -> new ResourceNotFoundException("Rol", "no encontrado", "nombre", AppConstants.EMPLOYEE_ROLE_NAME));
         Boolean wasEmployee = currentEntity.getRoles().contains(employeeRole);
@@ -403,8 +415,8 @@ public class UserServiceImpl extends GenericServiceImpl<UserEntity, UserEntityDT
                                 String.valueOf(branchId)));
                 workingBranches.add(workingBranch);
             }
-            for(Branch branch : formerBranches){
-                if(!workingBranches.contains(branch)){
+            for (Branch branch : formerBranches) {
+                if (!workingBranches.contains(branch)) {
                     branch.getEmployees().remove(employee);
                     this.branchRepository.save(branch);
                 }
