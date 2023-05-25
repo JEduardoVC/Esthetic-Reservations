@@ -43,7 +43,7 @@
         <div>
             <div th:insert="owner/navegation"></div>
             <div class="header-employee">
-                <div class="btn-new-service">
+                <div class="btn-new-employee">
                     <button class="btn-principal trigger-modal" data-action="add" data-target="-1"
                         id="add-employee">Agregar empleado</button>
                 </div>
@@ -71,7 +71,7 @@
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal-overlay" id="modal-new-employee">
+    <div class="modal-overlay no-mostrar" id="modal-new-employee">
         <div class="modal-form">
             <div class="volver-img">
                 <button class="btn-volver-img">
@@ -80,12 +80,13 @@
             </div>
             <h1 id="modal-header">Empleado</h1>
             <form id="usersForm" action="#" onsubmit="return false" method="POST" class="row g-3 my-2" novalidate>
+                <div class="scroll-modal-employee">
                     <div class="field">
                         <label for="user-username" class="form-label">Username</label>
                         <input type="text" class="employee-field" id="user-username" name="user-username"
                             placeholder="Nombre de usario" aria-label="username">
                     </div>
-
+    
                     <div class="field">
                         <label for="user-name" class="form-label">Nombre</label>
                         <input type="text" class="employee-field" id="user-name" name="user-name" placeholder="Nombre"
@@ -100,7 +101,7 @@
                         <label for="user-address" class="form-label">Dirección</label>
                         <input type="text" class="employee-field" id="user-address" name="user-address"
                             aria-label="address" placeholder="Dirección">
-
+    
                     </div>
                     <div class="field">
                         <label for="user-email" class="form-label">Correo</label>
@@ -122,12 +123,10 @@
                         <input type="password" class="employee-field" id="user-cpassword" name="user-cpassword"
                             aria-label="cpassword" placeholder="Confirmar la contraseña">
                     </div>
-
-                    <div id="branches-checkboxes">
-                    </div>
-
-                    <button type="submit" id="btn-action" data-action="add" class="btn btn-principal">Confirmar</button>
-                </form>
+                    <div class="branch-checkbox" id="branches-checkboxes"></div>
+                </div>
+                <button type="submit" id="btn-action" data-action="add" class="btn btn-principal">Confirmar</button>
+            </form>
         </div>
     </div>
 </body>
