@@ -19,27 +19,42 @@ async function getAppointments() {
 
 async function showAppointment() {
 	await getAppointments();
-	console.info(citasObj);
 	$("#show-appointment").empty();
-	citasObj.forEach(appointment => {
+	citasObj.forEach(async appointment => {
+		if(sessionStorage.getItem("qr") == appointment.id) appointment = await changeStatus(appointment.id);
+		console.info(appointment.appointmnet_time);
 		$("#show-appointment").append(`
 			<div class="appointment-confirmed">
 		        <p>${appointment.id_client.name} ${appointment.id_client.lastName}</p>
 		        ${showService(appointment.id_service)}
 		        <div class="date-time-appointment">
 		            <p>${appointment.appointment_date}</p>
-		            <p>${appointment.appointmnet_time}</p>
+		            <p>${changeFormatTime(appointment.appointmnet_time)}</p>
+		        </div>				
+		        <div class="status-appointment">
+		        	<button class="btn-status-${appointment.id_status.id == 1 ? "success" : "pending"}">${appointment.id_status.status_name}</button>
 		        </div>
-				<div class="status-appointment">
-					<button class="btn-status-success">Atendido</button>
-					<button class="btn-status-pending">Por atender</button>
-				</div>
 		        <div class="cancel-appointment">
 		            <button class="btn-remove" onclick="deleteAppointment(${appointment.id})">Cancelar</button>
 		        </div>
 		    </div>
 		`);
 	})
+}
+
+async function changeStatus(id) {
+	const resultado = await fetch(`${BASE_URL}api/appointment/actualizar/status/${id}/1`, {
+	method: "PUT",
+	headers: {
+		Accept: "application/json",
+		Authorization: `Bearer ${sessionStorage.getItem("token")}`
+	},
+	redirect: "follow"
+	})	
+	const respuesta = await resultado.json();
+	const index = citasObj.findIndex(e => e.id == id);
+	citasObj[index] = respuesta;
+	return respuesta;
 }
 
 async function deleteAppointment(id) {
@@ -71,7 +86,7 @@ function showService(listServices) {
 	const div = document.createElement("div");
 	div.classList.add("services-appointment");
 	listServices.forEach(service => {
-		div.innerHTML = `
+		div.innerHTML += `
         	<p>${service.service_name}</p>
 		`
 	})

@@ -25,6 +25,7 @@ import com.esthetic.reservations.api.exception.ResourceNotFoundException;
 import com.esthetic.reservations.api.model.Appointment;
 import com.esthetic.reservations.api.model.Branch;
 import com.esthetic.reservations.api.model.Service;
+import com.esthetic.reservations.api.model.Status;
 import com.esthetic.reservations.api.model.UserEntity;
 import com.esthetic.reservations.api.repository.AppointmentRepository;
 import com.esthetic.reservations.api.service.AppointmentService;
@@ -46,6 +47,9 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 	
 	@Autowired
 	BranchServiceImpl branchServiceImpl;
+	
+	@Autowired
+	StatusServiceImpl statusServiceImpl;
 	
 	@Autowired
 	MailService mailService;
@@ -98,7 +102,6 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		UserEntity empleado = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_employee()));
 		Date date_created = Date.valueOf(LocalDate.now());
 		Date appointment_date = Date.valueOf(cita.getappointment_date());
-		new Appointment();
 		Appointment appointment = new Appointment(date_created, appointment_date, cita.getAppointment_time(), usuario, empleado, null, sucursal);
 		appointment.setServicios(changeModel(cita.getCantidad(), cita.getId_service()));
 		return mapToDTO(appointmentRepository.save(appointment));
@@ -168,6 +171,14 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		response.setContent(changeModelToDTO(listaCitas));
 		return response;
 	}
+	
+	public AppointmentDTO updateStatus(Long id, Long status) {
+    	Appointment appointment = appointmentRepository.findById(id).get();
+    	appointment.setId_status(statusServiceImpl.mapToModel(statusServiceImpl.findById(status)));
+    	AppointmentDTO newAppointmentDTO = mapToDTO(appointmentRepository.save(appointment));
+    	newAppointmentDTO.setId_service(appointment.getServicios());
+    	return newAppointmentDTO;
+    }
 	
 	private ArrayList<AppointmentDTO> changeModelToDTO(List<Appointment> lista) {
 		ArrayList<AppointmentDTO> arregloCitas = new ArrayList<>();

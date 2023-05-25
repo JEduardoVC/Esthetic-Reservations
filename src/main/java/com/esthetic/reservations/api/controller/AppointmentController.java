@@ -31,6 +31,7 @@ import com.esthetic.reservations.api.repository.AppointmentRepository;
 import com.esthetic.reservations.api.service.MailService;
 import com.esthetic.reservations.api.service.impl.AppointmentServiceImpl;
 import com.esthetic.reservations.api.service.impl.BranchServiceImpl;
+import com.esthetic.reservations.api.service.impl.StatusServiceImpl;
 import com.esthetic.reservations.api.service.impl.UserServiceImpl;
 
 @RestController
@@ -43,6 +44,8 @@ public class AppointmentController {
 	UserServiceImpl serviceImpl;
 	@Autowired
 	BranchServiceImpl branchServiceImpl;
+	@Autowired
+	StatusServiceImpl statusServiceImpl;
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<AppointmentDTO> obtenerCita(@PathVariable("id") Long id){
@@ -81,5 +84,10 @@ public class AppointmentController {
 		response.put("success", "Cita Eliminadar");
 		response.put("code", "200");
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+	}
+	
+	@PutMapping("/actualizar/status/{id}/{id_status}")
+	public ResponseEntity<AppointmentDTO> actualizarStatus(@PathVariable Long id, @PathVariable Long id_status) {
+		return new ResponseEntity<AppointmentDTO>(appointmentServiceImpl.updateStatus(id, id_status), HttpStatus.ACCEPTED);
 	}
 }
