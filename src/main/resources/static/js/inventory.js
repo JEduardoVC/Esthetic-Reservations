@@ -42,7 +42,7 @@ async function inflateModal(action, target) {
                                 </div>
                                 <div class="field">
                                     <label class="filter" for="description">Descripción</label>
-                                    <input class="inventory-field" type="textarea" name="description" id="description" aria-label="description" placeholder="Descripción del producto" value="${product.description}">
+                                    <textarea class="inventory-field" name="description" id="description" aria-label="description" placeholder="Descripción del producto" value="${product.description}"></textarea>
                                 </div>
                                 <div class="field">
                                     <label class="filter" for="capacibility">Capacidad</label>
