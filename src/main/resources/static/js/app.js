@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     menu();
     menuPhone();
     isDarkModeNew();
-    isDarkMode();
+    // isDarkMode();
 });
 
 function darkMode() {
@@ -31,7 +31,7 @@ function darkMode() {
             document.querySelector(".luna").classList.remove("d-none");
             document.querySelector(".sol").classList.add("d-none");
             sessionStorage.removeItem("darkMode");
-            isDarkMode();
+            isDarkModeNew();
         }
     });
 }
@@ -87,12 +87,22 @@ function isDarkModeNew(){
     const solDesktopPhone = document.querySelector(".sol-phone");
     if(sessionStorage.getItem("darkMode")){
         document.body.classList.add("dark-mode");
-            lunaDesktop.classList.add("no-mostrar");
-            lunaDesktopPhone.classList.add("no-mostrar");
-            solDesktop.classList.remove("no-mostrar");
-            solDesktopPhone.classList.remove("no-mostrar");
-        }
+        if(!lunaDesktop) return;
+        if(!solDesktop) return;
+        if(!lunaDesktopPhone) return;
+        if(!solDesktopPhone) return;
+        lunaDesktop.classList.add("no-mostrar");
+        lunaDesktopPhone.classList.add("no-mostrar");
+        solDesktop.classList.remove("no-mostrar");
+        solDesktopPhone.classList.remove("no-mostrar");
+    }
     else{
+        if(!lunaDesktop) return;
+        if(!solDesktop) return;
+        if(!lunaDesktopPhone) return;
+        if(!solDesktopPhone) return;
+        console.log("Remover darkmode al body");
+        document.body.classList.remove("dark-mode");
         lunaDesktop.classList.remove("no-mostrar");
         lunaDesktopPhone.classList.remove("no-mostrar");
         solDesktop.classList.add("no-mostrar");
