@@ -18,8 +18,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!--<link href="/css/bootstrap.css" rel="stylesheet">-->
     <!--<script src="/js/bundle.min.js"></script>-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
     <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
     <script src="/js/vendor/sweetalert2/sweetalert2.all.min.js"></script>
 </head>
@@ -29,29 +31,21 @@
 
 <body>
     <style>
-        .no-mostrar{
+        .no-mostrar {
             display: none;
-        }
-        .mostrar{
-            display: block;
-        }
-        .modal-overlay {
-            overflow: auto;
-        }
-        .modal-overlay .modal-form {
-            width: 60%;
         }
     </style>
     <div class="owner-employee">
         <div class="title">
-    <h1 class="title-p">Administrador</h1>
-    <img src="/img/Productos-venta.webp">
-</div>
+            <h1 class="title-p">Administrador</h1>
+            <img src="/img/Productos-venta.webp">
+        </div>
         <div>
             <div th:insert="owner/navegation"></div>
             <div class="header-employee">
                 <div class="btn-new-service">
-                    <button class="btn-principal trigger-modal" data-action="add" data-target="-1" id="add-employee">Agregar empleado</button>
+                    <button class="btn-principal trigger-modal" data-action="add" data-target="-1"
+                        id="add-employee">Agregar empleado</button>
                 </div>
                 <div class="select-branch-admin">
                     <p>Sucursal: </p>
@@ -60,16 +54,24 @@
                 </div>
             </div>
             <div class="title-employee">
-                <div class="center"><h1>Nombre</h1></div>
-                <div class="center"><h1>Numero de telefono</h1></div>
-                <div class="center"><h1>Email</h1></div>
-                <div class="center"><h1>Acciones</h1></div>
+                <div class="center">
+                    <h1>Nombre</h1>
+                </div>
+                <div class="center">
+                    <h1>Numero de telefono</h1>
+                </div>
+                <div class="center">
+                    <h1>Email</h1>
+                </div>
+                <div class="center">
+                    <h1>Acciones</h1>
+                </div>
             </div>
             <div id="info-employees"></div>
         </div>
     </div>
     <!-- Modal -->
-    <div class="modal-overlay no-mostrar" id="modal-new-employee">
+    <div class="modal-overlay" id="modal-new-employee">
         <div class="modal-form">
             <div class="volver-img">
                 <button class="btn-volver-img">
@@ -77,10 +79,55 @@
                 </button>
             </div>
             <h1 id="modal-header">Empleado</h1>
-            
-            <div id="modal-content" th:insert="/owner/employees/formulario-usuario">
+            <form id="usersForm" action="#" onsubmit="return false" method="POST" class="row g-3 my-2" novalidate>
+                    <div class="field">
+                        <label for="user-username" class="form-label">Username</label>
+                        <input type="text" class="employee-field" id="user-username" name="user-username"
+                            placeholder="Nombre de usario" aria-label="username">
+                    </div>
 
-            </div>
+                    <div class="field">
+                        <label for="user-name" class="form-label">Nombre</label>
+                        <input type="text" class="employee-field" id="user-name" name="user-name" placeholder="Nombre"
+                            aria-label="name">
+                    </div>
+                    <div class="field">
+                        <label for="user-lastname" class="form-label">Apellidos</label>
+                        <input type="text" class="employee-field" id="user-lastname" name="user-lastname"
+                            aria-label="lastName" placeholder="Apellidos">
+                    </div>
+                    <div class="field">
+                        <label for="user-address" class="form-label">Dirección</label>
+                        <input type="text" class="employee-field" id="user-address" name="user-address"
+                            aria-label="address" placeholder="Dirección">
+
+                    </div>
+                    <div class="field">
+                        <label for="user-email" class="form-label">Correo</label>
+                        <input type="email" class="employee-field" id="user-email" name="user-email" aria-label="email"
+                            placeholder="Correo">
+                    </div>
+                    <div class="field">
+                        <label for="user-phone" class="form-label">Teléfono</label>
+                        <input type="phone" class="employee-field" id="user-phone" name="user-phone"
+                            placeholder="Número de teléfono" aria-label="phoneNumber">
+                    </div>
+                    <div class="field">
+                        <label for="user-password" class="form-label">Contraseña</label>
+                        <input type="password" class="employee-field" id="user-password" name="user-password"
+                            aria-label="password" placeholder="Contraseña">
+                    </div>
+                    <div class="field">
+                        <label for="user-cpassword" class="form-label">Confirmar Contraseña</label>
+                        <input type="password" class="employee-field" id="user-cpassword" name="user-cpassword"
+                            aria-label="cpassword" placeholder="Confirmar la contraseña">
+                    </div>
+
+                    <div id="branches-checkboxes">
+                    </div>
+
+                    <button type="submit" id="btn-action" data-action="add" class="btn btn-principal">Confirmar</button>
+                </form>
         </div>
     </div>
 </body>
@@ -88,4 +135,5 @@
 <script src="/js/owner.employees.js"></script>
 <script src="/js/logout.js"></script>
 <script src="/js/owner-directions.js"></script>
+
 </html>
