@@ -1,5 +1,6 @@
 package com.esthetic.reservations.api.util;
 
+import java.sql.Time;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +26,14 @@ public class Util {
         return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(email).matches();
     }
     
+    @SuppressWarnings("deprecation")
+	private String changeFormatTime(Time time) {
+    	String sufix = time.getMinutes() >= 12 ? "pm" : "am";
+    	String hours = String.valueOf((time.getMinutes() + 11) % 12 + 1);
+    	String mins = String.valueOf(time.getSeconds());
+    	return hours + ":" + mins + " " + sufix;
+    }
+    
     public String typeEmail(int type, UserEntity usuario, Branch sucursal, Appointment cita, Sale venta) {
     	switch (type) {
 			case 1:
@@ -32,7 +41,7 @@ public class Util {
 			            + usuario.getName() + " " + usuario.getLastName() + "\n"
 			            + "Gracias por agendar su cita en la sucursal " + sucursal.getBranchName() + "\n\n"
 			            + "Fecha de la cita: " + cita.getAppointment_Date() + "\n"
-			            + "Hora de la cita: " + cita.getAppointmnet_time() + "\n\n\n"
+			            + "Hora de la cita: " + changeFormatTime(cita.getAppointmnet_time()) + "\n\n\n"
 			            + "Favor de mostrar el código QR en la sucursal";
 
 			case 2:
@@ -40,7 +49,7 @@ public class Util {
 			            + usuario.getName() + " " + usuario.getLastName() + "\n"
 			            + "Gracias por actualizar su cita en la sucursal " + sucursal.getBranchName() + "\n\n"
 			            + "Fecha de la cita: " + cita.getAppointment_Date() + "\n"
-			            + "Hora de la cita: " + cita.getAppointmnet_time() + "\n\n\n"
+			            + "Hora de la cita: " + changeFormatTime(cita.getAppointmnet_time()) + "\n\n\n"
 			            + "Favor de mostrar el código QR en la sucursal";
 			case 3:
 				return "Correo enviado por Esthetic Reservation con el motivo de cambiar tu contraseña\n\n"
@@ -53,7 +62,7 @@ public class Util {
 				return "Correo enviado por Esthetic Reservation con el motivo de cancelación de cita reservada\n\n"
 						+ "La sucursal " + sucursal.getBranchName() + " le ofrece una sincera disculpa al incoveniente sucedido "
 						+ "pero por motivos personales y de fuerza mayor, se ve obligado a cancelar la cita programada para el " + cita.getAppointment_Date()
-						+ " a las " + cita.getAppointmnet_time() + "\n\n"
+						+ " a las " + changeFormatTime(cita.getAppointmnet_time()) + "\n\n"
 						+ "Sé lo importante que es respetar el tiempo de los demás, por lo que lamento cualquier inconveniente que esta cancelación pueda causarle\n\n"
 						+ "Aprecio su comprensión en este asunto y espero poder programar otra cita en el futuro\n\n\n";
 			case 5:
@@ -68,7 +77,7 @@ public class Util {
 				return "Correo enviado para Esthetic Reservation con el motivo de cancelación de cita reservada\n\n"
 						+ "El usuario " + usuario.getName() + " " + usuario.getLastName() + " le ofrece una sincera disculpa al incoveniente sucedido "
 						+ "pero por motivos personales y de fuerza mayor, se ve obligado a cancelar la cita programada para el " + cita.getAppointment_Date()
-						+ " a las " + cita.getAppointmnet_time() + "\n\n"
+						+ " a las " + changeFormatTime(cita.getAppointmnet_time()) + "\n\n"
 						+ "Sé lo importante que es respetar el tiempo de los demás, por lo que lamento cualquier inconveniente que esta cancelación pueda causarle\n\n"
 						+ "Aprecio su comprensión en este asunto y espero poder programar otra cita en el futuro\n\n\n";
 			default:

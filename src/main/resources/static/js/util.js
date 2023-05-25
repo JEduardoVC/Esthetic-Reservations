@@ -1,32 +1,32 @@
-const BASE_URL = 'http://localhost:5500/';
-//validarRol();
-//const BASE_URL = 'http://192.168.100.5:5500/';
+const BASE_URL = 'https://esthetic-reservation.herokuapp.com/';
+//const BASE_URL = 'http://192.168.100.6:5500/';
 //const BASE_URL = 'http://192.168.1.76:5500/';
 //const BASE_URL = 'http://192.168.1.70:5500/';
 //const BASE_URL = 'http://172.15.41.174:5500/';
+validarRol();
 
 function validarRol() {
 	switch(location.pathname.split("/")[2]) {
 		case "client":
-			if(sessionStorage.getItem("userId") != 4){
+			if(sessionStorage.getItem("rol") != 4){
 				sessionStorage.clear();
 				location.href = `${BASE_URL}app/login`;
 			}
 			break;
 		case "owner":
-			if(sessionStorage.getItem("userId") != 2){
+			if(sessionStorage.getItem("rol") != 2){
 				sessionStorage.clear();
 				location.href = `${BASE_URL}app/login`;
 			}
 			break;
 		case "admin":
-			if(sessionStorage.getItem("userId") != 1) {
+			if(sessionStorage.getItem("rol") != 1) {
 				sessionStorage.clear();
 				location.href = `${BASE_URL}app/login`;
 			}
 			break;
 		case "employee":
-			if(sessionStorage.getItem("userId") != 3){
+			if(sessionStorage.getItem("rol") != 3){
 				sessionStorage.clear();
 				location.href = `${BASE_URL}app/login`;
 			}
@@ -152,6 +152,10 @@ async function confirmAlert(tipo = 'warning', title = '¿Estás seguro?', text =
 		confirmButtonText: confirmText
 	});
 	return result.isConfirmed;
+}
+
+function changeFormatTime(time) {
+	return `${(parseInt(time.split(":")[1]) + 11) % 12 + 1}:${time.split(":")[2]} ${parseInt(time.split(":")[1]) >= 12 ? "pm" : "am"}`
 }
 
 function showLoading(message) {
