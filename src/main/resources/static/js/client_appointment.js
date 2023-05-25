@@ -40,13 +40,22 @@ async function showAppointment() {
 				    </div>
 				</div>
 				<div class="actions-appointment">
-				    <h4>Acciones</h4>
-				    <button class="btn-update" onclick="updateAppointment(${cita.id})">Editar reservación</button>
-				    <button class="btn-remove" onclick="deleteAppointment(${cita.id})">Cancelar reservación</button>
+					<h4>Acciones</h4>
+					<button class="btn-update" onclick="updateAppointment(${cita.id})">Editar reservación</button>
+					<button class="btn-remove" onclick="deleteAppointment(${cita.id})">Cancelar reservación</button>
+					${cita.id_status.id==1 ? '<button class="btn-review" onclick="viewModal('+cita.id+')">Reseña</button>' : ''}
 				</div>
 			</div>
 		`);
 	});
+}
+
+function removeModal(){
+	
+}
+
+function viewModal(id){
+	console.log(id)
 }
 
 function updateAppointment(id) {

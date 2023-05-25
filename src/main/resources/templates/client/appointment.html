@@ -15,16 +15,16 @@
                         <img class="filter" src="/img/volver.webp">
                     </button>
                 </div>
-            	<div>
-            		<div>
+            	<div class="filter-appintment-purchase">
+            		<div class="filter-all">
 						<input type="radio" name="filtro" id="filterTodo" checked>
 						<label for="filterTodo">Todos</label>
 					</div>
-					<div>
+					<div class="filter-appointment">
 						<input type="radio" name="filtro" id="filterAppointment">
 						<label for="filterAppointment">Reservaciones</label>
 					</div>
-					<div>
+					<div class="filter-purchase">
 						<input type="radio" name="filtro" id="filterSale">
 						<label for="filterSale">Compras</label>
 					</div>
@@ -34,7 +34,29 @@
         </div>
     </main>
 </body>
+<!-- Modal para la reseña -->
+<!-- <div class="modal-overlay" id="modal-new-service">
+    <div class="modal-form">
+        <div class="volver-img">
+            <button class="btn-volver-img" onclick="removeModal()">
+                <img class="filter" src="/img/volver.webp">
+            </button>
+        </div>
+        <h1>Reseña</h1>
+        <form>
+            <div class="field">
+                <label for="owner">Nombre de la encargada:</label>
+                <input id="owner" type="text" name="owner">
+            </div>
+            <div class="field">
+                <label for="review">Reseña:</label>
+                <textarea id="review" name="review"></textarea>
+            </div>
+            <button id="new-emp" class="btn-principal" type="button">Añadir reseña</button>
+        </form>
+    </div>
+</div> -->
 <!-- <script src="/js/logout.js"></script> -->
 <!-- <script src="/js/client_dashboard.min.js"></script> -->
-<script src="/js/client_appointment.js"></script>  
+<script src="/js/client_appointment.js"></script>
 </html>
