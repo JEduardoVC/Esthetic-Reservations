@@ -115,11 +115,15 @@ async function getBranchEmployees() {
 
     }
     if (html === '') {
-        html += `< div id = "show-employee" class="employee" >
+        html += `
             <div class="center"><p>No hay empleados en esta sucursal</p></div>
-                </div > `;
+                `;
     }
     return html;
+}
+
+function volver() {
+	location = `${BASE_URL}app/client/dashboard`;
 }
 
 // // Promedio de puntuacion de acuerdo a su tabla
