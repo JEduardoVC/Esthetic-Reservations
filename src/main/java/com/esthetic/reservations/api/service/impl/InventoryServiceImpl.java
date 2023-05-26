@@ -2,12 +2,20 @@ package com.esthetic.reservations.api.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +45,9 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 		ArrayList<Inventory> inventario = inventoryRepository.findAllByIdBranch(sucursal);
 		ArrayList<InventoryDTO> newInventario = new ArrayList<>();
 		for (Inventory inventory : inventario) {
+			Cloudinary cloudinary = new Cloudinary(getConfigCloudinary());
+			String url = cloudinary.url().transformation(new Transformation<>()).generate(inventory.getImagen());
+			inventory.setImagen(url);
 			newInventario.add(mapToDTO(inventory));
 		}
 		ResponseDTO<InventoryDTO> response = new ResponseDTO<>();
@@ -46,24 +57,22 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 	
 	public InventoryDTO save(MinInventory inventario, MultipartFile file) {
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(inventario.getId_branch()));
-		String rutaAbsoluta = "C://Esthetic-Reservation/Inventario";
+		Cloudinary cloudinary = new Cloudinary(getConfigCloudinary());
 		String nameImage = "";
 		try {
-			byte[] imagenBytes = file.getBytes();
-			nameImage = generateRandomString(20);
-			Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + nameImage + ".jpg");
-			Files.createDirectories(Paths.get(rutaAbsoluta));
-			Files.write(rutaCompleta, imagenBytes);
+			File img = convert(file);
+			Map<?, ?> hola =  cloudinary.uploader().upload(img, ObjectUtils.emptyMap());
+			nameImage = hola.get("public_id").toString();
 		} catch (IOException e) {
 			return null;
 		}
-		Inventory newInventory = new Inventory(inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), nameImage + ".jpg", sucursal, inventario.getDescription(), inventario.getCapacibility());
+		Inventory newInventory = new Inventory(inventario.getInventory_name(), inventario.getPrice(), inventario.getStore(), nameImage, sucursal, inventario.getDescription(), inventario.getCapacibility());
 		return mapToDTO(getRepository().save(newInventory));
 	}
 
 	public InventoryDTO update(MinInventory inventario, MultipartFile file, Long id) {
 		Inventory inventory = getRepository().findById(id).orElse(null);
-		String rutaAbsoluta = "C://Esthetic-Reservation/Inventario";
+		Cloudinary cloudinary = new Cloudinary(getConfigCloudinary());
 		String nameImage = "";
 		if(file == null) {
 			inventory.setInventory_name(inventario.getInventory_name());
@@ -74,15 +83,10 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 			return mapToDTO(getRepository().save(inventory));
 		}
 		try {
-			byte[] imagenBytes = file.getBytes();
-			nameImage = generateRandomString(20);
-			Path rutaCompleta = Paths.get(rutaAbsoluta + "//" + nameImage + ".jpg");
-			Files.createDirectories(Paths.get(rutaAbsoluta));
-			File curFile = new File(rutaAbsoluta + "//" + inventory.getImagen() + ".jpg");
-			if(curFile.exists() && curFile.isFile()){
-				Files.delete(Paths.get(rutaAbsoluta + "//" + inventory.getImagen() + ".jpg"));
-			}
-			Files.write(rutaCompleta, imagenBytes);
+			cloudinary.uploader().destroy(inventory.getImagen(), ObjectUtils.emptyMap());
+			File img = convert(file);
+			Map<?, ?> hola =  cloudinary.uploader().upload(img, ObjectUtils.emptyMap());
+			nameImage = hola.get("public_id").toString();
 		} catch (IOException e) {
 			return null;
 		}
@@ -90,35 +94,37 @@ public class InventoryServiceImpl extends GenericServiceImpl<Inventory, Inventor
 		inventory.setPrice(inventario.getPrice());
 		inventory.setStore(inventario.getStore());
 		inventory.setDescription(inventario.getDescription());
-		inventory.setImagen(nameImage + ".jpg");
+		inventory.setImagen(nameImage);
 		inventory.setCapacibility(inventario.getCapacibility());
 		return mapToDTO(getRepository().save(inventory));
 	}
 	
-	public void delete(Long id) {
+	public void eliminar(Long id) {
 		Inventory inventory = getRepository().findById(id).orElse(null);
-		String rutaAbsoluta = "C://Esthetic-Reservation/Inventario";
 		try {
-			Files.delete(Paths.get(rutaAbsoluta + "//" + inventory.getImagen() + ".jpg"));
-		} catch (IOException e) {
-			e.printStackTrace();
+			Cloudinary cloudinary = new Cloudinary(getConfigCloudinary());
+			cloudinary.uploader().destroy(inventory.getImagen(), ObjectUtils.emptyMap());
+			getRepository().deleteById(id);
+		} catch (Exception e) {
+
 		}
-		getRepository().deleteById(id);
 	}
 	
-	public String generateRandomString(int length) {
-        String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
-        String CHAR_UPPER = CHAR_LOWER.toUpperCase();
-        String NUMBER = "0123456789";
-        String DATA_FOR_RANDOM_STRING = CHAR_LOWER + CHAR_UPPER + NUMBER;
-        SecureRandom random = new SecureRandom();
-        if (length < 1) throw new IllegalArgumentException();
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int rndCharAt = random.nextInt(DATA_FOR_RANDOM_STRING.length());
-            char rndChar = DATA_FOR_RANDOM_STRING.charAt(rndCharAt);
-            sb.append(rndChar);
-        }
-        return sb.toString();
+	private File convert(MultipartFile multipartFile) throws IOException {
+        File file = new File(multipartFile.getOriginalFilename());
+        FileOutputStream fo = new FileOutputStream(file);
+        fo.write(multipartFile.getBytes());
+        fo.close();
+        return file;
+    }
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Map getConfigCloudinary() {
+		Map config = new HashMap<>();
+		config.put("cloud_name", "hm1kcpclw");
+		config.put("api_key", "542412146313699");
+		config.put("api_secret", "DqEyR-5WNRKmkey4vwpolCS__MY");
+		config.put("secur", true);
+		return config;
 	}
 }

@@ -18,11 +18,13 @@ document.addEventListener('DOMContentLoaded', function () {
 var map;
 
 async function initMap() {
-	const resultado = await fetch('/api/branch/all', {
+	console.info(`${BASE_URL}api/branch/all`)
+	const resultado = await fetch(`${BASE_URL}api/branch/all`, {
 		method: 'GET',
 		headers: myHeaders
 	});
 	const sucursales = await resultado.json();
+	console.info(sucursales);
 	const branchs = sucursales["content"];
 	map = L.map('map').setView([branchs[0] ? branchs[0].latitude : 20.587313, branchs[0] ? branchs[0].longitude : -100.394397], 13);
 
