@@ -11,12 +11,6 @@ $(async function () {
         paging: true,
         data: users,
         columns: [
-            { "name": "id", "data": "id", "targets": 0 },
-            { "name": "username", "data": "username", "targets": 1 },
-            { "name": "nombre", "data": "name", "targets": 2 },
-            { "name": "direccion", "data": "address", "targets": 3 },
-            { "name": "correo", "data": "email", "targets": 4 },
-            { "name": "telefono", "data": "phoneNumber", "targets": 5 },
             {
                 "searchable": false, "orderable": false,
                 "name": "acciones", "render": function (data, type, row) {
@@ -24,8 +18,16 @@ $(async function () {
                     return `
                             <button type="button" class="btn btn-warning rounded-pill" data-bs-toggle="modal" data-bs-target="#modalUsersForm"  data-target="${rowId}"><span class="bi bi-pencil"></span></button>
                             <button type="button" class="btn btn-danger rounded-pill" data-target="${rowId}"><span class="bi bi-trash text-white"></span></button>`;
-                }, "data": null, "targets": [6]
-            }
+                }, "data": null, "targets": [0]
+            },
+            { "name": "id", "data": "id", "targets": 1 },
+            { "name": "username", "data": "username", "targets": 2 },
+            { "name": "nombre", "render": function(data, type, row){
+                return `${data.name} ${data.lastName}`
+            }, "data": null, "targets": 3 },
+            { "name": "direccion", "data": "address", "targets": 4 },
+            { "name": "correo", "data": "email", "targets": 5 },
+            { "name": "telefono", "data": "phoneNumber", "targets": 6 }
         ],
         language: languageMX
     });
@@ -542,7 +544,7 @@ async function deleteUser(id) {
     }
 }
 
-$('.password-toggler').on('click', function(){
+$(document).on('click','.password-toggler', function(){
     const input = $(this).siblings('.form-floating').find('input.form-control');
     const icon = $(this).children('.bi');
     console.log(icon)
