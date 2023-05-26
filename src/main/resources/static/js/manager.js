@@ -122,7 +122,7 @@ async function getBranchEmployees() {
     return html;
 }
 
-function volver() {
+function volverDashboard() {
 	location = `${BASE_URL}app/client/dashboard`;
 }
 

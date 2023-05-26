@@ -100,9 +100,10 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_client()));
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(cita.getId_branch()));
 		UserEntity empleado = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_employee()));
+		Status estatus = statusServiceImpl.mapToModel(statusServiceImpl.findById(cita.getId_status()));
 		Date date_created = Date.valueOf(LocalDate.now());
 		Date appointment_date = Date.valueOf(cita.getappointment_date());
-		Appointment appointment = new Appointment(date_created, appointment_date, cita.getAppointment_time(), usuario, empleado, null, sucursal);
+		Appointment appointment = new Appointment(date_created, appointment_date, cita.getAppointment_time(), usuario, empleado, estatus, sucursal);
 		appointment.setServicios(changeModel(cita.getCantidad(), cita.getId_service()));
 		return mapToDTO(appointmentRepository.save(appointment));
 	}
@@ -112,11 +113,13 @@ public class AppointmentServiceImpl extends GenericServiceImpl<Appointment, Appo
 		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(cita.getId_client()));
 		Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(cita.getId_branch()));
 		Date date_created = Date.valueOf(LocalDate.now());
+		Status estatus = statusServiceImpl.mapToModel(statusServiceImpl.findById(cita.getId_status()));
 		citaActual.setDate_created(date_created);
 		citaActual.setAppointmnet_time(cita.getAppointment_time());
 		citaActual.setAppointment_Date(Date.valueOf(cita.getappointment_date()));
 		citaActual.setId_branch(sucursal);
 		citaActual.setId_client(usuario);
+		citaActual.setId_status(estatus);
 		citaActual.setServicios(changeModel(cita.getCantidad(), cita.getId_service()));
 		return mapToDTO(appointmentRepository.save(citaActual));
 	}
