@@ -50,7 +50,7 @@ public class MailServiceImpl {
         Map<String, String> map = new HashMap<String, String>();
         String message = util.typeEmail(created ? 1 : 2, usuario, sucursal, cita, null);
         try {
-			mailService.sendMultiMail(usuario.getEmail(), message, id_cita);
+			mailService.sendMultiMail(usuario.getEmail(), message, id_cita, sucursal.getId(), true);
         	map.put("message", "Correo Enviado Correctamente");
         	map.put("errorCode", "200");
             return new ResponseEntity<Object>(map, HttpStatus.OK);
@@ -65,9 +65,9 @@ public class MailServiceImpl {
 		UserEntity usuario = userServiceImpl.mapToModel(userServiceImpl.findById(id_usuario));
         Branch sucursal = branchServiceImpl.mapToModel(branchServiceImpl.findById(id_branch));
         Map<String, String> map = new HashMap<String, String>();
-        String message = util.typeEmail(created ? 5 : 6, usuario, sucursal, null, venta);
+        String message = util.typeEmail(created ? 5 : 7, usuario, sucursal, null, venta);
         try {
-			mailService.sendMultiMail(usuario.getEmail(), message, id_sale);
+			mailService.sendMultiMail(usuario.getEmail(), message, id_sale, sucursal.getId(), false);
         	map.put("message", "Correo Enviado Correctamente");
         	map.put("errorCode", "200");
             return new ResponseEntity<Object>(map, HttpStatus.OK);

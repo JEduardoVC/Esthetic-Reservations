@@ -53,7 +53,7 @@ async function showAppointment() {
 	await getAppointments();
 	$("#show-appointment").empty();
 	citasObj.forEach(async appointment => {
-		if(sessionStorage.getItem("qr") == appointment.id) appointment = await changeStatus(appointment.id);
+		if(sessionStorage.getItem("qr_item") == appointment.id) appointment = await changeStatus(appointment.id);
 		console.info(appointment.appointmnet_time);
 		$("#show-appointment").append(`
 			<div class="appointment-confirmed">

@@ -80,6 +80,14 @@ public class Util {
 						+ " a las " + changeFormatTime(cita.getAppointmnet_time()) + "\n\n"
 						+ "Sé lo importante que es respetar el tiempo de los demás, por lo que lamento cualquier inconveniente que esta cancelación pueda causarle\n\n"
 						+ "Aprecio su comprensión en este asunto y espero poder programar otra cita en el futuro\n\n\n";
+			case 7:
+				return "Correo enviado por Esthetic Reservation con el motivo de mostrar la compra de productos actualizada\n\n"
+			            + usuario.getName() + " " + usuario.getLastName() + "\n"
+			            + "Gracias por comprar sus prodcutos en la sucursal " + sucursal.getBranchName() + "\n"
+			            + "Con una compra de " + venta.getQuantity() + " productos\n"
+			            + "Con un total de $" + venta.getTotal() + " \n\n"
+			            + "Podra hacer entrega de sus productos en el horario establecido \n\n\n"
+			            + "Favor de mostrar el código QR en la sucursal";
 			default:
 				return "";
 		}

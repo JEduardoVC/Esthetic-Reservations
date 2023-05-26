@@ -51,8 +51,8 @@ async function showAppointment() {
 				</div>
 				<div class="actions-appointment">
 					<h4>Acciones</h4>
-					<button class="btn-update" onclick="updateAppointment(${cita.id})">Editar reservación</button>
-					<button class="btn-remove" onclick="deleteAppointment(${cita.id})">Cancelar reservación</button>
+					<button class="btn-update" onclick="updateAppointment(${cita.id}, ${cita.id_status.id})">Editar reservación</button>
+					<button class="btn-remove" onclick="deleteAppointment(${cita.id}, ${cita.id_status.id})">Cancelar reservación</button>
 					${cita.id_status.id==1 ? '<button class="btn-review trigger-modal" data-target="'+cita.id+'">Reseña</button>' : ''}
 				</div>
 			</div>
@@ -175,12 +175,20 @@ async function updateComment(body, id){
     }
 }
 
-function updateAppointment(id) {
+function updateAppointment(id, status) {
+	if(status == 1) {
+		alerta("error", "Esta cita ya fue atendida", "No puede editar la resevación");
+		return;
+	} 
 	sessionStorage.setItem("appointmentId", id);
 	location = `${BASE_URL}app/client/update/reservation`;
 }
 
-async function deleteAppointment(id) {
+async function deleteAppointment(id, status) {
+	if(status == 1) {
+		alerta("error", "Esta cita ya fue atendida", "No puede cancelar la reservación");
+		return;
+	} 
 	const accion = await confirmAlert("warning", "Cancelar Reservación", "¿Esta seguro de cancelar su reservación?", "Aceptar");
 	if(accion) {
 		showLoading("Enviando correo...")
@@ -195,7 +203,7 @@ async function deleteAppointment(id) {
 		})
 		const respuesta = await resultado.json();
 		if(respuesta.code == 200) {
-			citasObj = citasObj.find(cita => cita.id != id);
+			citasObj = citasObj.find(appointment => appointment.id != id);
 			setTimeout(() => {
 				alerta("success", "Su reservación fue cancelada exitosamete!", "Reservación cancelada")
 				showItems();

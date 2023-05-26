@@ -13,6 +13,7 @@ async function leerCodigo() {
 				mirror: false
 			});
 			Instascan.Camera.getCameras().then(function(cameras) {
+				console.info(cameras.length);
 				if(cameras.length > 0) {
 					scanner.start(cameras[0])
 				} else {
@@ -22,7 +23,10 @@ async function leerCodigo() {
 				alert(e);
 			});
 			scanner.addListener("scan", function(respuesta) {
-				sessionStorage.setItem("qr", respuesta);
+				respuesta = JSON.parse(respuesta);
+				sessionStorage.setItem("qr_service", respuesta.service);
+				sessionStorage.setItem("qr_item", respuesta.id_item);
+				sessionStorage.setItem("qr_branch", respuesta.id_branch);
 				window.location = `${BASE_URL}app/owner`;
 			})
 		}
