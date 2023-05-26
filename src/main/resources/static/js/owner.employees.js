@@ -272,7 +272,8 @@ async function getUserBranches() {
     const checkboxes = $('#branches-checkboxes');
     select.append($('<option>', {
         value: '',
-        text: 'Seleccionar sucursal'
+        text: 'Seleccionar sucursal',
+        disabled: 'disabled'
     }))
     $(branches).each(function () {
         const branch = this;

@@ -53,7 +53,7 @@ public class InventoryController {
 	@DeleteMapping("/eliminar/{id}")
 	public ResponseEntity<?> eliminar(@PathVariable("id") Long id) {
 		Map<String, String> response = new HashMap<String, String>();
-		inventoryServiceImpl.delete(id);
+		inventoryServiceImpl.eliminar(id);
 		response.put("message", "Eliminado Correctamente");
 		return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 	}

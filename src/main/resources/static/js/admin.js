@@ -20,9 +20,14 @@ $(function () {
     $('.dark-mode-toggler').on('click', toggleDarkMode);
 })
 
+$(document).on('click','#btn-cerrar-sesion', function(e){
+    sessionStorage.clear();
+    document.location = `${BASE_URL}app/cerrar`;
+});
+
 const toggleDarkMode = function () {
     $('html').toggleClass('dark-mode');
-    sessionStorage.setItem('darkMode', sessionStorage.getItem('darkModeAdmin') === 'true' ? 'false' : 'true');
+    sessionStorage.setItem('darkModeAdmin', sessionStorage.getItem('darkModeAdmin') === 'true' ? 'false' : 'true');
     $('.sun').toggleClass('d-none no-mostrar');
     $('.moon').toggleClass('d-none no-mostrar');
 };
