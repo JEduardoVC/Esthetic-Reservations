@@ -40,14 +40,26 @@
 </div>
         <div>
             <div th:insert="owner/navegation"></div>
+            <div class="select-branch-owner">
+                <p>Sucursal: </p>
+                <select id="select-branch">
+                </select>
+            </div>
             <div class="btn-new-product">
                 <button class="btn-principal trigger-modal" data-action="add" data-target="-1">Agregar nuevo producto</button>
+            </div>
+            <div class="select-branch-admin">
+                <p>Sucursal: </p>
+                <select id="select-branch">
+                </select>
             </div>
             <div class="title-inventory">
                 <div class="center"><h1>Nombre</h1></div>
                 <div class="center"><h1>Imagen</h1></div>
                 <div class="center"><h1>Precio</h1></div>
                 <div class="center"><h1>Cantidad</h1></div>
+                <div class="center"><h1>Capacidad</h1></div>
+                <div class="center"><h1>Descripción</h1></div>
                 <div class="center"><h1>Acciones</h1></div>
             </div>
             <div class="show-inventory" id="mostrar-productos">

@@ -1,7 +1,39 @@
-(function(){
+(async function(){
 	if(!sessionStorage.getItem("token")) location.href = `${BASE_URL}app/login`;
 	showAppointment();
+	await getUserBranches();
 })();
+
+async function getUserBranches() {
+    const branches = await request({
+        method: 'GET',
+        endpoint: 'api/branch/all/filter',
+        urlParams: {
+            filterBy: 'owner',
+            filterTo: sessionStorage.getItem('userId')
+        },
+        alertOnError: true
+    });
+    const select = $('#select-branch');
+	select.append($('<option>', {
+        value: '',
+        text: 'Seleccionar sucursal',
+        disabled: 'disabled'
+    }))
+    $(branches).each(function () {
+        const branch = this;
+        select.append($('<option>', {
+            value: branch.id,
+            text: branch.branchName
+        }))
+    });
+    select.val(sessionStorage.getItem('branchId'));
+}
+
+$('#select-branch').on('change', async function (e) {
+    sessionStorage.setItem('branchId', $(this).val());
+    await showAppointment();
+});
 
 let citasObj = [];
 

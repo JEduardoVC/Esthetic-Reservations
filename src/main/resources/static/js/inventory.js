@@ -1,12 +1,44 @@
 $(async function () {
+    await getUserBranches();
     await getAllProducts();
 });
+
+async function getUserBranches() {
+    const branches = await request({
+        method: 'GET',
+        endpoint: 'api/branch/all/filter',
+        urlParams: {
+            filterBy: 'owner',
+            filterTo: sessionStorage.getItem('userId')
+        },
+        alertOnError: true
+    });
+    const select = $('#select-branch');
+    select.append($('<option>', {
+        value: '',
+        text: 'Seleccionar sucursal',
+        disabled: 'disabled'
+    }))
+    $(branches).each(function () {
+        const branch = this;
+        select.append($('<option>', {
+            value: branch.id,
+            text: branch.branchName
+        }))
+    });
+    select.val(sessionStorage.getItem('branchId'));
+}
 
 $(document).on('click', '.trigger-modal', function (e) {
     cleanForm();
     const action = $(this).data('action');
     const target = $(this).data('target');
     showModal(action, target);
+});
+
+$('#select-branch').on('change', async function (e) {
+    sessionStorage.setItem('branchId', $(this).val());
+    await getAllProducts();
 });
 
 async function inflateModal(action, target) {
@@ -42,7 +74,7 @@ async function inflateModal(action, target) {
                                 </div>
                                 <div class="field">
                                     <label class="filter" for="description">Descripción</label>
-                                    <input class="inventory-field" type="textarea" name="description" id="description" aria-label="description" placeholder="Descripción del producto" value="${product.description}">
+                                    <textarea class="inventory-field" name="description" id="description" aria-label="description" placeholder="Descripción del producto" value="${product.description}"></textarea>
                                 </div>
                                 <div class="field">
                                     <label class="filter" for="capacibility">Capacidad</label>
@@ -136,7 +168,10 @@ async function getAllProducts() {
         fetch: 'response'
     });
     if (productResponse.data.content.length === 0) {
-        alerta('warning', 'No hay productos en esta sucursal', 'Sin productos');
+        // alerta('warning', 'No hay productos en esta sucursal', 'Sin productos');
+        $('#mostrar-productos').html(`<div class="product-registered">
+                                        <p>Esta sucursal no tiene productos.</p>
+                                    </div>`);
     } else {
         const products = productResponse.data.content;
         let html = '';
@@ -148,6 +183,8 @@ async function getAllProducts() {
                         </div>
                         <p><span>$</span>${product.price}</p>
                         <p>${product.store}</p>
+                        <p>${product.capacibility}</p>
+                        <p>${product.description}</p>
                         <div class="actions-product">
                             <button type="button" class="btn-update trigger-modal" data-action="edit" data-target="${product.id}">Actualizar</button>
                             <button type="button" class="btn-remove" data-target="${product.id}">Eliminar</button>
@@ -155,9 +192,9 @@ async function getAllProducts() {
                     </div>`;
         }
         if (html === '') {
-            html = html += `<div class="product-registered">
-                                <p>Esta sucursal no tiene productos.</p>
-                            </div>`;
+            html = `<div class="product-registered">
+                        <p>Esta sucursal no tiene productos.</p>
+                    </div>`;
         }
         $('#mostrar-productos').html('');
         $('#mostrar-productos').html(html);

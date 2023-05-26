@@ -28,4 +28,11 @@
 		}
 		location.href = "/app/client/appointment";
     });
+    document.querySelector("#appointment-phone").addEventListener("click", function(){
+		if(sessionStorage.getItem("appointmentId")) {
+			sessionStorage.removeItem("appointmentId");
+			sessionStorage.removeItem("carrito");
+		}
+		location.href = "/app/client/appointment";
+    });
 })();

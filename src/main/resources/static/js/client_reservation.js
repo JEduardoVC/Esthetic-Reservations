@@ -508,15 +508,19 @@ function selectDay(div){
 }
 
 function showSeccion(){
-    const seccionAnterior = document.querySelector('.mostrar-seccion');
+	console.log(pagina);
+    const seccionAnterior = document.querySelector('.mostrar');
+	console.log(seccionAnterior);
     if (seccionAnterior) {
-        seccionAnterior.classList.remove('mostrar-seccion');
-//        seccionAnterior.classList.add("ocultar");
+        seccionAnterior.classList.remove("mostrar");
         seccionAnterior.style = "display: none";
     }
     const seccionActual = document.querySelector(`#paso-${pagina}`);
-    seccionActual.classList.add("mostrar-seccion")
-    seccionActual.style = "display: grid";
+	seccionActual.classList.add("mostrar");
+	if(screen.width > 1024) seccionActual.style = "display: grid";
+	if(screen.width <= 480) seccionActual.style = "display: flex";
+	
+
 }
 
 async function obtenerServicios() {
