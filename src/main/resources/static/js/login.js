@@ -15,6 +15,7 @@ async function presionarBoton() {
 		alerta("error", "Password Vacio");
 		return;
 	}
+	console.info(`${BASE_URL}api/auth/user/login`);
 	await fetch(`${BASE_URL}api/auth/user/login`,  {
 		method: 'POST',
 		headers: {
