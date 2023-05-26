@@ -89,6 +89,9 @@ const appointment = {
 			}
 		}
 		if(carrito.productos.length == 0 && carrito.servicios.length == 0) alerta("error", "No ha seleccionado servicios o productos para agender su reservación")
+//		else setTimeout(() => {
+//			location.href = `${BASE_URL}app/client/appointment`;
+//		}, 2000);
 	})
 })();
 

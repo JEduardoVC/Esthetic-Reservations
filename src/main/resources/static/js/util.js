@@ -1,5 +1,5 @@
-const BASE_URL = 'https://esthetic-reservation.herokuapp.com/';
-//const BASE_URL = 'http://localhost:5500/';
+//const BASE_URL = 'https://esthetic-reservation.herokuapp.com/';
+const BASE_URL = 'http://localhost:5500/';
 //const BASE_URL = 'http://192.168.100.6:5500/';
 //const BASE_URL = 'http://192.168.1.76:5500/';
 //const BASE_URL = 'http://192.168.1.70:5500/';
@@ -55,6 +55,7 @@ async function enviarSimpleCorreo(email) {
 
 async function sendMail(id, created, appointment) {
 	const url = `${BASE_URL}api/mail/${created ? "new" : "update"}/${appointment ? "appointment" : "sale"}`;
+	console.info(url);
 	const newFormData = new FormData();
 	newFormData.append("mail", sessionStorage.getItem("userId"));
 	newFormData.append("branch", sessionStorage.getItem("branchId"));

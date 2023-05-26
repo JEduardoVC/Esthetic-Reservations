@@ -19,7 +19,7 @@ async function mostrarProducto() {
 	            <span>${producto.capacibility}</span>
 	        </div>
 	        <div class="product-description">
-	            <img src="/Inventario/${producto.imagen}">
+	            <img src="${producto.imagen}">
 	            <p>${producto.description}</p>
 	        </div>
 	        <p class="price-product">$ ${producto.price}</p>
@@ -64,7 +64,7 @@ async function mostrarProductos() {
 		const prod = document.createElement("div");
 		prod.classList.add("one-product");
 		prod.innerHTML = `
-	        <img class="img-product" <img src="/Inventario/${producto.imagen}">
+	        <img class="img-product" <img src="${producto.imagen}">
 	        <div class="description-oneproduct">
 	            <h4>${producto.inventory_name}</h4>
 	            <p>${producto.description}</p>
