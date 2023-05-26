@@ -27,7 +27,7 @@ $(document).on('click','#btn-cerrar-sesion', function(e){
 
 const toggleDarkMode = function () {
     $('html').toggleClass('dark-mode');
-    sessionStorage.setItem('darkMode', sessionStorage.getItem('darkModeAdmin') === 'true' ? 'false' : 'true');
+    sessionStorage.setItem('darkModeAdmin', sessionStorage.getItem('darkModeAdmin') === 'true' ? 'false' : 'true');
     $('.sun').toggleClass('d-none no-mostrar');
     $('.moon').toggleClass('d-none no-mostrar');
 };
