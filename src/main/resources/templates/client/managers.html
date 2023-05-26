@@ -28,11 +28,18 @@
 <body>
     <main>
         <div class="manager">
-            <form action="dashboard">
-                <button class="btn-secundario">Volver</button>
-            </form>
-            <h1>Encargados</h1>
-            <div id="employees-infos"></div>
+            <div class="title">
+                <h1 class="title-p">Encargados</h1>
+                <img src="/img/Productos-venta.webp">
+            </div>
+            <div class="container-manager">
+                <div class="volver-img">
+                    <button class="btn-volver-img" onclick="volver()">
+                        <img class="filter" src="/img/volver.webp">
+                    </button>
+                </div>
+                <div id="employees-infos" class="employees-infos"></div>
+            </div>
         </div>
     </main>
 </body>
