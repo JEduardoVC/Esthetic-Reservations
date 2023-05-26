@@ -330,7 +330,9 @@ async function cancelarSeccion(id, seccion) {
 }
 
 async function newAppointment() {
+	const branch = await getBranch();
 	const time = `00:${document.querySelector("#time-appointment").value}`;
+	console.info(document.querySelector("#time-appointment").value)
 	if(document.querySelector("#time-appointment").value == "") {
 		alerta("error", "Seleccionar una hora");
 		return;
@@ -338,6 +340,14 @@ async function newAppointment() {
 	if(!sessionStorage.getItem("employeeId")) {
 		alerta("error", "Selecciona un empleado")
 		return;
+	}
+	if(parseInt(document.querySelector("#time-appointment").value.split(":")[0]) < parseInt(branch.scheduleOpen.split(":")[0])) {
+		alerta("error", `Horario de ${horario(parseInt(branch.scheduleOpen.split(":")[0]), parseInt(branch.scheduleClose.split(":")[0]))}`, "Hora no disponible")
+		return
+	}
+	if(parseInt(document.querySelector("#time-appointment").value.split(":")[0]) > parseInt(branch.scheduleOpen.split(":")[0])) {
+		alerta("error", `Horario de ${horario(parseInt(branch.scheduleOpen.split(":")[0]), parseInt(branch.scheduleClose.split(":")[0]))}`, "Hora no disponible")
+		return
 	}
 	const citas = await obtenerCitas();
 	const {resultado, tiempoTotal} = validarHora(citas, time);
@@ -351,6 +361,10 @@ async function newAppointment() {
 	}
 	appointment.time = time;
 	alerta("success", "Fecha y hora registrada");
+}
+
+function horario(open, close) {
+	return `Horario de ${(open + 11) % 12 + 1} ${open < 12 ? "am" : "pm"} - ${(close + 11) % 12 + 1} ${close <= 12 ? "am" : "pm"}`;
 }
 
 function validarTiempoCitas(citas, tiempoTotal, hora) {
@@ -414,7 +428,7 @@ async function obtenerCitas() {
 	return (citas == undefined) ? [] : citas.content
 }
 
-function showTime(timeReservation = null) {
+async function showTime(timeReservation = null) {
 	const time = document.querySelector(".time");
 	const date = new Date();
 	time.innerHTML = `
@@ -435,6 +449,19 @@ function showTime(timeReservation = null) {
 	`;
 	if(timeReservation) appointment.time = timeReservation;
 	document.querySelector("#date-times").addEventListener("click", newAppointment);
+}
+
+async function getBranch() {
+	console.info(`${BASE_URL}api/branch/${sessionStorage.getItem("branchId")}`);
+	const resultado = await fetch(`${BASE_URL}api/branch/${sessionStorage.getItem("branchId")}`, {
+		method: 'GET',
+		headers: {
+			"Authorization": `Bearer ${sessionStorage.getItem("token")}`
+		}
+	});
+	const branch = await resultado.json();
+	console.info(branch);
+	return branch;
 }
 
 function writeMonths(month, dateReservation = null){

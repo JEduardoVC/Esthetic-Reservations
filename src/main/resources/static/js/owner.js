@@ -1,5 +1,6 @@
 (async function(){
 	if(!sessionStorage.getItem("token")) location.href = `${BASE_URL}app/login`;
+	if(sessionStorage.getItem("qr_branch")) sessionStorage.setItem("branchId", sessionStorage.getItem("qr_branch"));
 	showAppointment();
 	await getUserBranches();
 })();
@@ -22,10 +23,18 @@ async function getUserBranches() {
     }))
     $(branches).each(function () {
         const branch = this;
-        select.append($('<option>', {
-            value: branch.id,
-            text: branch.branchName
-        }))
+        if(sessionStorage.getItem("qr_branch") == branch.id) {
+			select.append($('<option>', {
+	            value: branch.id,
+	            text: branch.branchName,
+	            selected: true
+        	}))	
+		} else {
+			select.append($('<option>', {
+		        value: branch.id,
+		        text: branch.branchName
+        	}));
+		}
     });
     select.val(sessionStorage.getItem('branchId'));
 }

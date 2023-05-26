@@ -35,4 +35,9 @@
 		}
 		location.href = "/app/client/appointment";
     });
+    
+    $("#btn-volver-dashboard").on("click", () => {
+		location.href = `${BASE_URL}app/client/location`;
+	})
+    
 })();
