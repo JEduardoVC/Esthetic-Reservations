@@ -1,12 +1,44 @@
 $(async function () {
+    await getUserBranches();
     await getAllProducts();
 });
+
+async function getUserBranches() {
+    const branches = await request({
+        method: 'GET',
+        endpoint: 'api/branch/all/filter',
+        urlParams: {
+            filterBy: 'owner',
+            filterTo: sessionStorage.getItem('userId')
+        },
+        alertOnError: true
+    });
+    const select = $('#select-branch');
+    select.append($('<option>', {
+        value: '',
+        text: 'Seleccionar sucursal',
+        disabled: 'disabled'
+    }))
+    $(branches).each(function () {
+        const branch = this;
+        select.append($('<option>', {
+            value: branch.id,
+            text: branch.branchName
+        }))
+    });
+    select.val(sessionStorage.getItem('branchId'));
+}
 
 $(document).on('click', '.trigger-modal', function (e) {
     cleanForm();
     const action = $(this).data('action');
     const target = $(this).data('target');
     showModal(action, target);
+});
+
+$('#select-branch').on('change', async function (e) {
+    sessionStorage.setItem('branchId', $(this).val());
+    await getAllProducts();
 });
 
 async function inflateModal(action, target) {
@@ -136,7 +168,10 @@ async function getAllProducts() {
         fetch: 'response'
     });
     if (productResponse.data.content.length === 0) {
-        alerta('warning', 'No hay productos en esta sucursal', 'Sin productos');
+        // alerta('warning', 'No hay productos en esta sucursal', 'Sin productos');
+        $('#mostrar-productos').html(`<div class="product-registered">
+                                        <p>Esta sucursal no tiene productos.</p>
+                                    </div>`);
     } else {
         const products = productResponse.data.content;
         let html = '';
@@ -144,7 +179,7 @@ async function getAllProducts() {
             html += `<div class="product-registered">
                         <p>${product.inventory_name}</p>
                         <div class="img-product-inventory">
-                            <img src="/Inventario/${product.imagen}">
+                            <img src="${product.imagen}.jpg">
                         </div>
                         <p><span>$</span>${product.price}</p>
                         <p>${product.store}</p>
@@ -157,9 +192,9 @@ async function getAllProducts() {
                     </div>`;
         }
         if (html === '') {
-            html = html += `<div class="product-registered">
-                                <p>Esta sucursal no tiene productos.</p>
-                            </div>`;
+            html = `<div class="product-registered">
+                        <p>Esta sucursal no tiene productos.</p>
+                    </div>`;
         }
         $('#mostrar-productos').html('');
         $('#mostrar-productos').html(html);
@@ -179,8 +214,9 @@ async function deleteProduct(id) {
             endpoint: `api/owner/inventario/eliminar/${id}`,
             fetch: 'response'
         });
+        console.info(response);
         if (!response.isValid) {
-            alerta('error', response.data.message);
+            alerta('error', "Hay una compra asignada con este producto");
             return;
         }
         await getAllProducts();

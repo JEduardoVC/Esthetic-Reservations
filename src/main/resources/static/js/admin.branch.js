@@ -13,16 +13,6 @@ $(async function () {
         paging: true,
         data: branches,
         columns: [
-            { "name": "id", "data": "id", "targets": 0 },
-            { "name": "nombre", "data": "branchName", "targets": 1 },
-            { "name": "direccion", "data": "location", "targets": 2 },
-            {
-                "name": "dueño", "render": function (data, type, row) {
-                    return `${data.owner.name} ${data.owner.lastName} (${data.owner.id})`;
-                }, 'data': null, "targets": 3
-            },
-            { "name": "apertura", "data": "scheduleOpen", "targets": 4 },
-            { "name": "cierre", "data": "scheduleClose", "targets": 5 },
             {
                 "searchable": false, "orderable": false,
                 "name": "acciones", "render": function (data, type, row) {
@@ -30,8 +20,18 @@ $(async function () {
                     return `
                             <button type="button" class="btn btn-warning rounded-pill modal-trigger" data-bs-toggle="modal" data-bs-target="#modalBranchesForm" data-action="edit" data-target="${rowId}"><span class="bi bi-pencil"></span></button>
                             <button type="button" class="btn btn-danger rounded-pill" data-target="${rowId}"><span class="bi bi-trash text-white"></span></button>`;
-                }, "data": null, "targets": 6
-            }
+                }, "data": null, "targets": 0
+            },
+            { "name": "id", "data": "id", "targets": 1 },
+            { "name": "nombre", "data": "branchName", "targets": 2 },
+            { "name": "direccion", "data": "location", "targets": 3 },
+            {
+                "name": "dueño", "render": function (data, type, row) {
+                    return `${data.owner.name} ${data.owner.lastName} (${data.owner.id})`;
+                }, 'data': null, "targets": 4
+            },
+            { "name": "apertura", "data": "scheduleOpen", "targets": 5 },
+            { "name": "cierre", "data": "scheduleClose", "targets": 6 },
         ],
         language: languageMX
     });
@@ -353,7 +353,6 @@ function cleanForm() {
     $('#branch-location').attr('data-lon', 'x');
     // $('#branchesdiv').addClass('no-mostrar d-none');
     $('#employeesTable').DataTable().rows().deselect();
-    $('#alertas').addClass('no-mostrar d-none');
     $('#select-owner option').remove();
     // hideFeedback('roles');
     hideFeedback('form');
@@ -598,11 +597,12 @@ async function addBranch(data) {
         return true;
     } else {
         if (addResponse.status === 400) {
-            showObjectAlerts(addResponse.data.message, 'error');
+            const errors = Object.keys(addResponse.data.message).map((key) => [key, obj[key]]);
+            alerta('error', errors.join(', '), 'Error');
         } else if (addResponse.status === 500 || addResponse.status === 409) {
             let errors = [];
             errors.push(addResponse.data.message);
-            showAlerts(errors, 'error');
+            alerta('error', errors.join(', '), 'Error');
         } else {
             alerta('error', addResponse.status + '\n' + JSON.stringify(addResponse.data.message));
         }
@@ -632,11 +632,12 @@ async function updateBranch(id, data) {
         return true;
     } else {
         if (addResponse.status === 400) {
-            showObjectAlerts(addResponse.data.message, 'error');
+            const errors = Object.keys(addResponse.data.message).map((key) => [key, obj[key]]);
+            alerta('error', errors.join(', '), 'Error');
         } else if (addResponse.status === 500 || addResponse.status === 409) {
             let errors = [];
             errors.push(addResponse.data.message);
-            showAlerts(errors, 'error');
+            alerta('error', errors.join(', '), 'Error');
         } else {
             alerta('error', addResponse.status + '\n' + JSON.stringify(addResponse.data.message));
         }
@@ -660,28 +661,6 @@ async function deleteBranch(id) {
         alerta('success', 'Sucursal eliminada.');
         return true;
     }
-}
-
-function showAlerts(alerts, type = 'error') {
-    let html = '<div>\n'
-    alerts.forEach(alert => {
-        html += `<p class="${type}">${alert}</p>\n`;
-    })
-    html += '</div>';
-    document.getElementById('alertas').innerHTML = html;
-    $('#alertas').removeClass('d-none');
-    document.getElementById('alertas').scrollIntoView();
-}
-
-function showObjectAlerts(alerts, type) {
-    let html = '<div>\n'
-    for (const alert in alerts) {
-        html += `<p class="${type}">${alerts[alert]}</p>\n`;
-    }
-    html += '</div>';
-    document.getElementById('alertas').innerHTML = html;
-    $('#alertas').removeClass('d-none');
-    document.getElementById('alertas').scrollIntoView();
 }
 
 function strToDate(str) {
